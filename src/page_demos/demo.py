@@ -29,6 +29,7 @@ class Demo(tk.Tk):
             'names': None
         }
         self.project['folder'] = None
+        self.project['stalign_iterations'] = 0
 
         self.path_checkpoints = os.path.join("src", "page_demos", "checkpoints")
 
