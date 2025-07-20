@@ -48,8 +48,8 @@ class Page(tk.Frame, ABC):
     def __init__(self, master, project):
         super().__init__(master)
         self.project = project
-        self.slides = project['slides']
-        self.atlases = project['atlases']
+        self.slides = self.project.slides
+        self.atlases = self.project.atlases
         self.header = ""
         self.create_widgets()
 
@@ -224,9 +224,9 @@ class Starter(Page):
         # create project folder
         folder = "DART-" + datetime.now().strftime("%Y-%m-%d_%H%M%S")
         os.mkdir(os.path.join(path, folder))
-        self.project['parent_folder'] = os.path.abspath(path)
-        self.project['folder'] = os.path.join(
-            self.project['parent_folder'], 
+        self.project.parent_folder = os.path.abspath(path)
+        self.project.folder = os.path.join(
+            self.project.parent_folder, 
             folder
         )
 
@@ -734,6 +734,7 @@ class SlideProcessor(Page):
             # and show the error message
             if e is not None:
                 self.curr_slide_var.set(i+1)
+                # TODO: should also set annotation mode to the one necessary
                 self.refresh()
                 tk.messagebox.showerror(
                     title="Error",
@@ -742,14 +743,14 @@ class SlideProcessor(Page):
                 raise e
 
         # save target coordinates in a text file
-        with open(os.path.join(self.project['folder'], 'target_coordinates.txt'), 'w') as f:
+        with open(os.path.join(self.project.folder, 'target_coordinates.txt'), 'w') as f:
             f.write("slide#_target# : X Y\n")
             for si, slide in enumerate(self.slides):
                 for ti, target in enumerate(slide.targets):
                     f.write(f"{get_filename(si, ti)} : {target.x_offset} {target.y_offset}\n")
 
         # save calibration points in a text file
-        with open(os.path.join(self.project['folder'], 'calibration_points.txt'), 'w') as f:
+        with open(os.path.join(self.project.folder, 'calibration_points.txt'), 'w') as f:
             f.write("slide# : X Y\n")
             for si, slide in enumerate(self.slides):
                 for point in slide.calibration_points:
@@ -759,7 +760,7 @@ class SlideProcessor(Page):
         for si, slide in enumerate(self.slides):
             for ti, target in enumerate(slide.targets):
                 filename = get_filename(si, ti)+'.jpg'
-                ski.io.imsave(os.path.join(self.project['folder'], filename),target.img_original)
+                ski.io.imsave(os.path.join(self.project.folder, filename),target.img_original)
 
         super().done()
 
@@ -771,7 +772,6 @@ class SlideProcessor(Page):
         to finalize the page's actions.
         """
         self.slides.clear()
-        # TODO: decide whether to clear the points/target data
         super().cancel()
 
 class TargetProcessor(Page):
@@ -803,7 +803,7 @@ class TargetProcessor(Page):
           and the rotation and translation controls.
         - Parameter settings frame: Contains controls for adjusting parameters for
           automatic alignment, including basic and advanced parameter settings.
-         """
+        """
         
         # menu frame with slide and target navigation, buttons, and controls
         self.menu_frame = tk.Frame(self)
@@ -1184,6 +1184,11 @@ class TargetProcessor(Page):
         and removable landmark points with different colors. It updates the affine
         transformation parameters based on the current rotation and translation
         values, and applies the affine transformation to the atlas pixel locations.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the update (default is None).
         """
         self.slice_viewer.axes[1].cla()
         self.slice_viewer.axes[1].set_title("Atlas")
@@ -1258,6 +1263,11 @@ class TargetProcessor(Page):
         when the user clicks on the slice viewer to select landmark points. It checks
         if the click is within the axes, retrieves the new point coordinates based on
         the click position, and updates the new points for the target and atlas images.
+        
+        Parameters
+        ----------
+        event : tk.Event
+            The event that triggered the update.
         """
         if event.inaxes is None: return
 
@@ -1327,6 +1337,11 @@ class TargetProcessor(Page):
         based on the selected speed setting. It updates the advanced entries with
         the new values and prints a confirmation message indicating that the parameters
         have been reset to the defaults.
+
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the update (default is None).
         """
 
         # reset params to defaults
@@ -1386,8 +1401,8 @@ class TargetProcessor(Page):
             slide.estimate_pix_dim()
             for ti,target in enumerate(slide.targets):
                 folder = os.path.join(
-                    self.project['folder'], 
-                    get_folder(si, ti, self.project['stalign_iterations'])
+                    self.project.folder, 
+                    get_folder(si, ti, self.project.stalign_iterations)
                 )
                 os.mkdir(folder)
 
@@ -1479,16 +1494,37 @@ class TargetProcessor(Page):
         return self.curr_target_var.get()-1
 
 class STalignRunner(Page):
+    """
+    Page for running STalign and viewing results. This page runs 
+    STalign, showing a progress bar, and then displays results once
+    completed. It also saves graphs related to STalign runtime and 
+    error tracking.
+    """
 
     def __init__(self, master, project):
         super().__init__(master, project)
         self.header = "Running STalign."
     
     def activate(self):
+        """
+        Activate the STalignRunner page. This method calls 
+        `estimate_time` to estimate the duration of STalign and
+        configure the progress bar and labels accordingly.
+        """
+        # TODO: if all skipped -> immediately generate segmentations 
+        # and call done()
         self.estimate_time()
         super().activate()
 
     def estimate_time(self):
+        """
+        Estimate duration of STalign for all targets. This method
+        totals up the iterations for all planned STalign runs and
+        calculates the duration of STalign my assuming each iteration
+        takes 3 seconds. It also configures the progress bar and 
+        text label with this information.
+        """
+
         totalIterations = 0
         for slide in self.slides:
             for target in slide.targets:
@@ -1502,8 +1538,22 @@ class STalignRunner(Page):
         label_txt = f'Estimated Duration: {time_str}'
         self.info_label.config(text=label_txt)
 
-    # converts number of seconds to a human readable string
     def seconds_to_string(s):
+        """
+        Helper method that creates a verbose string describing a time
+        duration given in seconds
+
+        Parameters
+        ----------
+        s : int
+            The time duration in seconds
+        
+        Returns
+        -------
+        output : str
+            A verbose string that describes the time duration in days,
+            hours, minutes, and seconds
+        """
         units = {
             "day":24*60*60,
             "hour":60*60,
@@ -1525,6 +1575,14 @@ class STalignRunner(Page):
         return " ".join(output)
 
     def create_widgets(self):
+        """
+        Create the widgets for this page. This includes:
+        - Info Label: Displays information regarding time left, which
+        target and slice is currently being aligned, and completion status
+        - Progress Bar: Displays progress in STalign alignment
+        - Results Frame: Contains figure displaying results along with
+        navigation controls
+        """
         self.info_label = ttk.Label(
             master=self,
         )
@@ -1546,11 +1604,36 @@ class STalignRunner(Page):
         self.create_result_viewer()
 
     def show_widgets(self):
+        """
+        Show the widgets. This method packs the widgets on the page.
+        Of note, the Results Frame is not packed, but it's components
+        are. This allows the results to be easily displayed after STalign
+        completion by simply packing the Results Frame and hiding the 
+        progress bar.
+        """
         self.info_label.pack()
         self.start_btn.pack()
         self.show_result_viewer()
         
     def process_points(self, target):
+        """
+        Helper function for processing landmark points and returning
+        processed points. This method converts the 2D landmarks for the
+        atlas and target that are stored in the reference space of 
+        the matplotlib figure and converts them to the reference 
+        space of the atlas and target respectively.
+
+        Parameters
+        ----------
+        target : Target
+            The target whose points we want to process
+        
+        Returns
+        -------
+        processed : dict
+            The processed points stored in a dictionary with keys "target"
+            and "atlas"
+        """
         if target.num_landmarks > 0:
             points_target_pix = np.array(target.landmarks['target'])
             points_atlas_pix = np.array(target.landmarks['atlas'])
@@ -1569,6 +1652,25 @@ class STalignRunner(Page):
             return {"target": None, "atlas": None}  
 
     def get_transform(self, target, device):
+        """
+        Get the transform using STalign for a given target. This method
+        runs STalign for the provided target, using parameters stored
+        as class attributes of the target.
+
+        Parameters
+        ----------
+        target : Target
+            The target to be aligned using STalign.
+        device : str
+            The device to perform STalign on (i.e. 'cpu' or 'cuda')
+        
+        Returns
+        -------
+        transform : dict
+            A dictionary containing the results of STalign alignment. 
+            These results include the affine transform and the velocity
+            graph mapping the target to the atlas.
+        """
         # processing points
         processed_points = self.process_points(target)
 
@@ -1603,6 +1705,23 @@ class STalignRunner(Page):
         return transform
 
     def get_segmentation(self, target):
+        """
+        Get the segmentation of the target using the alignment created
+        by STalign. This method applies the transform (provided by STalign)
+        onto the labels atlas (a pre-segmented atlas corresponding to the
+        reference atlas) to generate a segmentation mask for the target image.
+
+        Parameters
+        ----------
+        target : Target
+            The target whose segmentation is being requested.
+        
+        Returns
+        -------
+        segmentation : ndarray
+            A numpy array representing the segmentation mask of the Target
+            image.
+        """
         transform = target.transform
         At = transform['A']
         v = transform['v']
@@ -1627,16 +1746,22 @@ class STalignRunner(Page):
             XJ=torch.tensor(XJ,device=At.device)
         )
 
-        AphiL = STalign.interp3D(
+        segmentation = STalign.interp3D(
             xL,
             torch.tensor(vol[None].astype(np.float64),dtype=torch.float64,device=tform.device),
             tform.permute(-1,0,1,2),
             mode='nearest'
-        )[0,0].cpu().int()
+        )[0,0].cpu().int().numpy()
         
-        return AphiL.numpy()
+        return segmentation
 
     def run(self):
+        """
+        Run STalign on all the targets. This method iterates through
+        all the targets, gets the transform by running STalign, then
+        gets the segmentation for the target. Finally, it displays the
+        results.
+        """
         print('running!')
         self.start_btn.pack_forget()
         self.progress_bar.pack()
@@ -1662,6 +1787,14 @@ class STalignRunner(Page):
         self.update()
 
     def create_result_viewer(self):
+        """
+        Create the widgets in the results frame. These include:
+        - Menu Frame: Contains navigation controls for viewing results
+        of each target.
+        - Slice Frame: Contains the figure to display the target image
+        with the boundaries from the segmentation overlaid.
+        """
+        
         # for showing results after running stalign
         self.menu_frame = tk.Frame(self.results_viewer)
         self.slice_frame = tk.Frame(self.results_viewer)
@@ -1689,6 +1822,11 @@ class STalignRunner(Page):
         self.slice_viewer = TkFigure(self.slice_frame, toolbar=True)
 
     def show_result_viewer(self):
+        """
+        Show the results viewer. This method displays the widgets 
+        inside the results frame with pack and grid configuration.
+        """
+        
         self.results_viewer.grid_rowconfigure(1, weight=1)
         self.results_viewer.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid(row=0, column=0, sticky='nsew')
@@ -1703,10 +1841,34 @@ class STalignRunner(Page):
         self.slice_viewer.get_widget().pack(expand=True, fill=tk.BOTH)
 
     def switch_slides(self, event=None):
+        """
+        Switch to the selected slide in the slide navigation combobox. This method
+        retrieves the selected slide index from the combobox, updates the current
+        slide, and updates the target navigation combobox to reflect the targets
+        available for the selected slide. It also resets the new points and updates
+        the target and atlas images in the slice viewer.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the switch (default is None).
+        """
         self.curr_target_var.set(1)
         self.update_result_viewer()
     
     def update_result_viewer(self, event=None):
+        """
+        Update the figure displaying the result. This method gets the
+        current slide and target indices, ensures the dropdowns are 
+        correctly configured, and displays the results for the current
+        target.
+
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the update (default is None).
+        """
+        
         self.currSlide = self.slides[self.get_slide_index()]
         self.currTarget = self.currSlide.targets[self.get_target_index()]
         self.target_nav_combo.config(
@@ -1715,12 +1877,25 @@ class STalignRunner(Page):
         self.show_seg()
 
     def show_seg(self):
+        """
+        Show the current target with the region boundaries overlaid.
+        This method clears the results display then shows the results
+        for the current target.
+        """
+        
         self.slice_viewer.axes[0].cla()
         seg_img = self.currTarget.get_img(seg="stalign")
         self.slice_viewer.axes[0].imshow(seg_img)
         self.slice_viewer.update()
 
     def show_results(self):
+        """
+        Show the results frame. This method updates the figure to display
+        the current target's results, ensures the navigation controls are 
+        correctly configured, and packs the results frame so that it's 
+        visible.
+        """
+
         self.currSlide = None
         self.currTarget = None
         self.update_result_viewer()
@@ -1731,17 +1906,50 @@ class STalignRunner(Page):
         self.results_viewer.pack(expand=True, fill=tk.BOTH)
     
     def get_slide_index(self):
+        """
+        Get the index of the current slide based on the selected value in the
+        slide navigation combobox. The index is adjusted to be zero-based by
+        subtracting 1 from the selected value.
+        
+        Returns
+        -------
+        index : int
+            The index of the current slide.
+        """
         return self.curr_slide_var.get()-1
     
     def get_target_index(self):
+        """
+        Get the index of the current target based on the selected value in the
+        target navigation combobox. The index is adjusted to be zero-based by 
+        subtracting 1 from the selected value.
+        
+        Returns
+        -------
+        index : int
+            The index of the current target.
+        """
+
         return self.curr_target_var.get()-1
 
     def done(self):
+        """
+        Finalize the STalignRunner page's actions. This method checks
+        that each target has an estimated segmentation. If not, it 
+        raises an Exception and informs the user to run STalign before
+        advancing.
+        """
+
         if self.slides[0].targets[0].transform is None:
             raise Exception("ERROR! Must Run STalign before advancing")
         super().done()
     
     def cancel(self):
+        """
+        Cancel the actions on the STalignRunner page. This method clears
+        the results of STalign and hides the results frame.
+        """
+
         self.results_viewer.pack_forget()
         for slide in self.slides:
             for target in slide.targets:
@@ -1766,7 +1974,7 @@ class VisuAlignRunner(Page):
         nifti = nib.Nifti1Image(stack, np.eye(4)) # create nifti obj
         nib.save(nifti, os.path.join("VisuAlign-v0_9//custom_atlas.cutlas//labels.nii.gz"))
 
-        self.project_folder = self.project['folder']
+        self.project_folder = self.project.folder
         visualign_export_folder = os.path.join(self.project_folder,'EXPORT_VISUALIGN_HERE')
         if not os.path.exists(visualign_export_folder):
             os.mkdir(visualign_export_folder)
@@ -2175,7 +2383,7 @@ class Exporter(Page):
 
         slide_index = self.get_index()
         output_filename = f'{os.path.splitext(self.currSlide.filename)[0]}_output_{self.numOutputs[slide_index]}.xml'
-        output_path = os.path.join(self.project['folder'], "output", output_filename)
+        output_path = os.path.join(self.project.folder, "output", output_filename)
         self.numOutputs[slide_index] += 1
 
         with open(output_path,'w') as file:

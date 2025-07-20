@@ -4,6 +4,36 @@ from images import Atlas, Slide
 from pages import *
 from constants import *
 
+class Project():
+    """
+    Project class to store all data, results, and metadata
+
+    Attributes
+    ----------
+        slides : list
+            List of Slide objects.
+        atlases : dict 
+            Dictionary containing atlas information.
+        parent_folder : str
+            String storing path to parent folder containing images
+        folder : str
+            String storing path to project folder storing intermediate files
+        stalign_iterations : int
+            Integer tracking number of times stalign has been run
+    """
+    def __init__(self):
+        self.slides = []
+        self.atlases = {
+            FSR: Atlas(),
+            DSR: Atlas(),
+            FSL: Atlas(),
+            DSL: Atlas(),
+            'names': None
+        }
+        self.parent_folder = None
+        self.folder = None
+        self.stalign_iterations = 0
+
 class App(tk.Tk):
     def __init__(self):
         # initializes app with main window, navigation bar, prev/next buttons in nav_bar, 
@@ -11,17 +41,7 @@ class App(tk.Tk):
         self.create_widgets()
         self.show_widgets()
 
-        self.project = {}
-        self.project['slides'] = []
-        self.project['atlases'] = {
-            FSR: Atlas(),
-            DSR: Atlas(),
-            FSL: Atlas(),
-            DSL: Atlas(),
-            'names': None
-        }
-        self.project['folder'] = None
-        self.project['stalign_iterations'] = 0
+        self.project = Project()
 
         # initalize each page with self.main_window as parent
         page_list: tuple[Page] = tuple([
