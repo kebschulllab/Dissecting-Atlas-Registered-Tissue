@@ -160,4 +160,4 @@ cython_debug/
 
 atlases/
 Data_compressed.zip
-src/demos/checkpoints/*.pkl
+src/page_demos/checkpoints/*.pkl
