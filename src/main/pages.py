@@ -1778,7 +1778,7 @@ class STalignRunner(Page):
         
         stalign_window = tk.Toplevel(self)
         figure = TkFigure(stalign_window, num_cols=0, num_rows=0)
-        figure.get_widget().pack()
+        figure.get_widget().pack(expand=True, fill=tk.BOTH)
 
         for sn,slide in enumerate(self.slides):
             for tn,target in enumerate(slide.targets):
@@ -2567,7 +2567,8 @@ class Exporter(Page):
     def export(self, event=None):
 
         slide_index = self.get_index()
-        output_filename = f'slide{slide_index}_output_{self.numOutputs[slide_index]}.xml'
+        targetList = [str(i) for i in range(self.currSlide.numTargets) if self.exported[slide_index][i] < 0]
+        output_filename = f'slide{slide_index}targets{'_'.join(targetList)}.xml'
         os.makedirs(os.path.join(self.project.folder, "output"), exist_ok=True)
         output_path = os.path.join(self.project.folder, "output", output_filename)
         self.numOutputs[slide_index] += 1
@@ -2599,7 +2600,7 @@ class Exporter(Page):
         for i,(name,shape) in enumerate(target.region_boundaries.items()):
             file.write(f'<Shape_{numShapesExported + i + 1}>\n')
             file.write(f'<PointCount>{len(shape)+1}</PointCount>\n')
-            file.write(f'<TransferID>{name}_{targetIndex}</TransferID>\n')
+            file.write(f'<TransferID>{name}_target{targetIndex}</TransferID>\n')
             file.write(f'<CapID>{target.wells[name]}</CapID>\n')
 
             for j in range(len(shape)+1):
