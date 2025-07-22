@@ -1,19 +1,21 @@
 import torch
 import STalign
 import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,  
 NavigationToolbar2Tk)
 
 get_filename = lambda slide, target: f'slide{slide}_target{target}'
-get_folder = lambda slide, target, iteration: f'{get_filename(slide, target)}_iteration{iteration}'
+get_folder = lambda s, t, i: f'{get_filename(s, t)}_iteration{i}'
 
 # Modified version of STalign.LDDMM_3D_to_slice
 def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
                    device,pointsI=None,pointsJ=None,
                    L=None,T=None,A=None,v=None,xv=None,
                    p=2.0,expand=1.25,sigmaB=2.0,sigmaA=5.0,
-                   dtype=torch.float64, progress_bar=None):
+                   dtype=torch.float64, progress_bar=None,
+                   figure=None):
     
     # check initial inputs and convert to torch
     if A is not None:
@@ -137,6 +139,25 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
         E.backward()
         return E
     
+    if figure is not None:
+        fig_image, figure_error = figure.subfigures(2,1)
+        ax_error_image = fig_image.add_subplot(121)
+        ax_velocity_image = fig_image.add_subplot(122)
+        ax_error_graph = figure_error.add_subplot(111)
+
+    def get_velocity_image():
+        image = v[0].clone().detach().cpu() # initial velocity, components are rgb
+        image /= torch.max(torch.abs(image))
+        image = image*0.5+0.5
+        image = STalign.clip(image)[image.shape[0]//2]
+        return image
+        
+    def get_error_image(fAI):
+        image = (fAI - J)/(torch.max(J).item())*3.0
+        image = STalign.clip(image).permute(1,2,3,0).clone().detach().cpu()
+        image = image*0.5+0.5
+        return image[0,...,0]
+
     for it in range(niter):
         print(f'Iteration #{it+1}:')
 
@@ -179,6 +200,31 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
         if progress_bar is not None:
             progress_bar.step(1)
             progress_bar.update()
+        
+        if figure is not None and it % 10 == 0:
+            # update figure
+            ax_error_image.cla()
+            ax_velocity_image.cla()
+            ax_error_graph.cla()
+
+            # velocity image
+            velocity_image = get_velocity_image()
+            ax_velocity_image.imshow(velocity_image, extent=extentV)
+            ax_velocity_image.set_title('Velocity Field')
+
+            # error image
+            error_image = get_error_image(fAI)
+            ax_error_image.imshow(error_image, extent=extentJ)
+            ax_error_image.set_title('Error')
+
+            # error graph
+            ax_error_graph.plot(Esave)
+            ax_error_graph.set_xlabel('Iteration')
+            ax_error_graph.set_yscale('log')
+            ax_error_graph.legend(['E', 'EM', 'ER', 'EP'][:len(tosave)])
+            ax_error_graph.set_title('Error Graph')
+
+            figure.update()
 
         E.backward()
         optimizer.step()
@@ -191,15 +237,17 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
         'WM': WM.clone().detach(),
         'WB': WB.clone().detach(),
         'WA': WA.clone().detach(),
-        'Xs': Xs.clone().detach()
-    }
+        'Xs': Xs.clone().detach(),
+    }, Esave
 
 class TkFigure(Figure):
 
     def __init__(self, master, num_rows=1, num_cols=1, toolbar=False):
         super().__init__()
         self.canvas = FigureCanvasTkAgg(self, master)
-        self.subplots(num_rows, num_cols)
+        
+        if num_rows and num_cols:
+            self.subplots(num_rows, num_cols)
     
         if toolbar:
             self.toolbar = NavigationToolbar2Tk(self.canvas, master)
