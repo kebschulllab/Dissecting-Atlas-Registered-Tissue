@@ -202,6 +202,7 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
             progress_bar.update()
         
         if figure is not None and it % 10 == 0:
+            # TODO: show the tformed src and the target
             # update figure
             ax_error_image.cla()
             ax_velocity_image.cla()
