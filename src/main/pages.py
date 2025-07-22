@@ -2153,6 +2153,12 @@ class RegionPicker(Page):
         self.make_tree()
 
         super().activate()
+    
+    def deactivate(self):
+        self.region_tree.delete(
+            *self.region_tree.get_children()
+        )
+        super().deactivate()
 
     def make_tree(self):
         regions = self.atlases['names']
