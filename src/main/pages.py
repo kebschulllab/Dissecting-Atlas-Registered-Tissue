@@ -2457,15 +2457,17 @@ class Exporter(Page):
     def export(self, event=None):
 
         slide_index = self.get_index()
-        output_filename = f'{os.path.splitext(self.currSlide.filename)[0]}_output_{self.numOutputs[slide_index]}.xml'
+        output_filename = f'slide{slide_index}_output_{self.numOutputs[slide_index]}.xml'
+        os.makedirs(os.path.join(self.project.folder, "output"), exist_ok=True)
         output_path = os.path.join(self.project.folder, "output", output_filename)
         self.numOutputs[slide_index] += 1
 
+        print(f'Exporting to {output_path}')
         with open(output_path,'w') as file:
             file.write("<ImageData>\n")
             file.write("<GlobalCoordinates>1</GlobalCoordinates>\n")
             
-            for i,pt in enumerate(cp_sorted):
+            for i,pt in enumerate(self.slides[slide_index].calibration_points):
                 file.write(f"<X_CalibrationPoint_{i+1}>{pt[0]}</X_CalibrationPoint_{i+1}>\n")
                 file.write(f"<Y_CalibrationPoint_{i+1}>{pt[1]}</Y_CalibrationPoint_{i+1}>\n")
             
