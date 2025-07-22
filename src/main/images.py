@@ -324,7 +324,7 @@ class Target(Image):
         scale = np.sqrt(area_target / area_atlas)
         return np.divide(self.img_estim.pix_dim, scale)
 
-    def get_img(self, seg="stalign", color=(255,0,0), mode='thick'):
+    def get_img(self, seg="stalign", color=(1,0,0), mode='thick'):
         """
         Target implementation of get_img(), used exclusively to get target
         image with all region boundaries marked. The seg parameter allows 
@@ -344,7 +344,7 @@ class Target(Image):
         else:
             return ski.segmentation.mark_boundaries(
                 image,
-                segmentation.astype('int'),
+                segmentation.astype(np.uint8),
                 color=color,
                 mode=mode,
                 background_label=0
