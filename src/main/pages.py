@@ -6,6 +6,7 @@ import os
 import torch
 import shapely
 import pandas as pd
+import pickle
 import numpy as np
 from sklearn.cluster import dbscan
 import shutil
@@ -759,7 +760,7 @@ class SlideProcessor(Page):
         # save target images in the project folder
         for si, slide in enumerate(self.slides):
             for ti, target in enumerate(slide.targets):
-                filename = get_filename(si, ti)+'.jpg'
+                filename = get_filename(si, ti)+'.png'
                 ski.io.imsave(os.path.join(self.project.folder, filename),target.img_original)
 
         super().done()
@@ -1651,7 +1652,7 @@ class STalignRunner(Page):
         else:
             return {"target": None, "atlas": None}  
 
-    def get_transform(self, target, device):
+    def get_transform(self, target, device, figure):
         """
         Get the transform using STalign for a given target. This method
         runs STalign for the provided target, using parameters stored
@@ -1688,7 +1689,9 @@ class STalignRunner(Page):
         J = target.img
         J = J[None] / np.mean(np.abs(J))
 
-        transform = LDDMM_3D_LBFGS(
+        
+
+        transform, errors = LDDMM_3D_LBFGS(
             xI,I,xJ,J,
             T=T,L=L,
             device=device,
@@ -1696,13 +1699,15 @@ class STalignRunner(Page):
             pointsJ=processed_points["target"], # DO NOT CHANGE
             nt=int(target.stalign_params['timesteps']),
             niter=int(target.stalign_params['iterations']),
-            sigmaM = target.stalign_params['sigmaM'],
-            sigmaP = target.stalign_params['sigmaP'],
-            sigmaR = target.stalign_params['sigmaR'],
-            a = target.stalign_params['resolution'],
-            progress_bar=self.progress_bar
+            sigmaM=target.stalign_params['sigmaM'],
+            sigmaP=target.stalign_params['sigmaP'],
+            sigmaR=target.stalign_params['sigmaR'],
+            a=target.stalign_params['resolution'],
+            progress_bar=self.progress_bar,
+            figure=figure
         )
-        return transform
+
+        return transform, errors
 
     def get_segmentation(self, target):
         """
@@ -1758,9 +1763,9 @@ class STalignRunner(Page):
     def run(self):
         """
         Run STalign on all the targets. This method iterates through
-        all the targets, gets the transform by running STalign, then
-        gets the segmentation for the target. Finally, it displays the
-        results.
+        all the targets, gets the transform by running STalign,
+        gets the segmentation for the target, and saves results in the 
+        folder. Finally, it displays the results.
         """
         print('running!')
         self.start_btn.pack_forget()
@@ -1771,17 +1776,65 @@ class STalignRunner(Page):
         else:
             device = 'cpu'
         
+        stalign_window = tk.Toplevel(self)
+        figure = TkFigure(stalign_window, num_cols=0, num_rows=0)
+        figure.get_widget().pack()
+
         for sn,slide in enumerate(self.slides):
             for tn,target in enumerate(slide.targets):
                 label_txt = f'Running STalign on Slice #{tn+1} of Slide #{sn+1}'
                 print(label_txt)
                 self.info_label.config(text=label_txt)
                 self.update()
-
-                target.transform = self.get_transform(target, device)
+                figure.clear()
+                
+                target.transform, errors = self.get_transform(
+                    target, 
+                    device, 
+                    figure
+                )
                 target.seg_stalign = self.get_segmentation(target)
 
+                # saving results
+                folder_path = os.path.join(
+                    self.project.folder, 
+                    get_folder(sn, tn, self.project.stalign_iterations)
+                )
+
+                # save figure
+                figure.savefig(os.path.join(folder_path, 'stalign_graph.png'))
+
+                # save transform
+                with open(os.path.join(folder_path, 'stalign_transform.pkl'), 'wb') as f:
+                    pickle.dump(target.transform, f)
+                
+                # save errors
+                with open(os.path.join(folder_path, 'stalign_errors.pkl'), 'wb') as f:
+                    pickle.dump(errors, f)
+                
+                # save segmentation
+                folder = get_folder(sn, tn, self.project.stalign_iterations)
+                np.save(
+                    os.path.join(
+                        folder_path,
+                        "stalign_segmentation.npy"
+                    ),
+                    target.seg_stalign
+                )
+                
+                # save outlines TODO: fix using figure_generation.ipynb on windows 1
+                seg_img = target.get_img(seg="stalign")
+                print(np.array(seg_img>1).nonzero())
+                ski.io.imsave(
+                    os.path.join(
+                        folder_path,
+                        "stalign_outlines.png"
+                    ),
+                    (255*target.get_img(seg="stalign")).astype(np.uint8)
+                )
+
         self.info_label.config(text="Done!")
+        stalign_window.destroy()
         self.progress_bar.pack_forget()
         self.show_results()
         self.update()
@@ -1988,7 +2041,7 @@ class VisuAlignRunner(Page):
             i=0
             for sn,slide in enumerate(self.slides):
                 for ti,t in enumerate(slide.targets):
-                    filename = get_filename(sn, ti)+'.jpg'
+                    filename = get_filename(sn, ti)+'.png'
                     f.write('{')
                     h = raw_stack[i].shape[0]
                     w = raw_stack[i].shape[1]
