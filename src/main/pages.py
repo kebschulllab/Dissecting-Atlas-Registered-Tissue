@@ -2237,7 +2237,7 @@ class RegionPicker(Page):
         self.update()
 
     def check_update(self, event=None):
-        new_rois = [int(float(s)) for s in self.region_tree.get_checked()]
+        new_rois = [int(float(s)) for s in self.region_tree.get_checked_no_children()]
         if self.rois != new_rois:
             self.rois = new_rois
             self.show_seg()
@@ -2248,7 +2248,7 @@ class RegionPicker(Page):
         self.target_nav_combo.config(
             values=[i+1 for i in range(self.currSlide.numTargets)]
         )
-        self.rois = [int(float(s)) for s in self.region_tree.get_checked()]
+        self.rois = [int(float(s)) for s in self.region_tree.get_checked_no_children()]
         self.show_seg()
 
     def show_seg(self):
@@ -2256,8 +2256,11 @@ class RegionPicker(Page):
         seg_img = self.currTarget.get_img(seg="visualign")
         seg = self.currTarget.seg_visualign
         data_regions = np.zeros_like(seg)
-        for roi in self.rois: data_regions += (seg==roi).astype(int)
-        data_regions = np.multiply(data_regions, seg)
+
+        # create masks for each checked region
+        for roi in self.rois:
+            data_regions += self.make_region_mask(roi) * (roi)
+        
         self.slice_viewer.axes[0].imshow(ski.color.label2rgb(
             data_regions,
             seg_img, 
@@ -2269,7 +2272,32 @@ class RegionPicker(Page):
             colors=self.region_colors
         ))
         self.slice_viewer.update()
-    
+            
+    def make_region_mask(self, id):
+        """
+        Create a mask for the specified region ID and its children. This 
+        method generates a binary mask where the pixels corresponding to 
+        the specified region ID and the region IDs of its children are 
+        set to 1, and all other pixels are set to 0.
+
+        Parameters
+        ----------
+        id : int
+            The ID of the region for which the mask is created.
+        
+        Returns
+        -------
+        mask : ndarray
+            A binary mask with the same shape as the segmentation image,
+            where pixels belonging to the specified region and its children 
+            are set to 1.
+        """
+        seg = self.currTarget.seg_visualign
+        mask = (seg==id).astype(int)
+        for child in self.region_tree.get_children(str(float(id))):
+            mask += self.make_region_mask(int(float(child)))
+        return mask
+
     def on_move(self, event):
         if event.inaxes:
             x,y = int(event.xdata), int(event.ydata)
@@ -2304,11 +2332,15 @@ class RegionPicker(Page):
         super().cancel()
 
     def done(self):
+        row = 0
+        col = 0
+        startRow = ord('A')
+        well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
         for slide in self.slides:
             for target in slide.targets:
                 for roi in self.rois:
                     roi_name = self.get_region_name(roi)
-                    pts = np.argwhere(target.seg_visualign==roi)
+                    pts = np.argwhere(self.make_region_mask(roi))
                     if pts.shape[0] == 0: continue # skip if no points found
                 
                     _,labels = dbscan(pts, eps=2, min_samples=5, metric='manhattan')
@@ -2323,6 +2355,16 @@ class RegionPicker(Page):
                         if hull.geom_type == 'Polygon':
                             bound = shapely.get_coordinates(hull)
                             target.region_boundaries[shape_name] = bound
+                            
+                            # save well
+                            if row >= 8: raise Exception(
+                                "Too many ROIs selected, please select less ROIs"
+                            )
+                            target.wells[shape_name] = well(row, col)
+                            col += 2
+                            if col >= 12:
+                                col %= 12
+                                row += 1
         super().done()
 
     class ModifiedCheckboxTreeView(ttkwidgets.CheckboxTreeview):
@@ -2347,6 +2389,66 @@ class RegionPicker(Page):
             for c in ch:
                 get_checked_children(c)
             return checked
+        
+        def get_checked_no_children(self):
+            """
+            Get the checked items without their children. This method returns
+            a list of checked items, ensuring that no child items of a checked
+            item are included in the result.
+            
+            Returns
+            -------
+            checked : list
+                A list of checked items without their children.
+            """
+            checked = []
+            
+            def get_highest_checked_children(item):
+                if not self.tag_has("unchecked", item):
+                    if self.tag_has("checked", item):
+                        checked.append(item)
+                    else:
+                        for c in self.get_children(item):
+                            get_highest_checked_children(c)
+
+            ch = self.get_children("")
+            for c in ch:
+                get_highest_checked_children(c)
+            return checked
+
+        def _box_click(self, event):
+            """
+            Overload:
+            If box is checked -> make it tristate
+            If box is tristate -> make it unchecked
+            If box is unchecked -> check it 
+            """
+            x, y, widget = event.x, event.y, event.widget
+            elem = widget.identify("element", x, y)
+            if "image" in elem:
+                # a box was clicked
+                item = self.identify_row(y)
+                if self.tag_has("unchecked", item):
+                    self._check_ancestor(item)
+                    self._check_descendant(item)
+                elif self.tag_has("checked", item) and self.get_children(item):
+                    self._tristate_parent(item)
+                else:
+                    self._uncheck_descendant(item)
+                    self._uncheck_ancestor(item)
+
+        def _check_ancestor(self, item):
+            """
+            Overload:
+            Check the box of item and change the state of the boxes of item's
+            ancestors accordingly. 
+            Modification: parent is always tristate even if all children are
+            checked
+            """
+            self.change_state(item, "checked")
+            parent = self.parent(item)
+            if parent:
+                self._tristate_parent(parent)
 
 class Exporter(Page):
 
@@ -2492,6 +2594,7 @@ class Exporter(Page):
             file.write(f'<Shape_{numShapesExported + i + 1}>\n')
             file.write(f'<PointCount>{len(shape)+1}</PointCount>\n')
             file.write(f'<TransferID>{name}_{targetIndex}</TransferID>\n')
+            file.write(f'<CapID>{target.wells[name]}</CapID>\n')
 
             for j in range(len(shape)+1):
                 file.write(f'<X_{j+1}>{shape[j%len(shape)][1]+target.x_offset}</X_{j+1}>\n')

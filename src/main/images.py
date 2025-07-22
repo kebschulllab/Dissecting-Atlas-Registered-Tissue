@@ -249,7 +249,9 @@ class Target(Image):
         self.seg_stalign = None
         self.seg_visualign = None
 
+        # Region Boundaries and Wells
         self.region_boundaries = {}
+        self.wells = {}
 
     def load_img(self, raw_img_data, pix_dim, ds_factor=1):
         """
