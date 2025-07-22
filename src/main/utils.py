@@ -141,8 +141,7 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
     
     if figure is not None:
         fig_image, figure_error = figure.subfigures(2,1)
-        ax_error_image = fig_image.add_subplot(121)
-        ax_velocity_image = fig_image.add_subplot(122)
+        ax_images = fig_image.subplots(2, 2)
         ax_error_graph = figure_error.add_subplot(111)
 
     def get_velocity_image():
@@ -156,6 +155,16 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
         image = (fAI - J)/(torch.max(J).item())*3.0
         image = STalign.clip(image).permute(1,2,3,0).clone().detach().cpu()
         image = image*0.5+0.5
+        return image[0,...,0]
+
+    def get_transformed_image(AI):
+        range = (torch.amax(AI,(1,2,3))-torch.amin(AI,(1,2,3)))[...,None,None,None]
+        image = AI-torch.amin(AI,(1,2,3))[...,None,None,None]
+        image = (image/range).permute(1,2,3,0).clone().detach().cpu()
+        return image[0,...,0]
+    
+    def get_target_image():
+        image = J.permute(1,2,3,0).cpu()/torch.max(J).item()
         return image[0,...,0]
 
     for it in range(niter):
@@ -202,23 +211,32 @@ def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
             progress_bar.update()
         
         if figure is not None and it % 10 == 0:
-            # TODO: show the tformed src and the target
-            # update figure
-            ax_error_image.cla()
-            ax_velocity_image.cla()
-            ax_error_graph.cla()
+            # transformed src
+            transformed_image = get_transformed_image(AI)
+            ax_images[0][0].cla()
+            ax_images[0][0].imshow(transformed_image, extent=extentJ)
+            ax_images[0][0].set_title('Transformed Source')
 
-            # velocity image
-            velocity_image = get_velocity_image()
-            ax_velocity_image.imshow(velocity_image, extent=extentV)
-            ax_velocity_image.set_title('Velocity Field')
+            # target image
+            target_image = get_target_image()
+            ax_images[0][1].cla()
+            ax_images[0][1].imshow(target_image, extent=extentJ)
+            ax_images[0][1].set_title('Target')
 
             # error image
             error_image = get_error_image(fAI)
-            ax_error_image.imshow(error_image, extent=extentJ)
-            ax_error_image.set_title('Error')
+            ax_images[1][0].cla()
+            ax_images[1][0].imshow(error_image, extent=extentJ)
+            ax_images[1][0].set_title('Error')
+
+            # velocity image
+            velocity_image = get_velocity_image()
+            ax_images[1][1].cla()
+            ax_images[1][1].imshow(velocity_image, extent=extentV)
+            ax_images[1][1].set_title('Velocity Field')
 
             # error graph
+            ax_error_graph.cla()
             ax_error_graph.plot(Esave)
             ax_error_graph.set_xlabel('Iteration')
             ax_error_graph.set_yscale('log')
