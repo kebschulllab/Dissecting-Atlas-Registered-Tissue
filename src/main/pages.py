@@ -1428,7 +1428,7 @@ class TargetProcessor(Page):
                     f.write("parameter : value\n")
                     for key, value in target.stalign_params.items():
                         f.write(f"{key} : {value}\n")
-
+        
         super().done()
 
     def cancel(self):
@@ -2006,6 +2006,7 @@ class STalignRunner(Page):
             for target in slide.targets:
                 target.transform = None
                 target.seg_stalign = None
+        self.project.stalign_iterations += 1
         super().cancel()
 
 class VisuAlignRunner(Page):
