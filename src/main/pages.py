@@ -1823,8 +1823,6 @@ class STalignRunner(Page):
                 )
                 
                 # save outlines TODO: fix using figure_generation.ipynb on windows 1
-                seg_img = target.get_img(seg="stalign")
-                print(np.array(seg_img>1).nonzero())
                 ski.io.imsave(
                     os.path.join(
                         folder_path,
@@ -2109,6 +2107,30 @@ class VisuAlignRunner(Page):
                     seg_visualign[mask] = self.atlases['names'].id[region_name]
                     
                 t.seg_visualign = seg_visualign.astype(int)
+
+                folder_path = os.path.join(
+                    self.project.folder, 
+                    get_folder(sn, ti, self.project.stalign_iterations)
+                )
+
+                # save segmentation
+                np.save(
+                    os.path.join(
+                        folder_path,
+                        "visualign_segmentation.npy"
+                    ),
+                    t.seg_visualign
+                )
+
+                # save outlines
+                ski.io.imsave(
+                    os.path.join(
+                        folder_path,
+                        "visualign_outlines.png"
+                    ),
+                    (255*t.get_img(seg="visualign")).astype(np.uint8)
+                )
+
         super().done()
     
     def cancel(self):
