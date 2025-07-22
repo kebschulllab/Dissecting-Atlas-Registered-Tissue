@@ -2337,6 +2337,7 @@ class RegionPicker(Page):
         col = 0
         startRow = ord('A')
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
+        spread = 3 # how far wells should be spread apart
         for slide in self.slides:
             for target in slide.targets:
                 for roi in self.rois:
@@ -2362,10 +2363,10 @@ class RegionPicker(Page):
                                 "Too many ROIs selected, please select less ROIs"
                             )
                             target.wells[shape_name] = well(row, col)
-                            col += 2
+                            col += spread
                             if col >= 12:
                                 col %= 12
-                                row += 1
+                                row += spread
         super().done()
 
     class ModifiedCheckboxTreeView(ttkwidgets.CheckboxTreeview):
