@@ -2581,11 +2581,15 @@ class Exporter(Page):
                 file.write(f"<X_CalibrationPoint_{i+1}>{pt[0]}</X_CalibrationPoint_{i+1}>\n")
                 file.write(f"<Y_CalibrationPoint_{i+1}>{pt[1]}</Y_CalibrationPoint_{i+1}>\n")
             
-            file.write(f"<ShapeCount>{sum([len(t.region_boundaries) for t in self.currSlide.targets])}</ShapeCount>\n")
+            numShapes = 0
+            for i,t in enumerate(self.currSlide.targets):
+                if self.exported[slide_index][i] < 0: numShapes += len(t.region_boundaries)
+
+            file.write(f"<ShapeCount>{numShapes}</ShapeCount>\n")
             numShapesExported = 0
             for ti,t in enumerate(self.currSlide.targets):
-                if self.exported[self.get_index()][ti] > 0: continue
-                self.exported[self.get_index()][ti] = 2
+                if self.exported[slide_index][ti] > 0: continue
+                self.exported[slide_index][ti] = 2
                 self.write_target_shapes(file, t, ti, numShapesExported)
                 numShapesExported += len(t.region_boundaries)
             file.write("</ImageData>")
