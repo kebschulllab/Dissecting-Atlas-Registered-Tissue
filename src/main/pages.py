@@ -2152,14 +2152,13 @@ class RegionPicker(Page):
         self.slide_nav_combo.config(
             values=[i+1 for i in range(len(self.slides))]
         )
-        self.make_tree()
+
+        if len(self.region_tree.get_children()) == 0:
+            self.make_tree()
 
         super().activate()
     
     def deactivate(self):
-        self.region_tree.delete(
-            *self.region_tree.get_children()
-        )
         super().deactivate()
 
     def make_tree(self):
@@ -2344,7 +2343,7 @@ class RegionPicker(Page):
         row = 0
         col = 0
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
-        spread = 3 # how far wells should be spread apart
+        spread = 2 # how far wells should be spread apart
         for slide in self.slides:
             for target in slide.targets:
                 for roi in self.rois:
@@ -2466,14 +2465,12 @@ class Exporter(Page):
         self.header = "Exporting Boundaries."
         self.currSlide = None
         self.exported = []
-        self.numOutputs = []
 
     def activate(self):
         self.slide_nav_combo.config(
             values=[i+1 for i in range(len(self.slides))]
         )
         self.exported = [[1 for t in slide.targets] for slide in self.slides] # 1 for not exported, 2 for exported, negative for current export group
-        self.numOutputs = [0 for slide in self.slides]
         super().activate()
 
     def create_widgets(self):
@@ -2570,38 +2567,52 @@ class Exporter(Page):
                     self.update()
                     return
                     
-
     def export(self, event=None):
 
         slide_index = self.get_index()
-        targetList = [str(i) for i in range(self.currSlide.numTargets) if self.exported[slide_index][i] < 0]
-        output_filename = f'slide{slide_index}targets{'_'.join(targetList)}.xml'
+
+        tis = [] # list of target indexes to export
+        for i in range(self.currSlide.numTargets):
+            if self.exported[slide_index][i] < 0:
+                self.exported[slide_index][i] = 2
+                tis.append(i)  
+        
+        output_filename = f'slide{slide_index}targets{'_'.join(list(map(str, tis)))}.xml'
+        
         os.makedirs(os.path.join(self.project.folder, "output"), exist_ok=True)
         output_path = os.path.join(self.project.folder, "output", output_filename)
-        self.numOutputs[slide_index] += 1
 
         print(f'Exporting to {output_path}')
         with open(output_path,'w') as file:
+            self.export_slide(self.currSlide, tis, file)
+        
+        self.update()
+    
+    def export_slide(self, slide, targetIndexes, file):
+            # write the xml header
             file.write("<ImageData>\n")
             file.write("<GlobalCoordinates>1</GlobalCoordinates>\n")
             
-            for i,pt in enumerate(self.slides[slide_index].calibration_points):
+            # write the calibration points
+            for i,pt in enumerate(slide.calibration_points):
                 file.write(f"<X_CalibrationPoint_{i+1}>{pt[0]}</X_CalibrationPoint_{i+1}>\n")
                 file.write(f"<Y_CalibrationPoint_{i+1}>{pt[1]}</Y_CalibrationPoint_{i+1}>\n")
             
+            # write the shape count
             numShapes = 0
-            for i,t in enumerate(self.currSlide.targets):
-                if self.exported[slide_index][i] < 0: numShapes += len(t.region_boundaries)
-
+            for ti in targetIndexes:
+                numShapes += len(slide.targets[ti].region_boundaries)
             file.write(f"<ShapeCount>{numShapes}</ShapeCount>\n")
+
+            # write the shapes
             numShapesExported = 0
-            for ti,t in enumerate(self.currSlide.targets):
-                if self.exported[slide_index][ti] > 0: continue
-                self.exported[slide_index][ti] = 2
+            for ti in targetIndexes:
+                t = slide.targets[ti]
                 self.write_target_shapes(file, t, ti, numShapesExported)
                 numShapesExported += len(t.region_boundaries)
+
+            # close the <ImageData> tag
             file.write("</ImageData>")
-        self.update()
     
     def write_target_shapes(self, file, target, targetIndex, numShapesExported):
         for i,(name,shape) in enumerate(target.region_boundaries.items()):
