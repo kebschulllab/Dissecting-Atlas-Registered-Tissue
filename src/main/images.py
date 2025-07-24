@@ -165,7 +165,7 @@ class Slide(Image):
         self.numCalibrationPoints = 0
 
     def load_img(self, filename):
-        self.img = ski.io.imread(filename)
+        self.img = ski.io.imread(filename, plugin='pil')
         self.shape = self.img.shape
         
     def estimate_pix_dim(self):
