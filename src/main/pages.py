@@ -2260,7 +2260,8 @@ class RegionPicker(Page):
 
         # create masks for each checked region
         for roi in self.rois:
-            data_regions += self.make_region_mask(roi) * (roi)
+            mask = self.make_region_mask(self.currTarget, roi) * (roi)
+            data_regions += mask
         
         self.slice_viewer.axes[0].imshow(ski.color.label2rgb(
             data_regions,
@@ -2274,7 +2275,7 @@ class RegionPicker(Page):
         ))
         self.slice_viewer.update()
             
-    def make_region_mask(self, id):
+    def make_region_mask(self, target, id):
         """
         Create a mask for the specified region ID and its children. This 
         method generates a binary mask where the pixels corresponding to 
@@ -2283,6 +2284,8 @@ class RegionPicker(Page):
 
         Parameters
         ----------
+        target : Target
+            The target for which the mask is created.
         id : int
             The ID of the region for which the mask is created.
         
@@ -2293,10 +2296,10 @@ class RegionPicker(Page):
             where pixels belonging to the specified region and its children 
             are set to 1.
         """
-        seg = self.currTarget.seg_visualign
+        seg = target.seg_visualign
         mask = (seg==id).astype(int)
         for child in self.region_tree.get_children(str(float(id))):
-            mask += self.make_region_mask(int(float(child)))
+            mask += self.make_region_mask(target, int(float(child)))
         return mask
 
     def on_move(self, event):
@@ -2335,14 +2338,13 @@ class RegionPicker(Page):
     def done(self):
         row = 0
         col = 0
-        startRow = ord('A')
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
         spread = 3 # how far wells should be spread apart
         for slide in self.slides:
             for target in slide.targets:
                 for roi in self.rois:
                     roi_name = self.get_region_name(roi)
-                    pts = np.argwhere(self.make_region_mask(roi))
+                    pts = np.argwhere(self.make_region_mask(target, roi))
                     if pts.shape[0] == 0: continue # skip if no points found
                 
                     _,labels = dbscan(pts, eps=2, min_samples=5, metric='manhattan')
