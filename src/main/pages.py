@@ -6,6 +6,8 @@ import numpy as np
 import os
 import pandas as pd
 import pickle
+import PIL.Image
+import PIL.ImageDraw
 import shapely
 import shutil
 from sklearn.cluster import dbscan
@@ -2340,11 +2342,12 @@ class RegionPicker(Page):
         with open(os.path.join(self.project.folder, 'regions.json'), 'w') as f:
             json.dump(self.rois, f)
 
-        row = 0
-        col = 0
+        
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
         spread = 2 # how far wells should be spread apart
         for slide in self.slides:
+            row = 0
+            col = 0
             for target in slide.targets:
                 for roi in self.rois:
                     roi_name = self.get_region_name(roi)
@@ -2471,7 +2474,43 @@ class Exporter(Page):
             values=[i+1 for i in range(len(self.slides))]
         )
         self.exported = [[1 for t in slide.targets] for slide in self.slides] # 1 for not exported, 2 for exported, negative for current export group
+        
+        for si, slide in enumerate(self.slides):
+            for ti, target in enumerate(slide.targets):
+                folder_path = os.path.join(
+                    self.project.folder,
+                    get_folder(si, ti, self.project.stalign_iterations)
+                )
+
+                # export outlines
+                with open(os.path.join(folder_path, 'outlines_ldm.xml'), 'w') as file:
+                    self.export_slide(slide, [ti], file)
+                
+                # save image with outlines
+                image_path = os.path.join(folder_path, 'rois.png')
+                self.export_boundary_image(target, image_path)
+
+                print(f'Exported outlines for {get_filename(si, ti)}')
+                
         super().activate()
+
+    def export_boundary_image(self, target, path):
+        
+        # Convert the image to PIL format
+        image_pil = PIL.Image.fromarray(target.img_original)
+
+        # Create a drawing context
+        draw = PIL.ImageDraw.Draw(image_pil)
+
+        # Draw each shape's boundary on the image
+        for shape in target.region_boundaries.values(): 
+            verts = [(x,y) for y,x in shape]
+            # Repeat the first point to close the polygon
+            verts.append((shape[0][1], shape[0][0]))  
+            draw.line(verts, fill='red', width=5)  # Draw closed polygon
+        
+        # Save the output image
+        image_pil.save(path)
 
     def create_widgets(self):
         # menu
