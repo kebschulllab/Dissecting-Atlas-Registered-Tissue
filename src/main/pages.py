@@ -1,17 +1,18 @@
+from datetime import datetime
+import glob
+import json
+import matplotlib as mpl
+import numpy as np
+import os
+import pandas as pd
+import pickle
+import shapely
+import shutil
+from sklearn.cluster import dbscan
 import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
-import matplotlib as mpl
-import os
 import torch
-import shapely
-import pandas as pd
-import pickle
-import numpy as np
-from sklearn.cluster import dbscan
-import shutil
-import glob
-from datetime import datetime
 
 from images import *
 from constants import *
@@ -2336,6 +2337,10 @@ class RegionPicker(Page):
         super().cancel()
 
     def done(self):
+
+        with open(os.path.join(self.project.folder, 'regions.json'), 'w') as f:
+            json.dump(self.rois, f)
+
         row = 0
         col = 0
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
