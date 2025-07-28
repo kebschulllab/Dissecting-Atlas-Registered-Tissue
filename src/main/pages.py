@@ -147,6 +147,17 @@ class Starter(Page):
         - Slides picker: An entry field to select a folder containing sample images.
         - Browse button: A button to open a file dialog for selecting the slides folder.
         """
+        # Segmentation Method Picker
+        self.segmentation_method = tk.StringVar(master=self, value="Choose Segmentation Method")
+        self.segmentation_method_label = ttk.Label(self, text="Segmentation Method:")
+        self.segmentation_method_combobox = ttk.Combobox(
+            master=self, 
+            values=['DART in-built (STalign + VisuAlign)', 
+                    'Other - I will provide the segmentation results'],
+            state='readonly',
+            textvariable=self.segmentation_method
+        )
+
         # Atlas Picker
         self.atlas_name = tk.StringVar(master=self, value="Choose Atlas")
         atlases = os.listdir(r'atlases')
@@ -2197,7 +2208,7 @@ class VisuAlignRunner(Page):
                 self.project.stalign_iterations
             )
         )
-        target = self.slides[slideIndex][targetIndex]
+        target = self.slides[slideIndex].targets[targetIndex]
 
         # save segmentation
         np.save(
