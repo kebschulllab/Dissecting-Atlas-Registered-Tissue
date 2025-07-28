@@ -2277,9 +2277,21 @@ class RegionPicker(Page):
         super().activate()
     
     def deactivate(self):
+        """
+        Deactivate the RegionPicker page. This method calls
+        the parent class's deactivate method to finalize
+        the page's actions.
+        """
         super().deactivate()
 
     def make_tree(self):
+        """
+        Create the region tree view with the atlas regions. This method
+        populates the region tree with the regions from the atlas,
+        setting the region names as the text and the region IDs as the
+        item IDs. It also sets the parent structure ID for each region
+        to create a hierarchical structure in the tree view.
+        """
         regions = self.atlases['names']
         for name,row in regions.iterrows():
             id = row['id']
@@ -2294,6 +2306,14 @@ class RegionPicker(Page):
         self.region_tree.expand_all()
 
     def create_widgets(self):
+        """
+        Create the widgets for this page. This includes:
+        - Menu Frame: Contains navigation controls for slides and targets.
+        - Slice Frame: Contains the figure to display the target image
+        with the selected regions overlaid.
+        - Region Frame: Contains the tree view for selecting regions
+        of interest (ROIs).
+        """
         self.menu_frame = tk.Frame(self)
         self.slice_frame = tk.Frame(self)
         self.region_frame = tk.Frame(self)
@@ -2330,6 +2350,14 @@ class RegionPicker(Page):
         self.region_tree.bind('<ButtonRelease-1>',self.check_update)
 
     def show_widgets(self):
+        """
+        Show the widgets on the page. This method packs the
+        menu frame, slice frame, and region frame onto the page,
+        configures the grid layout, and sets up the navigation
+        controls for slides and targets. It also updates the slice
+        viewer to display the current target image with the selected
+        regions overlaid.
+        """
         self.update()
         
         self.grid_rowconfigure(1, weight=1)
@@ -2352,16 +2380,46 @@ class RegionPicker(Page):
         #TODO: figure out how to make entire tree horizontal visible
 
     def switch_slides(self, event=None):
+        """
+        Switch to the selected slide in the slide navigation combobox. This method
+        retrieves the selected slide index from the combobox, updates the current
+        slide, and updates the target navigation combobox to reflect the targets
+        available for the selected slide. It also resets the new points and updates
+        the target and atlas images in the slice viewer.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the switch (default is None).
+        """
         self.curr_target_var.set(1)
         self.update()
 
     def check_update(self, event=None):
+        """
+        Check if the selected regions have changed and update the
+        segmentation display accordingly. This method retrieves the
+        currently checked regions from the region tree, compares them
+        with the previously selected regions, and updates the segmentation
+        display if there are any changes.
+        """
         new_rois = [int(float(s)) for s in self.region_tree.get_checked_no_children()]
         if self.rois != new_rois:
             self.rois = new_rois
             self.show_seg()
 
     def update(self, event=None):
+        """
+        Update the figure displaying the segmentation for the current target.
+        This method retrieves the current slide and target indices, ensures
+        the dropdowns are correctly configured, and displays the segmentation
+        for the current target with the selected regions overlaid.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the update (default is None).
+        """
         self.currSlide = self.slides[self.get_slide_index()]
         self.currTarget = self.currSlide.targets[self.get_target_index()]
         self.target_nav_combo.config(
@@ -2371,6 +2429,14 @@ class RegionPicker(Page):
         self.show_seg()
 
     def show_seg(self):
+        """
+        Show the current target with the selected regions overlaid.
+        This method clears the current axes in the slice viewer, retrieves
+        the segmentation image for the current target, and overlays the
+        selected regions on the segmentation image. It uses the region colors
+        to visualize the selected regions, creating a mask for each checked
+        region and displaying them on the segmentation image.
+        """
         self.slice_viewer.axes[0].cla()
         seg_img = self.currTarget.get_img(seg="visualign")
         seg = self.currTarget.seg_visualign
@@ -2421,6 +2487,19 @@ class RegionPicker(Page):
         return mask
 
     def on_move(self, event):
+        """
+        Update the title of the slice viewer with the name of the region
+        under the mouse cursor. This method retrieves the pixel coordinates
+        from the mouse event, gets the region ID from the segmentation image
+        at those coordinates, and updates the title of the slice viewer with
+        the name of the region corresponding to that ID. If the mouse is not
+        over an axes, it does nothing.
+        
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.MouseEvent
+            The mouse event containing the x and y coordinates of the mouse cursor.
+        """
         if event.inaxes:
             x,y = int(event.xdata), int(event.ydata)
             id = self.currTarget.seg_visualign[y,x]
@@ -2429,6 +2508,19 @@ class RegionPicker(Page):
             self.slice_viewer.update()
         
     def on_click(self, event=None):
+        """
+        Handle mouse click events on the slice viewer. This method checks
+        if the mouse click occurred within the axes of the slice viewer, retrieves
+        the pixel coordinates from the mouse event, and toggles the checked state
+        of the region corresponding to the pixel coordinates in the region tree.
+        If the region is already checked, it unchecks it and vice versa. It also
+        updates the segmentation display after toggling the checked state.
+        
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.MouseEvent, optional
+            The mouse event containing the x and y coordinates of the mouse click.
+        """
         if event.inaxes:
             x,y = int(event.xdata), int(event.ydata)
             id = float(self.currTarget.seg_visualign[y,x])
@@ -2441,24 +2533,71 @@ class RegionPicker(Page):
             self.update()
             
     def get_slide_index(self):
+        """
+        Get the index of the current slide based on the selected value in the
+        slide navigation combobox. The index is adjusted to be zero-based by
+        subtracting 1 from the selected value.
+        
+        Returns
+        -------
+        index : int
+            The index of the current slide.
+        """
         return self.curr_slide_var.get()-1
     
     def get_target_index(self):
+        """
+        Get the index of the current target based on the selected value in the
+        target navigation combobox. The index is adjusted to be zero-based by
+        subtracting 1 from the selected value.
+
+        Returns
+        -------
+        index : int
+            The index of the current target.
+        """
         return self.curr_target_var.get()-1
     
     def get_region_name(self, id):
+        """
+        Get the name of the region corresponding to the specified ID.
+        This method retrieves the region DataFrame from the atlases dictionary,
+        locates the row with the specified ID, and returns the index (name) of that
+        region.
+
+        Parameters
+        ----------
+        id : int
+            The ID of the region for which to get the name.
+        
+        Returns
+        -------
+        name : str
+            The name of the region corresponding to the specified ID.
+        """
         region_df = self.atlases['names']
         return region_df.loc[region_df.id==id].index[0]
 
     def cancel(self):
+        """
+        Cancel the actions on the RegionPicker page. This method calls
+        the parent class's cancel method to finalize the page's actions.
+        """
         super().cancel()
 
     def done(self):
+        """
+        Finalize the RegionPicker page's actions. This method processes
+        the selected regions and saves them in a JSON file. Then, this method
+        splits each region into clusters using DBSCAN, creates concave hulls
+        for each cluster, and saves the boundaries of these hulls in the target's
+        `region_boundaries` attribute. It also assigns wells to each region
+        based on the row and column indices, ensuring that wells are spread apart
+        """
 
         with open(os.path.join(self.project.folder, 'regions.json'), 'w') as f:
             json.dump(self.rois, f)
 
-        
         well = lambda r,c: f'{chr( ord('A') +r )}{c+1}'
         spread = 2 # how far wells should be spread apart
         for slide in self.slides:
@@ -2495,12 +2634,35 @@ class RegionPicker(Page):
         super().done()
 
     class ModifiedCheckboxTreeView(ttkwidgets.CheckboxTreeview):
+        """
+        A modified version of the CheckboxTreeview that implements custom
+        behavior for checking, unchecking, and tristating items. This class
+        extends the `ttkwidgets.CheckboxTreeview` class to provide a tree view
+        with checkboxes that can be checked, unchecked, and tristated.
+
+        This class overloads the `_box_click` method to implement custom
+        behavior for checking, unchecking, and tristating items based on
+        the current state of the checkbox.
+        
+        It also provides methods to get the checked items and their children,
+        as well as a method to get the checked items without their children.
+        """
 
         def __init__(self, master=None, **kw):
             super().__init__(master, **kw)
 
         def get_checked(self):
-            """Overloading """
+            """
+            Get the checked items and their children. This method returns
+            a list of checked items, including their children, ensuring that
+            all descendants of a checked item are also included in the result.
+            This method overloads the default behavior to include all checked
+            items (parents and children) in the result.
+            
+            Returns
+            -------
+            checked : list
+                A list of checked items including their children."""
             checked = []
 
             def get_checked_children(item):
@@ -2546,9 +2708,9 @@ class RegionPicker(Page):
         def _box_click(self, event):
             """
             Overload:
-            If box is checked -> make it tristate
-            If box is tristate -> make it unchecked
             If box is unchecked -> check it 
+            If box is checked (and has children) -> make it tristate
+            If box is tristate -> make it unchecked
             """
             x, y, widget = event.x, event.y, event.widget
             elem = widget.identify("element", x, y)
@@ -2578,6 +2740,12 @@ class RegionPicker(Page):
                 self._tristate_parent(parent)
 
 class Exporter(Page):
+    """
+    Page for exporting boundaries of targets. This page exports the outlines
+    of the targets in each slide to XML files and saves images with the
+    boundaries drawn on them. It also provides a toggle button to select
+    or deselect all targets for export, and an export button to initiate
+    the export process."""
 
     def __init__(self, master, project):
         super().__init__(master, project)
@@ -2586,6 +2754,13 @@ class Exporter(Page):
         self.exported = []
 
     def activate(self):
+        """
+        Activate the Exporter page. This method initializes the slide navigation
+        combobox with the number of slides, sets up the exported list to track
+        the export status of each target, and prepares the folder structure for
+        exporting the outlines and images. It also exports the outlines for each
+        target in each slide and saves the images with the boundaries drawn on them.
+        """
         self.slide_nav_combo.config(
             values=[i+1 for i in range(len(self.slides))]
         )
@@ -2611,6 +2786,17 @@ class Exporter(Page):
         super().activate()
 
     def export_boundary_image(self, target, path):
+        """
+        Export the boundary image for a target. This method draws the boundaries
+        of the target's regions on the original image and saves it as a PNG file.
+        
+        Parameters
+        ----------
+        target : Target
+            The target for which to export the boundary image.
+        path : str
+            The path where the boundary image will be saved.
+        """
         
         # Convert the image to PIL format
         image_pil = PIL.Image.fromarray(target.img_original)
@@ -2629,6 +2815,12 @@ class Exporter(Page):
         image_pil.save(path)
 
     def create_widgets(self):
+        """
+        Create the widgets for the Exporter page. This includes:
+        - Menu Frame: Contains buttons for toggling selection and exporting.
+        - Slide Navigation: A combobox for navigating through the slides.
+        - Slide Viewer: A figure to display the current slide with the targets.
+        """
         # menu
         self.menu_frame = tk.Frame(self)
         self.toggle_all_btn = ttk.Button(
@@ -2659,6 +2851,12 @@ class Exporter(Page):
         self.slide_viewer.canvas.mpl_connect('button_press_event', self.on_click)
 
     def show_widgets(self):
+        """
+        Show the widgets on the Exporter page. This method packs the
+        menu frame and slide viewer onto the page, configures the grid layout,
+        and sets up the slide navigation combobox. It also calls the update method
+        to initialize the current slide and update the buttons and slide viewer.
+        """
         
         self.update() # update buttons, slideviewer, stalign params
 
@@ -2678,12 +2876,34 @@ class Exporter(Page):
         self.slide_viewer.get_widget().pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
     def update(self, event=None):
+        """
+        Update the current slide and display the targets on the slide viewer.
+        This method retrieves the current slide index from the slide navigation
+        combobox, updates the current slide, clears the axes in the slide viewer,
+        and shows the new slide image with the targets overlaid. It also updates
+        the buttons based on the export status of the targets in the current slide.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the update (default is None).
+        """
         self.currSlide = self.slides[self.get_index()]
         self.slide_viewer.axes[0].cla() # clear and show new slide image
         self.update_buttons() # update buttons
         self.show_slide()
 
     def update_buttons(self):
+        """
+        Update the state of the toggle all and export buttons based on the
+        export status of the targets in the current slide. This method checks
+        the export status of each target in the current slide and updates the
+        toggle all button text and the export button state accordingly. If any
+        target is marked for export (export status < 0), the toggle all button
+        text is set to "Deselect All" and the export button is enabled. If all
+        targets are not marked for export, the toggle all button text is set to
+        "Select All" and the export button is disabled.
+        """
         self.toggle_all_btn.config(text="Select All")
         self.export_btn.config(state='disabled')
         for export_status in self.exported[self.get_index()]:
@@ -2693,6 +2913,12 @@ class Exporter(Page):
                 return
         
     def show_slide(self):
+        """
+        Show the current slide with the targets overlaid. This method clears
+        the axes in the slide viewer, displays the current slide image, and
+        adds rectangles for each target in the current slide. The rectangles
+        are colored based on their export status.
+        """
         # TODO: show the shapes being exported
         self.slide_viewer.axes[0].imshow(self.currSlide.get_img())
         for i,target in enumerate(self.currSlide.targets):
@@ -2712,6 +2938,17 @@ class Exporter(Page):
         self.slide_viewer.update()
     
     def on_click(self, event=None):
+        """
+        Handle mouse click events on the slide viewer. This method checks if
+        the mouse click occurred within the axes of the slide viewer, retrieves
+        the pixel coordinates from the mouse event, and toggles the export status
+        of the target corresponding to the pixel coordinates.
+        
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.MouseEvent, optional
+            The mouse event containing the x and y coordinates of the mouse click.
+        """
         if event.inaxes is None: return
         x,y = int(event.xdata), int(event.ydata)
         if event.button == 1:
@@ -2723,6 +2960,21 @@ class Exporter(Page):
                     return
                     
     def export(self, event=None):
+        """
+        Export the outlines of the targets in the current slide to an XML file.
+        This method retrieves the current slide index, checks which targets
+        are marked for export, and creates an output filename based on the
+        slide index and the target indexes. It then creates the output directory
+        if it doesn't exist, opens the output file, and calls the `export_slide`
+        method to write the slide data to the XML file. After exporting, it updates
+        the export status of the targets in the current slide and refreshes the
+        display.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the export (default is None).
+        """
 
         slide_index = self.get_index()
 
@@ -2744,6 +2996,21 @@ class Exporter(Page):
         self.update()
     
     def export_slide(self, slide, targetIndexes, file):
+            """
+            Export the outlines of the targets in the slide to an XML file.
+            This method writes the calibration points, shape count, and shapes
+            of the targets in the slide to the XML file. It also writes the
+            XML header and the global coordinates.
+            
+            Parameters
+            ----------
+            slide : Slide
+                The slide containing the targets to export.
+            targetIndexes : list of int
+                The indexes of the targets to export.
+            file : file object
+                The file object to write the XML data to.
+            """
             # write the xml header
             file.write("<ImageData>\n")
             file.write("<GlobalCoordinates>1</GlobalCoordinates>\n")
@@ -2770,6 +3037,23 @@ class Exporter(Page):
             file.write("</ImageData>")
     
     def write_target_shapes(self, file, target, targetIndex, numShapesExported):
+        """
+        Write the shapes of the target to the XML file.
+        This method writes the shape count, transfer ID, cap ID, and the coordinates
+        of the points in the shape to the XML file. It also handles the offset
+        for the target's coordinates.
+        
+        Parameters
+        ----------
+        file : file object
+            The file object to write the XML data to.
+        target : Target
+            The target containing the shapes to export.
+        targetIndex : int
+            The index of the target in the slide.
+        numShapesExported : int
+            The number of shapes already exported in this file.
+        """
         for i,(name,shape) in enumerate(target.region_boundaries.items()):
             file.write(f'<Shape_{numShapesExported + i + 1}>\n')
             file.write(f'<PointCount>{len(shape)+1}</PointCount>\n')
@@ -2783,6 +3067,20 @@ class Exporter(Page):
             file.write(f'</Shape_{numShapesExported + i + 1}>\n')
 
     def toggle_select(self, event=None):
+        """
+        Toggle the selection of all targets in the current slide. This method
+        checks the export status of the targets in the current slide and toggles
+        their export status. If any target is marked for export (export status < 0),
+        it will deselect all targets (set their export status to positive). If
+        all targets are not marked for export, it will select all targets (set
+        their export status to negative). It also updates the display to reflect
+        the changes in export status.
+        
+        Parameters
+        ----------
+        event : tk.Event, optional
+            The event that triggered the toggle (default is None).
+        """
         currSlide_exported = self.exported[self.get_index()]
         has_neg = False # boolean whether currSlide_exported contains a value < 0
         for export_status in currSlide_exported:
@@ -2795,10 +3093,29 @@ class Exporter(Page):
         self.update()
 
     def get_index(self):
+        """
+        Get the index of the current slide based on the selected value in the
+        slide navigation combobox. The index is adjusted to be zero-based by
+        subtracting 1 from the selected value.
+        
+        Returns
+        -------
+        index : int
+            The index of the current slide.
+        
+        """
         return self.curr_slide_var.get()-1
 
     def done(self):
+        """
+        Finalize the Exporter page's actions. This method is calls the parent class's
+        done method to finalize the page's actions.
+        """
         super().done()
     
     def cancel(self):
+        """
+        Cancel the actions on the Exporter page. This method calls
+        the parent class's cancel method to finalize the page's actions.
+        """
         super().cancel()
