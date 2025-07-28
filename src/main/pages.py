@@ -2013,12 +2013,26 @@ class STalignRunner(Page):
         super().cancel()
 
 class VisuAlignRunner(Page):
-
+    """
+    Page for running VisuAlign. This page prepares the data
+    for VisuAlign, including creating a NIfTI file with the
+    segmentation stack and a JSON file with the necessary
+    information for VisuAlign. It also provides instructions
+    for the user to follow in order to perform the alignment
+    in VisuAlign and save the results.
+    """
     def __init__(self, master, project):
         super().__init__(master, project)
         self.header = "Running VisuAlign."
 
     def activate(self):
+        """
+        Activate the VisuAlignRunner page. This method prepares
+        the data for VisuAlign by creating a NIfTI file with the
+        segmentation stack and a JSON file with the necessary
+        information for VisuAlign. It also creates the necessary
+        folders and files for exporting the results.
+        """
         # stack seg_stalign of all targets and pad as necessary to create 3 dimensions np.array
         raw_stack = [target.seg_stalign for slide in self.slides for target in slide.targets]
         shapes = np.array([seg.shape for seg in raw_stack])
@@ -2029,12 +2043,11 @@ class VisuAlignRunner(Page):
         nifti = nib.Nifti1Image(stack, np.eye(4)) # create nifti obj
         nib.save(nifti, os.path.join("VisuAlign-v0_9//custom_atlas.cutlas//labels.nii.gz"))
 
-        self.project_folder = self.project.folder
-        visualign_export_folder = os.path.join(self.project_folder,'EXPORT_VISUALIGN_HERE')
+        visualign_export_folder = os.path.join(self.project.folder,'EXPORT_VISUALIGN_HERE')
         if not os.path.exists(visualign_export_folder):
             os.mkdir(visualign_export_folder)
 
-        with open(os.path.join(self.project_folder,'CLICK_ME.json'),'w') as f:
+        with open(os.path.join(self.project.folder,'CLICK_ME.json'),'w') as f:
             f.write('{')
             f.write('"name":"", ')
             f.write('"target":"custom_atlas.cutlas", ')
@@ -2058,11 +2071,21 @@ class VisuAlignRunner(Page):
         super().activate()
 
     def deactivate(self):
-        os.remove(os.path.join(self.project_folder,'CLICK_ME.json'))
+        """
+        Deactivate the VisuAlignRunner page. This method
+        deletes the JSON file for interfacing with VisuAlign
+        along with the segmentation stack. 
+        """
+        os.remove(os.path.join(self.project.folder,'CLICK_ME.json'))
         os.remove('VisuAlign-v0_9/custom_atlas.cutlas/labels.nii.gz')
         super().deactivate()
 
     def create_widgets(self):
+        """
+        Create the widgets for this page. This includes:
+        - Run Button: A button to open VisuAlign and start the alignment process.
+        - Instructions Label: A label with instructions for the user to follow
+        """
         self.run_btn = ttk.Button(
             master=self,
             text="Open VisuAlign",
@@ -2075,72 +2098,158 @@ class VisuAlignRunner(Page):
         )
 
     def show_widgets(self):
+        """
+        Show the widgets on the page. This method packs the
+        run button and instructions label onto the page."""
         self.instructions_label.pack()
         self.run_btn.pack()
 
     def run(self):
+        """
+        Run the VisuAlign application. This method changes the
+        current working directory to the VisuAlign directory and
+        executes the command to run VisuAlign using the Java executable.
+        After VisuAlign has been run, it calls `load_results`
+        to load the results from the exported files.
+        """
         print("running visualign")
         cmd = rf"cd VisuAlign-v0_9 && {os.path.join("bin","java.exe")} --module qnonlin/visualign.QNonLin"
         os.system(cmd)
+        self.load_results()
+    
+    def load_result_filename(self, filename):
+        """
+        Load the results from a specified filename. This method checks if the
+        exported files from VisuAlign exist, and if so, it processes the results
+        to extract the segmentation and outlines. If the files do not exist,
+        it raises an exception indicating that the user needs to run VisuAlign first.
         
-    def done(self):
-        #TODO: handle if visualign adjustment not used (no exported files)
+        Parameters
+        ----------
+        filename : str
+            The filename of the exported results from VisuAlign.
+
+        Returns
+        -------
+        seg : np.ndarray
+            A numpy array representing the segmentation mask of the Target image.
+        """
+        
         regions_nutil = pd.read_json(r'resources/Rainbow 2017.json')
+        with open(filename, 'rb') as fp:
+            buffer = fp.read()
+        shape = np.frombuffer(buffer, dtype=np.dtype('>i4'), offset=1, count=2) 
+        data = np.frombuffer(buffer, dtype=np.dtype('>i2'), offset=9)
+        
+        data = data.reshape(shape[::-1])
+        data = data[:-1,:-1]
+        
+        names = regions_nutil['name'].to_numpy()[data] 
+        seg = names.copy()
+        for region_name in np.unique(names):
+            mask = names==region_name
+            seg[mask] = self.atlases['names'].id[region_name]
+        
+        return seg.astype(int)
+
+    def load_results(self):
+        """
+        Load the results from VisuAlign. This method processes
+        the results to extract the segmentation and outlines and
+        saves them.
+        """
+        
         for sn,slide in enumerate(self.slides):
             for ti,t in enumerate(slide.targets):
-                visualign_nl_flat_filename = os.path.join(self.project_folder,
+                visualign_nl_flat_filename = os.path.join(self.project.folder,
                                                           "EXPORT_VISUALIGN_HERE",
                                                           get_filename(sn,ti)+"_nl.flat")
+                
                 try:
                     print(f'we are looking for {visualign_nl_flat_filename}')
-                    with open(visualign_nl_flat_filename, 'rb') as fp:
-                        buffer = fp.read()
+                    t.seg_visualign = self.load_result_filename(visualign_nl_flat_filename)
                 except:
+                    # if not found, use stalign segmentation instead
                     print(f"visualign manual alignment not performed for slice #{sn}, target #{ti}, using stalign semiautomatic alignment")
                     t.seg_visualign = t.seg_stalign.copy()
-                    continue
-                shape = np.frombuffer(buffer, dtype=np.dtype('>i4'), offset=1, count=2) 
-                data = np.frombuffer(buffer, dtype=np.dtype('>i2'), offset=9)
-                data = data.reshape(shape[::-1])
-                data = data[:-1,:-1]
-                
-                seg_visualign_names = regions_nutil['name'].to_numpy()[data] 
-                seg_visualign = seg_visualign_names.copy()
-                for region_name in np.unique(seg_visualign_names):
-                    mask = seg_visualign_names==region_name
-                    seg_visualign[mask] = self.atlases['names'].id[region_name]
-                    
-                t.seg_visualign = seg_visualign.astype(int)
-
-                folder_path = os.path.join(
-                    self.project.folder, 
-                    get_folder(sn, ti, self.project.stalign_iterations)
-                )
 
                 # save segmentation
-                np.save(
-                    os.path.join(
-                        folder_path,
-                        "visualign_segmentation.npy"
-                    ),
-                    t.seg_visualign
-                )
+                self.save_results(sn, ti)
 
-                # save outlines
-                ski.io.imsave(
-                    os.path.join(
-                        folder_path,
-                        "visualign_outlines.png"
-                    ),
-                    (255*t.get_img(seg="visualign")).astype(np.uint8)
-                )
+    def save_results(self, slideIndex, targetIndex):
+        """
+        Save the results from VisuAlign for a specific slide and target.
+        This method processes the results to extract the segmentation and
+        outlines, and saves them in the respective target folder.
+
+        Parameters
+        ----------
+        slideIndex : int
+            The index of the slide for which to save the results.
+        targetIndex : int
+            The index of the target for which to save the results.
+        """
+        folder_path = os.path.join(
+            self.project.folder, 
+            get_folder(
+                slideIndex, 
+                targetIndex, 
+                self.project.stalign_iterations
+            )
+        )
+        target = self.slides[slideIndex][targetIndex]
+
+        # save segmentation
+        np.save(
+            os.path.join(
+                folder_path,
+                "visualign_segmentation.npy"
+            ),
+            target.seg_visualign
+        )
+
+        # save outlines
+        outlines = (255*target.get_img(seg="visualign")).astype(np.uint8)
+        ski.io.imsave(
+            os.path.join(
+                folder_path,
+                "visualign_outlines.png"
+            ),
+            outlines
+        )
+        print(f"saved visualign results for slide #{slideIndex}, target #{targetIndex}")
+
+    def done(self):
+        """
+        Finalize the VisuAlignRunner page's actions. This method
+        processes the results from VisuAlign, extracting the segmentation
+        and outlines from the exported files. It saves the segmentation
+        and outlines in the respective target folders, and updates the
+        target's segmentation attribute with the visualign segmentation.
+        """
+        #TODO: handle if visualign adjustment not used (no exported files)
+        self.load_results()
 
         super().done()
     
     def cancel(self):
+        """
+        Cancel the actions on the VisuAlignRunner page. This method
+        clears the VisuAlign segmentation for each target, effectively
+        resetting the manual alignment results.
+        """
+        for slide in self.slides:
+            for target in slide.targets:
+                target.seg_visualign = None
         super().cancel()
 
 class RegionPicker(Page):
+    """
+    Page for selecting regions of interest (ROIs) from the atlas.
+    This page allows the user to select regions from a tree view
+    of the atlas regions and visualize the selected regions on
+    the target images.
+    """
 
     def __init__(self, master, project):
         super().__init__(master, project)
@@ -2151,6 +2260,13 @@ class RegionPicker(Page):
         self.region_colors = ['red','yellow','green','orange','brown','white','black','grey','cyan','pink','tan']
     
     def activate(self):
+        """
+        Activate the RegionPicker page. This method initializes the
+        region tree view with the atlas regions, sets up the slide and
+        target navigation comboboxes, and ensures the widgets are displayed.
+        It also calls `make_tree` to populate the region tree with the
+        atlas regions if it hasn't been done yet.
+        """
         self.slide_nav_combo.config(
             values=[i+1 for i in range(len(self.slides))]
         )
