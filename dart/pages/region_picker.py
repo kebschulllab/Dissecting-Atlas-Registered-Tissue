@@ -10,8 +10,6 @@ from tkinter import ttk
 import ttkwidgets
 
 from pages.base import BasePage
-from app import Project
-from images import Slide
 from utils import TkFigure
 
 class RegionPicker(BasePage):

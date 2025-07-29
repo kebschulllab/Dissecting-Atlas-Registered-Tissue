@@ -7,8 +7,6 @@ import tkinter as tk
 from tkinter import ttk
 
 from pages.base import BasePage
-from app import Project
-from images import Slide
 from utils import get_filename, get_folder
 
 class VisuAlignRunner(BasePage):

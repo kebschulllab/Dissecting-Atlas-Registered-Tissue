@@ -4,8 +4,7 @@ from tkinter import ttk
 import os
 
 from pages.base import BasePage
-from app import Project
-from images import Image, Slide
+from images import Image
 from constants import DSR, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR, COMMITTED_COLOR, REMOVABLE_COLOR
 from utils import get_folder, TkFigure
 

@@ -5,7 +5,6 @@ import os
 import pandas as pd
 
 from pages.base import BasePage
-from app import Project
 from images import Slide
 from constants import FSR, DSR, FSL, DSL
 

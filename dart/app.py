@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from images import Atlas, Slide
 from pages import *
-from constants import *
+from constants import FSR, DSR, FSL, DSL
 
 class Project():
     """
@@ -56,7 +56,6 @@ class App(tk.Tk):
         self.pages: list[BasePage] = [page(self.main_window, self.project) for page in page_list]
         self.page_index = 0
         self.update()
-        self.mainloop()
 
     def create_widgets(self):
         self.main_window = tk.Frame(self)
@@ -126,7 +125,3 @@ class App(tk.Tk):
 
         # insert SegmentationImporter page after SlideProcessor
         self.pages.insert(2, SegmentationImporter(self.main_window, self.project))
-
-# Actually run the app
-if __name__ == "__main__":
-    app = App()

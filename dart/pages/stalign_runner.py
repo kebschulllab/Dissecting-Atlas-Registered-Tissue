@@ -8,8 +8,6 @@ from tkinter import ttk
 import torch
 
 from pages.base import BasePage
-from app import Project
-from images import Slide
 from constants import ALPHA, FSR, DSR, FSL 
 from utils import get_folder, LDDMM_3D_LBFGS, TkFigure
 
