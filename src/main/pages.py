@@ -194,11 +194,13 @@ class Starter(Page):
         self.grid_columnconfigure(2)
 
         # show widgets using grid()
-        self.atlas_picker_label.grid(row=0, column=0)
-        self.atlas_picker_combobox.grid(row=0, column=1, sticky='ew')
-        self.slides_picker_label.grid(row=1, column=0)
-        self.slides_picker_entry.grid(row=1, column=1, sticky='ew')
-        self.browse_button.grid(row=1, column=2)
+        self.segmentation_method_label.grid(row=0, column=0)
+        self.segmentation_method_combobox.grid(row=0, column=1, sticky='ew')
+        self.atlas_picker_label.grid(row=1, column=0)
+        self.atlas_picker_combobox.grid(row=1, column=1, sticky='ew')
+        self.slides_picker_label.grid(row=2, column=0)
+        self.slides_picker_entry.grid(row=2, column=1, sticky='ew')
+        self.browse_button.grid(row=2, column=2)
     
     def select_slides(self):
         """
