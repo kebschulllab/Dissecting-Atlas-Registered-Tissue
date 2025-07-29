@@ -5,6 +5,7 @@ import os
 import pickle
 sys.path.append(os.path.join('src','main'))
 
+from main import Project
 from images import Slide, Atlas
 from constants import FSR, DSR, FSL, DSL
 
@@ -19,17 +20,7 @@ class Demo(tk.Tk):
             command = self.done
         )
 
-        self.project = {}
-        self.project['slides'] = []
-        self.project['atlases'] = {
-            FSR: Atlas(),
-            DSR: Atlas(),
-            FSL: Atlas(),
-            DSL: Atlas(),
-            'names': None
-        }
-        self.project['folder'] = None
-        self.project['stalign_iterations'] = 0
+        self.project = Project()
 
         self.path_checkpoints = os.path.join("src", "page_demos", "checkpoints")
 
