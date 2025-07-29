@@ -40,7 +40,14 @@ class Starter(BasePage):
 
         # Atlas Picker
         self.atlas_name = tk.StringVar(master=self, value="Choose Atlas")
-        atlases = os.listdir(r'atlases')
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        atlas_dir = os.path.join(
+            script_dir, 
+            '..',
+            '..',
+            'atlases'
+        )
+        atlases = os.listdir(atlas_dir)
         self.atlas_picker_label = ttk.Label(self, text="Atlas:")
         self.atlas_picker_combobox = ttk.Combobox(
             master=self, 
