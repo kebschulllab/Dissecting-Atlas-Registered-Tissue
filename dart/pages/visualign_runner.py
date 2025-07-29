@@ -38,7 +38,20 @@ class VisuAlignRunner(BasePage):
         stack = np.array([np.pad(r, ((p[0],0),(0,p[1]))) for p,r in zip(paddings, raw_stack)])
         stack = np.transpose(np.flip(stack, axis=(0,1)), (-1,0,1))
         nifti = nib.Nifti1Image(stack, np.eye(4)) # create nifti obj
-        nib.save(nifti, os.path.join("VisuAlign-v0_9//custom_atlas.cutlas//labels.nii.gz"))
+        
+        self.visualign_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            '..',
+            '..',
+            'VisuAlign-v0_9'
+        )
+        self.custom_atlas_path = os.path.join(
+            self.visualign_path,
+            'custom_atlas.cutlas',
+            'labels.nii.gz'
+        )
+        
+        nib.save(nifti, self.custom_atlas_path)
 
         visualign_export_folder = os.path.join(self.project.folder,'EXPORT_VISUALIGN_HERE')
         if not os.path.exists(visualign_export_folder):
@@ -74,7 +87,7 @@ class VisuAlignRunner(BasePage):
         along with the segmentation stack. 
         """
         os.remove(os.path.join(self.project.folder,'CLICK_ME.json'))
-        os.remove('VisuAlign-v0_9/custom_atlas.cutlas/labels.nii.gz')
+        os.remove(self.custom_atlas_path)
         super().deactivate()
 
     def create_widgets(self):
@@ -110,7 +123,7 @@ class VisuAlignRunner(BasePage):
         to load the results from the exported files.
         """
         print("running visualign")
-        cmd = rf"cd VisuAlign-v0_9 && {os.path.join("bin","java.exe")} --module qnonlin/visualign.QNonLin"
+        cmd = rf"cd {self.visualign_path} && {os.path.join("bin","java.exe")} --module qnonlin/visualign.QNonLin"
         os.system(cmd)
         self.load_results()
     
@@ -132,7 +145,14 @@ class VisuAlignRunner(BasePage):
             A numpy array representing the segmentation mask of the Target image.
         """
         
-        regions_nutil = pd.read_json(r'resources/Rainbow 2017.json')
+        nutil_json_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            '..',
+            '..',
+            'resources',
+            'Rainbow 2017.json'
+        )
+        regions_nutil = pd.read_json(nutil_json_path)
         with open(filename, 'rb') as fp:
             buffer = fp.read()
         shape = np.frombuffer(buffer, dtype=np.dtype('>i4'), offset=1, count=2) 
@@ -219,13 +239,15 @@ class VisuAlignRunner(BasePage):
     def done(self):
         """
         Finalize the VisuAlignRunner page's actions. This method
-        processes the results from VisuAlign, extracting the segmentation
-        and outlines from the exported files. It saves the segmentation
-        and outlines in the respective target folders, and updates the
-        target's segmentation attribute with the visualign segmentation.
+        checks that each target has a VisuAlign segmentation. If
+        not, it copies the STalign segmentation to the VisuAlign
+        segmentation.
         """
-        #TODO: handle if visualign adjustment not used (no exported files)
-        self.load_results()
+
+        for slide in self.slides:
+            for target in slide.targets:
+                if target.seg_visualign is None:
+                    target.seg_visualign = target.seg_stalign.copy()
 
         super().done()
     

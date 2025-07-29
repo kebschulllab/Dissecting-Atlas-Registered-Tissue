@@ -19,6 +19,23 @@ class Starter(BasePage):
     def __init__(self, master, project):
         super().__init__(master, project)
         self.header = 'Select samples and atlas'
+        self.atlas_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), 
+            '..',
+            '..',
+            'atlases'
+        )
+
+    def activate(self):
+        """
+        Activate the Starter page. This method is called when the page is
+        displayed. It configures the atlas combobox and shows the widgets.
+        """
+
+        atlases = os.listdir(self.atlas_dir)
+        self.atlas_picker_combobox.config(values=atlases)
+        super().activate()
+
     
     def create_widgets(self):
         """
@@ -40,18 +57,9 @@ class Starter(BasePage):
 
         # Atlas Picker
         self.atlas_name = tk.StringVar(master=self, value="Choose Atlas")
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        atlas_dir = os.path.join(
-            script_dir, 
-            '..',
-            '..',
-            'atlases'
-        )
-        atlases = os.listdir(atlas_dir)
         self.atlas_picker_label = ttk.Label(self, text="Atlas:")
         self.atlas_picker_combobox = ttk.Combobox(
-            master=self, 
-            values=atlases,
+            master=self,
             state='readonly',
             textvariable=self.atlas_name
         )
@@ -122,8 +130,7 @@ class Starter(BasePage):
             print("Skipping in-built segmentation steps.")
 
         # load atlases
-        atlas_folder_name = os.path.join('atlases', self.atlas_name.get())
-        self.load_atlas_info(atlas_folder_name)
+        self.load_atlas_info(self.atlas_name.get())
 
         # load slides
         path = self.slides_folder_name.get()
@@ -144,7 +151,7 @@ class Starter(BasePage):
 
         super().done()
 
-    def load_atlas_info(self, path):
+    def load_atlas_info(self, name):
         """
         Load atlas information from the specified path. This method searches for
         the atlas files in the given directory and initializes the atlases
@@ -153,9 +160,10 @@ class Starter(BasePage):
         
         Parameters
         ----------
-        path : str
-            The path to the atlas directory containing the reference and label images.
+        name : str
+            The name of the atlas to be loaded.
         """
+        path = os.path.join(self.atlas_dir, name)
         for filename in os.listdir(path):
             curr_path = os.path.join(path, filename)
             if 'reference' in filename: 
