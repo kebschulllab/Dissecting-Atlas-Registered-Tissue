@@ -22,7 +22,7 @@ class Project():
             Integer tracking number of times stalign has been run
     """
     def __init__(self):
-        self.slides = []
+        self.slides: list[Slide] = []
         self.atlases = {
             FSR: Atlas(),
             DSR: Atlas(),
@@ -108,6 +108,24 @@ class App(tk.Tk):
         
         if self.page_index == len(self.pages)-1:
             self.next_btn.config(text='Finish')
+    
+    def skip_inbuilt_segmentation(self):
+        """
+        Modifies the page order to bypass the inbuilt segmentation steps.
+        This method is called when the user selects a custom segmentation method
+        in the Starter page. It removes the TargetProcessor and STalignRunner pages
+        from the navigation flow, allowing the user to proceed directly to the
+        VisuAlignRunner page after completing the SlideProcessor page.
+        """
+        
+        # remove TargetProcessor and STalignRunner pages from the navigation flow
+        target_processor_page = self.pages.pop(2)
+        stalign_runner_page = self.pages.pop(2)
+        target_processor_page.destroy()
+        stalign_runner_page.destroy()
+
+        # insert SegmentationImporter page after SlideProcessor
+        self.pages.insert(2, SegmentationImporter(self.main_window, self.project))
 
 # Actually run the app
 if __name__ == "__main__":
