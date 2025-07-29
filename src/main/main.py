@@ -109,6 +109,6 @@ class App(tk.Tk):
         if self.page_index == len(self.pages)-1:
             self.next_btn.config(text='Finish')
 
-
 # Actually run the app
-app = App()
+if __name__ == "__main__":
+    app = App()
