@@ -8,6 +8,5 @@ class StarterDemo(Demo):
         self.createDemoWidget(Starter)
         self.checkpoint_name = "post_starter.pkl"
 
-
 demo = StarterDemo()
 demo.run()
