@@ -220,11 +220,19 @@ class Starter(Page):
         loads the atlas information and the slides into the project structure.
         Raises an exception if the atlas or slides folder is not selected.
         """
-        # check that atlas picker and slides picker are not blank
-        if self.atlas_name.get() == 'Choose Atlas': 
+        # check that segmentation method picker, atlas picker, 
+        # and slides picker are not blank
+        if  self.segmentation_method.get() == 'Choose Segmentation Method':
+            raise Exception('Must select a segmentation method.')
+        elif self.atlas_name.get() == 'Choose Atlas': 
             raise Exception('Must select an atlas.')
         elif self.slides_folder_name.get() == '':
             raise Exception('Must select an folder containing sample images.')
+
+        seg_method = self.segmentation_method.get()
+        if seg_method == 'Other - I will provide the segmentation results':
+            self.winfo_toplevel().skip_inbuilt_segmentation()
+            print("Skipping in-built segmentation steps.")
 
         # load atlases
         atlas_folder_name = os.path.join('atlases', self.atlas_name.get())
