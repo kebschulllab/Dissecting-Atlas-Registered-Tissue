@@ -44,7 +44,7 @@ class App(tk.Tk):
         self.project = Project()
 
         # initalize each page with self.main_window as parent
-        page_list: tuple[Page] = tuple([
+        page_list: tuple[BasePage] = tuple([
             Starter, 
             SlideProcessor, 
             TargetProcessor,
@@ -53,7 +53,7 @@ class App(tk.Tk):
             RegionPicker,
             Exporter
         ])
-        self.pages: list[Page] = [page(self.main_window, self.project) for page in page_list]
+        self.pages: list[BasePage] = [page(self.main_window, self.project) for page in page_list]
         self.page_index = 0
         self.update()
         self.mainloop()
