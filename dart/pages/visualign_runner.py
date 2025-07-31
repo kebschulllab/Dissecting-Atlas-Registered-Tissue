@@ -217,10 +217,10 @@ class VisuAlignRunner(BasePage):
         target = self.slides[slideIndex].targets[targetIndex]
 
         # save segmentation
-        np.save(
+        ski.io.imsave(
             os.path.join(
                 folder_path,
-                "visualign_segmentation.npy"
+                "visualign_segmentation.tif"
             ),
             target.seg_visualign
         )

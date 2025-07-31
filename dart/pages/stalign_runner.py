@@ -332,10 +332,10 @@ class STalignRunner(BasePage):
                 
                 # save segmentation
                 folder = get_folder(sn, tn, self.project.stalign_iterations)
-                np.save(
+                ski.io.imsave(
                     os.path.join(
                         folder_path,
-                        "stalign_segmentation.npy"
+                        "stalign_segmentation.tif"
                     ),
                     target.seg_stalign
                 )
