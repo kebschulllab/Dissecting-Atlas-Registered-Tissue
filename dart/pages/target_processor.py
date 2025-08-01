@@ -627,7 +627,7 @@ class TargetProcessor(BasePage):
         elif "fast" in speed:
             self.param_vars['iterations'].set('10')
         else:
-            self.param_vars['iterations'].set('1') #TODO: ensure STalign doesn't explod when given 0 iterations
+            self.param_vars['iterations'].set('0')
 
     def set_basic(self):
         """
