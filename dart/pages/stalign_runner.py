@@ -23,6 +23,7 @@ class STalignRunner(BasePage):
     def __init__(self, master, project):
         super().__init__(master, project)
         self.header = "Running STalign."
+        self.can_finish = False
     
     def activate(self):
         """
@@ -32,30 +33,41 @@ class STalignRunner(BasePage):
         """
         # TODO: if all skipped -> immediately generate segmentations 
         # and call done()
-        self.estimate_time()
         super().activate()
+        total_iterations = 0
+        for slide in self.slides:
+            for target in slide.targets:
+                total_iterations += target.stalign_params['iterations']
 
-    def estimate_time(self):
+        if total_iterations:
+            self.estimate_time(total_iterations)
+        else:
+            self.can_finish = True
+            self.header = "Skipping STalign, displaying segmentation " \
+                          "estimations from previous step."
+            self.start_btn.pack_forget()
+            self.show_results()
+
+    def estimate_time(self, iterations):
         """
         Estimate duration of STalign for all targets. This method
         totals up the iterations for all planned STalign runs and
         calculates the duration of STalign my assuming each iteration
         takes 3 seconds. It also configures the progress bar and 
         text label with this information.
+
+        Parameters
+        ----------
+        iterations : int
+            The total number of iterations of STalign across all
+            targets.
         """
 
-        totalIterations = 0
-        for slide in self.slides:
-            for target in slide.targets:
-                numIt = target.stalign_params['iterations']
-                totalIterations += numIt
-        self.progress_bar.config(maximum=totalIterations)
-
-        time_sec = 3*totalIterations # ~3 sec/iteration
+        time_sec = 3*iterations # ~3 sec/iteration
         time_str = STalignRunner.seconds_to_string(time_sec)
-
         label_txt = f'Estimated Duration: {time_str}'
         self.info_label.config(text=label_txt)
+        self.progress_bar.config(maximum=iterations)
 
     def seconds_to_string(s):
         """
@@ -132,7 +144,6 @@ class STalignRunner(BasePage):
         """
         self.info_label.pack()
         self.start_btn.pack()
-        self.show_result_viewer()
         
     def process_points(self, target):
         """
@@ -337,8 +348,9 @@ class STalignRunner(BasePage):
                 folder = get_folder(sn, tn, self.project.stalign_iterations)
                 target.save_seg(folder_path, 'stalign')
 
-        self.info_label.config(text="Done!")
+        self.can_finish = True
         stalign_window.destroy()
+        self.info_label.config(text="Done!")
         self.progress_bar.pack_forget()
         self.show_results()
         self.update()
@@ -446,12 +458,6 @@ class STalignRunner(BasePage):
             seg_img = self.currTarget.get_img(seg='stalign')
         else:            
             seg_img = self.currTarget.get_img()
-            tk.messagebox.showinfo(
-                title="No STalign Segmentation",
-                message="STalign was skipped for this target. Currently "
-                        "displaying an estimated segmentation using affine "
-                        "transformation provided in previous step"
-            )
         
         self.slice_viewer.axes[0].imshow(seg_img)
         self.slice_viewer.update()
@@ -464,14 +470,15 @@ class STalignRunner(BasePage):
         visible.
         """
 
+        self.results_viewer.pack(expand=True, fill=tk.BOTH)
+        self.show_result_viewer()
+
         self.currSlide = None
         self.currTarget = None
         self.update_result_viewer()
-
         self.slide_nav_combo.config(
             values=[i+1 for i in range(len(self.slides))]
         )
-        self.results_viewer.pack(expand=True, fill=tk.BOTH)
     
     def get_slide_index(self):
         """
@@ -508,7 +515,7 @@ class STalignRunner(BasePage):
         advancing.
         """
 
-        if self.slides[0].targets[0].transform is None:
+        if not self.can_finish:
             raise Exception("ERROR! Must Run STalign before advancing")
         super().done()
     
