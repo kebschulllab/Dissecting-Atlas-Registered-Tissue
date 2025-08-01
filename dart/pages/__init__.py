@@ -6,6 +6,7 @@ from pages.stalign_runner import STalignRunner
 from pages.visualign_runner import VisuAlignRunner
 from pages.region_picker import RegionPicker
 from pages.exporter import Exporter
+from pages.segmentation_importer import SegmentationImporter
 
 __all__ = [
     'BasePage',
@@ -15,5 +16,6 @@ __all__ = [
     'STalignRunner',
     'VisuAlignRunner',
     'RegionPicker',
-    'Exporter'
+    'Exporter',
+    'SegmentationImporter'
 ]
