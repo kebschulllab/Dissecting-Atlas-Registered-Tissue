@@ -368,7 +368,7 @@ class Target(Image):
         )
         return marked
 
-    def get_seg(self, seg=None):
+    def get_seg(self, seg=None, verbose=True):
         """
         Get the segmentation for the target. If seg is None, returns the
         most recent segmentation added to the target. If seg is provided,
@@ -381,6 +381,9 @@ class Target(Image):
             The segmentation version to return. Must be one of 'estimated',
             'stalign', 'visualign', or 'custom'. If None, returns the most
             recent segmentation added to the target.
+        verbose : bool, optional
+            If True and seg is None, prints a message about which segmentation
+            was used. Defaults to True.
         
         Returns
         -------
@@ -394,7 +397,7 @@ class Target(Image):
 
             # return the most recent segmentation
             last_seg = list(self.seg.keys())[-1]
-            print(f"Using most recent segmentation: {last_seg}")
+            if verbose: print(f"Using most recent segmentation: {last_seg}")
             return self.seg[last_seg]
         
         options = ['estimated', 'stalign', 'visualign', 'custom']
