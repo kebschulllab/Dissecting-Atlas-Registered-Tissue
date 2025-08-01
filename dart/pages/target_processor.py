@@ -652,9 +652,10 @@ class TargetProcessor(BasePage):
         elif num_iterations == 500: self.basic_combo.set(self.basic_options[1])
         elif num_iterations == 100: self.basic_combo.set(self.basic_options[2])
         elif num_iterations == 10: self.basic_combo.set(self.basic_options[3])
-        elif num_iterations == 1: self.basic_combo.set(self.basic_options[4])
+        elif num_iterations == 0: self.basic_combo.set(self.basic_options[4])
         else:
-            self.basic_combo.set(f"Advanced settings estimated {2.5*num_iterations}") 
+            self.basic_combo.set(f"Advanced settings - estimated duration: "
+                                  "{3*num_iterations} seconds") 
 
     def done(self):
         """
