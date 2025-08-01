@@ -300,7 +300,10 @@ class STalignRunner(BasePage):
 
         for sn,slide in enumerate(self.slides):
             for tn,target in enumerate(slide.targets):
-                label_txt = f'Running STalign on Slice #{tn+1} of Slide #{sn+1}'
+                if target.stalign_params['iterations'] == 0:
+                    print(f'Skipping STalign for Slide {sn+1}, Target {tn+1}')
+                    continue
+                label_txt = f'Running STalign on Slide #{sn+1}, Target #{tn+1}'
                 print(label_txt)
                 self.info_label.config(text=label_txt)
                 self.update()
@@ -333,22 +336,6 @@ class STalignRunner(BasePage):
                 # save segmentation
                 folder = get_folder(sn, tn, self.project.stalign_iterations)
                 target.save_seg(folder_path, 'stalign')
-                '''ski.io.imsave(
-                    os.path.join(
-                        folder_path,
-                        "stalign_segmentation.tif"
-                    ),
-                    target.seg_stalign
-                )
-                
-                # save outlines TODO: fix using figure_generation.ipynb on windows 1
-                ski.io.imsave(
-                    os.path.join(
-                        folder_path,
-                        "stalign_outlines.png"
-                    ),
-                    (255*target.get_img(seg="stalign")).astype(np.uint8)
-                )'''
 
         self.info_label.config(text="Done!")
         stalign_window.destroy()
@@ -454,7 +441,18 @@ class STalignRunner(BasePage):
         """
         
         self.slice_viewer.axes[0].cla()
-        seg_img = self.currTarget.get_img(seg="stalign")
+
+        if 'stalign' in self.currTarget.seg:
+            seg_img = self.currTarget.get_img(seg='stalign')
+        else:            
+            seg_img = self.currTarget.get_img()
+            tk.messagebox.showinfo(
+                title="No STalign Segmentation",
+                message="STalign was skipped for this target. Currently "
+                        "displaying an estimated segmentation using affine "
+                        "transformation provided in previous step"
+            )
+        
         self.slice_viewer.axes[0].imshow(seg_img)
         self.slice_viewer.update()
 
