@@ -442,7 +442,7 @@ class TargetProcessor(BasePage):
         mesh_transformed = (L @ mesh[...,None])[...,0] + T
         slice_seg = atlas.get_img(mesh_transformed, mode='nearest')
         
-        target.seg['estimated'] = slice_seg.astype('uint8')
+        target.seg['estimated'] = slice_seg.astype(int)
 
     def show_atlas(self, event=None):
         """
