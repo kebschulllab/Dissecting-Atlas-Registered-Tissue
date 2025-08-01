@@ -30,8 +30,8 @@ class VisuAlignRunner(BasePage):
         information for VisuAlign. It also creates the necessary
         folders and files for exporting the results.
         """
-        # stack seg_stalign of all targets and pad as necessary to create 3 dimensions np.array
-        raw_stack = [target.seg_stalign for slide in self.slides for target in slide.targets]
+        # stack latest seg of all targets and pad as necessary to create 3 dimensions np.array
+        raw_stack = [target.get_seg() for slide in self.slides for target in slide.targets]
         shapes = np.array([seg.shape for seg in raw_stack])
         max_dims = [shapes[:,0].max(), shapes[:,1].max()]
         paddings = max_dims-shapes
@@ -182,13 +182,8 @@ class VisuAlignRunner(BasePage):
                                                           "EXPORT_VISUALIGN_HERE",
                                                           get_filename(sn,ti)+"_nl.flat")
                 
-                try:
-                    print(f'we are looking for {visualign_nl_flat_filename}')
-                    t.seg_visualign = self.load_result_filename(visualign_nl_flat_filename)
-                except:
-                    # if not found, use stalign segmentation instead
-                    print(f"visualign manual alignment not performed for slice #{sn}, target #{ti}, using stalign semiautomatic alignment")
-                    t.seg_visualign = t.seg_stalign.copy()
+                print(f'we are looking for {visualign_nl_flat_filename}')
+                t.seg['visualign'] = self.load_result_filename(visualign_nl_flat_filename)
 
                 # save segmentation
                 self.save_results(sn, ti)
@@ -217,7 +212,8 @@ class VisuAlignRunner(BasePage):
         target = self.slides[slideIndex].targets[targetIndex]
 
         # save segmentation
-        ski.io.imsave(
+        target.save_seg(folder_path, 'visualign')
+        '''ski.io.imsave(
             os.path.join(
                 folder_path,
                 "visualign_segmentation.tif"
@@ -233,21 +229,14 @@ class VisuAlignRunner(BasePage):
                 "visualign_outlines.png"
             ),
             outlines
-        )
+        )'''
         print(f"saved visualign results for slide #{slideIndex}, target #{targetIndex}")
 
     def done(self):
         """
         Finalize the VisuAlignRunner page's actions. This method
-        checks that each target has a VisuAlign segmentation. If
-        not, it copies the STalign segmentation to the VisuAlign
-        segmentation.
+        calls the parent class's done method.
         """
-
-        for slide in self.slides:
-            for target in slide.targets:
-                if target.seg_visualign is None:
-                    target.seg_visualign = target.seg_stalign.copy()
 
         super().done()
     
@@ -259,5 +248,6 @@ class VisuAlignRunner(BasePage):
         """
         for slide in self.slides:
             for target in slide.targets:
-                target.seg_visualign = None
+                if 'visualign' in target.seg:
+                    target.seg.pop('visualign')
         super().cancel()

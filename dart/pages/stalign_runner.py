@@ -311,7 +311,7 @@ class STalignRunner(BasePage):
                     device, 
                     figure
                 )
-                target.seg_stalign = self.get_segmentation(target)
+                target.seg['stalign'] = self.get_segmentation(target)
 
                 # saving results
                 folder_path = os.path.join(
@@ -332,7 +332,8 @@ class STalignRunner(BasePage):
                 
                 # save segmentation
                 folder = get_folder(sn, tn, self.project.stalign_iterations)
-                ski.io.imsave(
+                target.save_seg(folder_path, 'stalign')
+                '''ski.io.imsave(
                     os.path.join(
                         folder_path,
                         "stalign_segmentation.tif"
@@ -347,7 +348,7 @@ class STalignRunner(BasePage):
                         "stalign_outlines.png"
                     ),
                     (255*target.get_img(seg="stalign")).astype(np.uint8)
-                )
+                )'''
 
         self.info_label.config(text="Done!")
         stalign_window.destroy()
@@ -523,6 +524,7 @@ class STalignRunner(BasePage):
         for slide in self.slides:
             for target in slide.targets:
                 target.transform = None
-                target.seg_stalign = None
+                if 'stalign' in target.seg:
+                    target.seg.pop('stalign')
         self.project.stalign_iterations += 1
         super().cancel()

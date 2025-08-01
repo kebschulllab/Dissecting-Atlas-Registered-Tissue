@@ -5,7 +5,8 @@ import os
 
 from pages.base import BasePage
 from images import Image
-from constants import DSR, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR, COMMITTED_COLOR, REMOVABLE_COLOR
+from constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
+                       COMMITTED_COLOR, REMOVABLE_COLOR)
 from utils import get_folder, TkFigure
 
 class TargetProcessor(BasePage):
@@ -402,13 +403,46 @@ class TargetProcessor(BasePage):
 
         atlas = self.atlases[DSR]
         
-        xE = [ALPHA*x for x in atlas.pix_loc]
-        XE = np.stack(np.meshgrid(np.zeros(1),xE[1],xE[2],indexing='ij'),-1)
-        L,T = target.get_LT()
-        slice_transformed = (L @ XE[...,None])[...,0] + T
-        slice_img = atlas.get_img(slice_transformed)
+        pix_loc = [ALPHA*x for x in atlas.pix_loc[1:]]
+        mesh = np.stack(np.meshgrid(
+            np.zeros(1),
+            pix_loc[0],
+            pix_loc[1],
+            indexing='ij'),-1)
         
+        L,T = target.get_LT()
+        mesh_transformed = (L @ mesh[...,None])[...,0] + T
+        slice_img = atlas.get_img(mesh_transformed)
         target.img_estim.load_img(slice_img)
+    
+    def update_seg_estim(self, target):
+        """
+        Update the estimated segmentation for the target based on the current
+        affine transformation parameters. This method retrieves the atlas for the
+        current target, applies the affine transformation to the atlas pixel locations,
+        and transforms the segmentation using the target's affine transformation
+        parameters. It then updates the target's estimated segmentation with the
+        transformed segmentation.
+        
+        Parameters
+        ----------
+        target : Target
+            The target for which to update the estimated segmentation.
+        """
+        
+        atlas = self.atlases[FSL]
+        
+        mesh = np.stack(np.meshgrid(
+            np.zeros(1),
+            target.pix_loc[0],
+            target.pix_loc[1],
+            indexing='ij'),-1)
+        
+        L,T = target.get_LT()
+        mesh_transformed = (L @ mesh[...,None])[...,0] + T
+        slice_seg = atlas.get_img(mesh_transformed, mode='nearest')
+        
+        target.seg['estimated'] = slice_seg.astype('uint8')
 
     def show_atlas(self, event=None):
         """
@@ -630,15 +664,21 @@ class TargetProcessor(BasePage):
         points, and stalign parameters to text files in the respective target folders.
         """
         
-        # estimate pixel dimensions
         for si, slide in enumerate(self.slides):
+            # estimate pixel dimensions
             slide.estimate_pix_dim()
             for ti,target in enumerate(slide.targets):
+
+                # make target folder
                 folder = os.path.join(
                     self.project.folder, 
                     get_folder(si, ti, self.project.stalign_iterations)
                 )
                 os.mkdir(folder)
+
+                # make and save estimated segmentation
+                self.update_seg_estim(target)
+                target.save_seg(folder, 'estimated')
 
                 with open(os.path.join(folder, 'settings.txt'), 'w') as f:
                     # write affine parameters
@@ -678,6 +718,8 @@ class TargetProcessor(BasePage):
                 target.thetas = np.array([0, 0, 0])
                 target.T_estim = np.array([0, 0, 0])
                 target.img_estim = Image()
+                if "estimated" in target.seg:
+                    target.seg.pop('estimated')
                 for i in range(target.num_landmarks): target.remove_landmarks()
         super().cancel()
     

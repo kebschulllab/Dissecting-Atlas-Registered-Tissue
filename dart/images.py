@@ -145,11 +145,12 @@ class Atlas(Image):
         pix_dim = np.diag(header['space directions'])
         return img_data, pix_dim
 
-    def get_img(self, sample_mesh):
+    def get_img(self, sample_mesh, **kwargs):
         return STalign.interp3D(
             self.pix_loc, 
             self.img[None].astype('float64'), 
-            sample_mesh.transpose(3,0,1,2)
+            sample_mesh.transpose(3,0,1,2),
+            **kwargs
             )[0,0,...].numpy()
 
 class Slide(Image):
@@ -232,7 +233,7 @@ class Target(Image):
             'resolution': 250
         }
         
-        # Image Estimations using Affine Properties and Atlas
+        # Image Estimation using Affine Properties and Atlas
         self.img_estim = Image()
 
         # Landmark Points
@@ -246,8 +247,7 @@ class Target(Image):
         self.transform = None
 
         # Initialize Segmentations
-        self.seg_stalign = None
-        self.seg_visualign = None
+        self.seg = {}
 
         # Region Boundaries and Wells
         self.region_boundaries = {}
@@ -326,31 +326,117 @@ class Target(Image):
         scale = np.sqrt(area_target / area_atlas)
         return np.divide(self.img_estim.pix_dim, scale)
 
-    def get_img(self, seg="stalign", color=(1,0,0), mode='thick'):
+    def get_img(self, seg=None, color=(1,0,0), mode='thick'):
         """
         Target implementation of get_img(), used exclusively to get target
         image with all region boundaries marked. The seg parameter allows 
-        the client to choose whether to use the segmentation after stalign
-        or after visualign
+        the client to choose whether to use the estimated, stalign, visualign,
+        or custom segmentation. The color and mode parameters are passed to
+        skimage.segmentation.mark_boundaries() to set the color and mode of
+        the boundaries. The background_label is set to 0, so that the
+        background is not marked with a boundary.
+
+        Parameters
+        ----------
+        seg : str, optional
+            Specifies which segmentation to use. If None, uses the most recent
+            segmentation added to the target. If provided, must be one of
+            'estimated', 'stalign', 'visualign', or 'custom'.
+        color : tuple, optional
+            The color of the boundaries. Defaults to (1, 0, 0) (red).
+        mode : str, optional
+            The mode of the boundaries. Defaults to 'thick'. Can be 'inner',
+            'outer', or 'thick'.
+        
+        Returns
+        -------
+        marked : numpy array
+            The image with boundaries marked.
         """
-        if seg not in ['stalign','visualign']:
-            raise Exception("must set mode to one of 'stalign' or 'visualign'")
-        
+
         image = self.img_downscaled
-        if seg == 'stalign':
-            segmentation = self.seg_stalign
-        else:
-            segmentation = self.seg_visualign
+        if image is None:
+            raise Exception("Image not loaded")
+        segmentation = self.get_seg(seg)
+       
+        marked = ski.segmentation.mark_boundaries(
+            image=image,
+            label_img=segmentation.astype(np.uint8),
+            color=color,
+            mode=mode,
+            background_label=0
+        )
+        return marked
+
+    def get_seg(self, seg=None):
+        """
+        Get the segmentation for the target. If seg is None, returns the
+        most recent segmentation added to the target. If seg is provided,
+        returns the segmentation for that version. If the segmentation is not
+        found, raises an exception.
+
+        Parameters
+        ----------
+        seg : str, optional
+            The segmentation version to return. Must be one of 'estimated',
+            'stalign', 'visualign', or 'custom'. If None, returns the most
+            recent segmentation added to the target.
         
-        if image is None or segmentation is None: return None
-        else:
-            return ski.segmentation.mark_boundaries(
-                image,
-                segmentation.astype(np.uint8),
-                color=color,
-                mode=mode,
-                background_label=0
-            )
+        Returns
+        -------
+        segmentation : numpy array
+            The desired segmentation for the target.
+        """
+
+        if seg is None:
+            if len(self.seg) == 0:
+                raise Exception("No segmentations found for target")
+
+            # return the most recent segmentation
+            last_seg = list(self.seg.keys())[-1]
+            print(f"Using most recent segmentation: {last_seg}")
+            return self.seg[last_seg]
+        
+        options = ['estimated', 'stalign', 'visualign', 'custom']
+        if seg not in options:
+            raise Exception("must set seg to one of {options}")
+        if seg not in self.seg:
+            raise Exception(f"Segmentation {seg} not loaded")
+        
+        return self.seg[seg]
+        
+    def save_seg(self, folder_path, seg):
+        """
+        Save the segmentation along with the target image with the boundaries
+        of the segmentation marked. Saves the outline images as .tif and .png,
+        and the segmentation as .tif. 
+
+        Parameters
+        ----------
+        folder_path : str
+            The path to the parent directory in which the images should be
+            saved.
+        seg : str
+            The segmentation version to save. Must be one of 'estimated', 
+            'stalign', 'visualign', or 'custom'.
+        """
+
+        outlines_img = self.get_img(seg)
+        ski.io.imsave(
+            f"{folder_path}/{seg}_outlines.tif",
+            outlines_img,
+        )
+        ski.io.imsave(
+            f"{folder_path}/{seg}_outlines.png",
+            (255*outlines_img).astype(np.uint8)
+        )
+
+
+        ski.io.imsave(
+            f"{folder_path}/{seg}_segmentation.tif",
+            self.seg[seg],
+        )
+
 
     def add_landmarks(self, target_point, atlas_point):
         self.landmarks['target'].append(target_point)
