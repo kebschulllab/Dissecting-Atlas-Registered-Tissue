@@ -104,13 +104,19 @@ class VisuAlignRunner(BasePage):
 
         self.instructions_label = ttk.Label(
             master=self,
-            text="Instructions:\n1. Click \"Open VisuAlign\" button\n2. Click File > Open > \"CLICK_ME.json\"\n3. Adjust alignment with VisuAlign until satisfied\n4. Click File > Export > \"EXPORT_VISUALIGN_HERE\"\n5. Close VisuAlign after notification of successful saving of segmentation"
+            text="Instructions:\n" \
+                 "1. Click \"Open VisuAlign\" button\n" \
+                 "2. Click File > Open > \"CLICK_ME.json\"\n" \
+                 "3. Adjust alignment with VisuAlign until satisfied\n" \
+                 "4. Click File > Export > \"EXPORT_VISUALIGN_HERE\"\n" \
+                 "5. Close VisuAlign after notification of successful saving of segmentation"
         )
 
     def show_widgets(self):
         """
         Show the widgets on the page. This method packs the
-        run button and instructions label onto the page."""
+        run button and instructions label onto the page.
+        """
         self.instructions_label.pack()
         self.run_btn.pack()
 
