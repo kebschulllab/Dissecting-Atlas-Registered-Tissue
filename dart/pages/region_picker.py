@@ -208,7 +208,7 @@ class RegionPicker(BasePage):
         """
         self.slice_viewer.axes[0].cla()
         seg_img = self.currTarget.get_img()
-        seg = self.currTarget.get_seg()
+        seg = self.currTarget.get_seg(verbose=False)
         data_regions = np.zeros_like(seg)
 
         # create masks for each checked region
@@ -249,7 +249,7 @@ class RegionPicker(BasePage):
             where pixels belonging to the specified region and its children 
             are set to 1.
         """
-        seg = target.get_seg()
+        seg = target.get_seg(verbose=False)
         mask = (seg==id).astype(int)
         for child in self.region_tree.get_children(str(float(id))):
             mask += self.make_region_mask(target, int(float(child)))
@@ -271,7 +271,7 @@ class RegionPicker(BasePage):
         """
         if event.inaxes:
             x,y = int(event.xdata), int(event.ydata)
-            id = self.currTarget.get_seg()[y,x]
+            id = self.currTarget.get_seg(verbose=False)[y,x]
             name = self.get_region_name(id)
             self.slice_viewer.axes[0].set_title(name)
             self.slice_viewer.update()
@@ -292,7 +292,7 @@ class RegionPicker(BasePage):
         """
         if event.inaxes:
             x,y = int(event.xdata), int(event.ydata)
-            id = float(self.currTarget.get_seg()[y,x])
+            id = float(self.currTarget.get_seg(verbose=False)[y,x])
             if self.region_tree.tag_has("checked", id):
                 self.region_tree._uncheck_descendant(id)
                 self.region_tree._uncheck_ancestor(id)
