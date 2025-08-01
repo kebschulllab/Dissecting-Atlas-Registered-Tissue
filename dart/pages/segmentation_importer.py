@@ -17,19 +17,45 @@ class SegmentationImporter(BasePage):
         self.header = "Perform custom segmentation and import results here"
     
     def create_widgets(self):
+        """
+        Create the widgets for this page. This includes:
+        - Instructions label: A label with instructions for the user to follow
+        """
         return super().create_widgets()
     
     def show_widgets(self):
+        """
+        Show the widgets for this page. This method simply packs the 
+        instructions label
+        """
         return super().show_widgets()
     
     def activate(self):
+        """
+        Activate this page. This method calls the parent class's activate
+        method.
+        """
         return super().activate()
     
     def deactivate(self):
+        """
+        Deactivate this page. This method calls the parent class's deactivate 
+        method.
+        """
         return super().deactivate()
     
     def done(self):
+        """
+        Finalize the SegmentationImporter's actions. This method confirms that
+        a segmentation has been imported for each target. If not, it raises an
+        Exception and informs the user which targets are lacking segmentations.
+        The method also loads the segmentations in Target.seg['custom']
+        """
         return super().done()
     
     def cancel(self):
+        """
+        Cancel the SegmentationImporter's actions. This method clears the 
+        custom segmentation for each target, if it exists.
+        """
         return super().cancel()
