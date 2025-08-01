@@ -213,23 +213,6 @@ class VisuAlignRunner(BasePage):
 
         # save segmentation
         target.save_seg(folder_path, 'visualign')
-        '''ski.io.imsave(
-            os.path.join(
-                folder_path,
-                "visualign_segmentation.tif"
-            ),
-            target.seg_visualign
-        )
-
-        # save outlines
-        outlines = (255*target.get_img(seg="visualign")).astype(np.uint8)
-        ski.io.imsave(
-            os.path.join(
-                folder_path,
-                "visualign_outlines.png"
-            ),
-            outlines
-        )'''
         print(f"saved visualign results for slide #{slideIndex}, target #{targetIndex}")
 
     def done(self):
