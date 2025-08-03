@@ -189,7 +189,20 @@ class VisuAlignRunner(BasePage):
                                                           get_filename(sn,ti)+"_nl.flat")
                 
                 print(f'we are looking for {visualign_nl_flat_filename}')
-                t.seg['visualign'] = self.load_result_filename(visualign_nl_flat_filename)
+                
+                try:
+                    t.seg['visualign'] = self.load_result_filename(visualign_nl_flat_filename)
+                except:
+                    tk.messagebox.showwarning(
+                        title="VisuAlign results not found",
+                        message="You may have closed VisuAlign without "
+                                "exporting the results. If this was "
+                                "unintentional, please click \"Run\" again and "
+                                "redo your manual adjustments . Remember to "
+                                "export your results by clicking:\n "
+                                "File > Export > \"EXPORT_VISUALIGN_HERE\" "
+                    )
+                    return
 
                 # save segmentation
                 self.save_results(sn, ti)
