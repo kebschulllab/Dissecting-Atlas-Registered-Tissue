@@ -254,7 +254,7 @@ class Exporter(BasePage):
                 self.exported[slide_index][i] = 2
                 tis.append(i)  
         
-        output_filename = f'slide{slide_index}targets{'_'.join(list(map(str, tis)))}.xml'
+        output_filename = f'{get_filename(slide_index, tis)}.xml'
         
         os.makedirs(os.path.join(self.project.folder, "output"), exist_ok=True)
         output_path = os.path.join(self.project.folder, "output", output_filename)
