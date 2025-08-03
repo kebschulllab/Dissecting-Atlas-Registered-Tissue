@@ -6,8 +6,73 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,  
 NavigationToolbar2Tk)
 
-get_filename = lambda slide, target: f'slide{slide+1}_target{target+1}'
-get_folder = lambda s, t, i: f'{get_filename(s, t)}_iteration{i}'
+def stringify_ints(values):
+    """
+    Convert an integer or list of integers into a string. This method
+    takes in one or more integers, adds one to each value (to convert
+    from zero-indexing to one-indexing) and returns a string with
+    these values separated by underscores.
+
+    Parameters
+    ----------
+    values : int or List[int]
+        The integer or list of integers to convert to a string.
+    
+    Returns
+    -------
+    int_string : str
+        The string containing the underscore separated values
+        incremented by one.
+    """
+
+    if isinstance(values, int):
+        values = [values]
+    
+    values = map(lambda x: str(1+x), values)
+    int_string = "_".join(values)
+    return int_string
+
+def get_filename(slide, targets): 
+    """
+    Create and return a filename that describes the slides and targets 
+    provided.
+
+    Parameters
+    ----------
+    slide : int
+        The (0-indexed) index of the slide this file pertains to.
+    targets : int or List[int]
+        An int or list of ints that contains the (0-indexed) index or indices
+        of the targets this file pertains to.
+
+    Returns
+    -------
+    filename : str
+        The string representing the filename with no extension.
+    """
+    return f'slide{slide+1}_target{stringify_ints(targets)}'
+
+def get_folder(slide, targets, i): 
+    """
+    Create and return a foldername for the ith run of stalign.
+
+    Parameters
+    ----------
+    slide : int
+        The (0-indexed) index of the slide this file pertains to.
+    targets : int or List[int]
+        An int or list of ints that contains the (0-indexed) index or indices
+        of the targets this file pertains to.
+    i: int
+        An int representing which attempt (0-indexed) of stalign this folder represents.
+    
+    Returns
+    -------
+    foldername : str
+        The string representing the folder.
+    """
+    foldername = f'{get_filename(slide, targets)}_iteration{i+1}'
+    return foldername
 
 # Modified version of STalign.LDDMM_3D_to_slice
 def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,
