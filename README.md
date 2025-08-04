@@ -11,10 +11,11 @@ Rishi Koneru, Manjari Anant^
 ## Overview
 
 DART enables:
-- alignment of cell stained slices to a 3D common coordinate framework
-- automatic and manual annotation of brain regions
-- excision of identified brain regions with LEICA LMD software
+- Automated or semi-automated alignment of 2D brain slices to a 3D atlas (e.g., the Allen Brain Atlas CCFv3 2017) and atlas-based segmentation. 
+- Automatic generation of ROI boundaries.
+- Seamless sample handling and integration with Leica LMD software for laser dissection. 
 
+<img src="DART_alignment_results.png">
 
 ## Installation
 
