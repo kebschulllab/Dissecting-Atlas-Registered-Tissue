@@ -11,10 +11,11 @@ Rishi Koneru, Manjari Anant^
 ## Overview
 
 DART enables:
-- alignment of cell stained slices to a 3D common coordinate framework
-- automatic and manual annotation of brain regions
-- excision of identified brain regions with LEICA LMD software
+- Automated or semi-automated alignment of 2D brain slices to a 3D atlas (e.g., the Allen Brain Atlas CCFv3 2017) and atlas-based segmentation. 
+- Automatic generation of ROI boundaries.
+- Seamless sample handling and integration with Leica LMD software for laser dissection. 
 
+<img src="DART_alignment_results.png">
 
 ## Installation
 
@@ -29,4 +30,8 @@ To use this tool, you will need provide the following information:
 ## Usage
 
 To use `DART`, please refer to our [tutorial](https://docs.google.com/document/d/1Ch9BTZmZ5squiQciajM1lAMXQOpW5biJrctP5JFD_R4/edit?usp=sharing).
+
+## License
+- DART's source code is available under the GNU General Public License version 3
+- VisuAlign is developed by the Neural Systems Laboratory at the Institute of Basic Medical Sciences, University of Oslo, Norway and is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
