@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from images import Atlas, Slide
 from pages import *
-from constants import *
+from constants import FSR, DSR, FSL, DSL
 
 class Project():
     """
@@ -22,7 +22,7 @@ class Project():
             Integer tracking number of times stalign has been run
     """
     def __init__(self):
-        self.slides = []
+        self.slides: list[Slide] = []
         self.atlases = {
             FSR: Atlas(),
             DSR: Atlas(),
@@ -44,7 +44,7 @@ class App(tk.Tk):
         self.project = Project()
 
         # initalize each page with self.main_window as parent
-        page_list: tuple[Page] = tuple([
+        page_list: tuple[BasePage] = tuple([
             Starter, 
             SlideProcessor, 
             TargetProcessor,
@@ -53,10 +53,9 @@ class App(tk.Tk):
             RegionPicker,
             Exporter
         ])
-        self.pages: list[Page] = [page(self.main_window, self.project) for page in page_list]
+        self.pages: list[BasePage] = [page(self.main_window, self.project) for page in page_list]
         self.page_index = 0
         self.update()
-        self.mainloop()
 
     def create_widgets(self):
         self.main_window = tk.Frame(self)
@@ -108,7 +107,21 @@ class App(tk.Tk):
         
         if self.page_index == len(self.pages)-1:
             self.next_btn.config(text='Finish')
+    
+    def skip_inbuilt_segmentation(self):
+        """
+        Modifies the page order to bypass the inbuilt segmentation steps.
+        This method is called when the user selects a custom segmentation method
+        in the Starter page. It removes the TargetProcessor and STalignRunner pages
+        from the navigation flow, allowing the user to proceed directly to the
+        VisuAlignRunner page after completing the SlideProcessor page.
+        """
+        
+        # remove TargetProcessor and STalignRunner pages from the navigation flow
+        target_processor_page = self.pages.pop(2)
+        stalign_runner_page = self.pages.pop(2)
+        target_processor_page.destroy()
+        stalign_runner_page.destroy()
 
-
-# Actually run the app
-app = App()
+        # insert SegmentationImporter page after SlideProcessor
+        self.pages.insert(2, SegmentationImporter(self.main_window, self.project))
