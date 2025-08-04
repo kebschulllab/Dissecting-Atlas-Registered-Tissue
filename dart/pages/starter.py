@@ -45,8 +45,14 @@ class Starter(BasePage):
         - Browse button: A button to open a file dialog for selecting the slides folder.
         """
         # Segmentation Method Picker
-        self.segmentation_method = tk.StringVar(master=self, value="Choose Segmentation Method")
-        self.segmentation_method_label = ttk.Label(self, text="Segmentation Method:")
+        self.segmentation_method = tk.StringVar(
+            master=self, 
+            value="DART in-built (STalign + VisuAlign)"
+        )
+        self.segmentation_method_label = ttk.Label(
+            self, 
+            text="Segmentation Method:"
+        )
         self.segmentation_method_combobox = ttk.Combobox(
             master=self, 
             values=['DART in-built (STalign + VisuAlign)', 
