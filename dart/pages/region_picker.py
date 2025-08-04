@@ -352,6 +352,10 @@ class RegionPicker(BasePage):
         Cancel the actions on the RegionPicker page. This method calls
         the parent class's cancel method to finalize the page's actions.
         """
+        for roi in self.rois:
+            self.region_tree._uncheck_descendant(float(roi))
+            self.region_tree._uncheck_ancestor(float(roi))
+        self.rois.clear()
         super().cancel()
 
     def done(self):
