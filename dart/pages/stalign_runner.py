@@ -22,7 +22,7 @@ class STalignRunner(BasePage):
 
     def __init__(self, master, project):
         super().__init__(master, project)
-        self.header = "Running STalign."
+        self.header = "Running STalign and Viewing Results."
         self.can_finish = False
     
     def activate(self):
@@ -43,8 +43,10 @@ class STalignRunner(BasePage):
             self.estimate_time(total_iterations)
         else:
             self.can_finish = True
-            self.header = "Skipping STalign, displaying segmentation " \
-                          "estimations from previous step."
+            self.info_label.config(
+                text="Skipping STalign, displaying segmentation "
+                     "estimations from previous step."
+            )
             self.start_btn.pack_forget()
             self.show_results()
 
