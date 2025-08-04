@@ -30,3 +30,7 @@ To use this tool, you will need provide the following information:
 
 To use `DART`, please refer to our [tutorial](https://docs.google.com/document/d/1Ch9BTZmZ5squiQciajM1lAMXQOpW5biJrctP5JFD_R4/edit?usp=sharing).
 
+## License
+- DART's source code is available under the GNU General Public License version 3
+- VisuAlign is developed by the Neural Systems Laboratory at the Institute of Basic Medical Sciences, University of Oslo, Norway and is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
