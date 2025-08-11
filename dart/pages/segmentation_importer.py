@@ -1,9 +1,11 @@
 import os
+import shutil
+import skimage as ski
 import tkinter as tk
 from tkinter import ttk
 
 from pages.base import BasePage
-from utils import TkFigure
+from utils import TkFigure, get_filename, get_folder
 
 class SegmentationImporter(BasePage):
     """
@@ -18,13 +20,14 @@ class SegmentationImporter(BasePage):
     def __init__(self, master, project):
         super().__init__(master, project)
         self.header = "Perform custom segmentation and import results here"
+        self.upload_path = None
     
     def create_widgets(self):
         """
         Create the widgets for this page. This includes:
         - Instructions label: A label with instructions for the user to follow
         - Load Button: A button that will call self.load when clicked
-        - - Results Frame: Contains figure displaying results along with
+        - Results Frame: Contains figure displaying results along with
         navigation controls
         """
         self.instructions_label = ttk.Label(
@@ -32,7 +35,9 @@ class SegmentationImporter(BasePage):
             text="Instructions: \n"
                  "1. Generate segmentations of the target images in the "
                  "project folder using your desired algorithm. \n"
-                 "2. Upload segmentations to the project folder. \n\n" 
+                 "2. Upload segmentations to the folder titled "
+                 "\"UPLOAD_SEGMENTATION_HERE\" which can be found inside the "
+                 "project folder. \n\n" 
                  "Segmentation Requirements: \n"
                  "1. Uses the Allen Atlas CCF's pixel value to brain region "
                  "assignments \n"
@@ -47,7 +52,7 @@ class SegmentationImporter(BasePage):
             command=self.load
         )
 
-        self.results_viewer = tk.Frame()
+        self.results_viewer = tk.Frame(self)
         self.create_result_viewer()
     
     def show_widgets(self):
@@ -63,13 +68,47 @@ class SegmentationImporter(BasePage):
         Load the segmentations. This method searches for the segmentations in 
         the project folder using the naming guide. It then reads them in as
         numpy arrays and adds them to the corresponding targets segmentation
-        dictionart under the key "custom". Then, it notifies the user of 
+        dictionary under the key "custom". Then, it notifies the user of 
         successful upload via terminal or it raises an exception if a 
-        segmentation is missing. Finally, it hides the load button and calls
+        segmentation is missing. After saving the segmentation results in the
+        corresponding folder, it hides the load button and calls
         `show_results` to display the uploaded segmentations.
         """
         # TODO: implement me
-        return
+
+        for si, slide in enumerate(self.slides):
+            for ti, target in enumerate(slide.targets):
+
+                # read segmentation
+                filename = get_filename(si, ti) + '_seg.tif'
+                path = os.path.join(
+                    self.upload_path,
+                    filename
+                )
+                try:
+                    seg = ski.io.imread(path, plugin='pil')
+                except:
+                    raise Exception(
+                        f"Missing segmentation for Slide #{si+1}, "
+                        f"Target #{ti+1}"
+                    )
+                target.seg['custom'] = seg
+                print(
+                    f"Segmentation of Slide #{si+1}, Target #{ti+1} "
+                    "successfully uploaded."
+                )
+        
+                # make target folder and save segmentation
+                folder = os.path.join(
+                    self.project.folder, 
+                    get_folder(si, ti, self.project.stalign_iterations)
+                )
+                os.mkdir(folder)
+                target.save_seg(folder, 'custom')
+
+        self.instructions_label.config(text="Uploaded!")
+        self.load_btn.pack_forget()
+        self.show_results()
 
     def create_result_viewer(self):
         """
@@ -226,15 +265,25 @@ class SegmentationImporter(BasePage):
     def activate(self):
         """
         Activate this page. This method calls the parent class's activate
-        method.
+        method and creates a folder within the project folder where the 
+        user can upload their segmentations.
         """
+
+        self.upload_path = os.path.join(
+            self.project.folder,
+            'UPLOAD_SEGMENTATION_HERE'
+        )
+        os.makedirs(self.upload_path)
         super().activate()
     
     def deactivate(self):
         """
         Deactivate this page. This method calls the parent class's deactivate 
-        method.
+        method and deletes the folder for uploading segmentations.
         """
+
+        shutil.rmtree(self.upload_path)
+        self.upload_path = None
         super().deactivate()
     
     def done(self):
