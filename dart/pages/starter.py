@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import tkinter as tk
 from tkinter import ttk
 import os
@@ -154,6 +155,10 @@ class Starter(BasePage):
             self.project.parent_folder, 
             folder
         )
+        
+        # save atlas name
+        with open(os.path.join(self.project.folder, 'atlas.json'), 'w') as f:
+            json.dump(self.rois, f)
 
         super().done()
 
