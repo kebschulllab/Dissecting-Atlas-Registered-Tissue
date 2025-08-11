@@ -252,4 +252,8 @@ class VisuAlignRunner(BasePage):
             for target in slide.targets:
                 if 'visualign' in target.seg:
                     target.seg.pop('visualign')
+        
+        # if using custom segmentations, increase segmentation count by one
+        if 'custom' in self.slides[0].targets[0].seg:
+            self.project['stalign_iterations'] += 1
         super().cancel()
