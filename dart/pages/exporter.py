@@ -381,6 +381,8 @@ class Exporter(BasePage):
         Finalize the Exporter page's actions. This method is calls the parent class's
         done method to finalize the page's actions.
         """
+        # TODO: give final warning that clicking finish means youre done
+        # TODO: export any selected slices
         super().done()
     
     def cancel(self):
