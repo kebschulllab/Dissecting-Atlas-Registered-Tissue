@@ -1,4 +1,6 @@
 import os
+import tkinter as tk
+from tkinter import ttk
 
 from pages.base import BasePage
 
@@ -21,13 +23,46 @@ class SegmentationImporter(BasePage):
         Create the widgets for this page. This includes:
         - Instructions label: A label with instructions for the user to follow
         """
+        self.instructions_label = ttk.Label(
+            master=self,
+            text=""
+        )
+
+        self.load_btn = ttk.Button(
+            master=self,
+            text="Load Segmentation(s)",
+            command=self.load
+        )
     
     def show_widgets(self):
         """
         Show the widgets for this page. This method simply packs the 
         instructions label
         """
+        self.instructions_label.pack()
+        # instructions:
+        # take the target images we generated from the project folder
+        # and segment them with whatever algorithm you want
+        # as of now, the only requirement for the segmentation is that
+        # it uses the allen atlas's pixel value to brain region assignments
+        # for more info see: ___ (some link)
+        # then, once you have this segmentation, copy the file over as a .tif
+        # with the name of the corresponding image (e.g. "slide1_target1") with "_seg" 
+        # appended
     
+    def load():
+        """
+        Load the segmentations. This method searches for the segmentations in 
+        the project folder using the naming guide. It then reads them in as
+        numpy arrays and adds them to the corresponding targets segmentation
+        dictionart under the key "custom". Then, it notifies the user of 
+        successful upload via terminal or it raises an exception if a 
+        segmentation is missing. Finally, it hides the load button and calls
+        `show_results` to display the uploaded segmentations.
+        """
+        # TODO: implement me
+        return
+
     def activate(self):
         """
         Activate this page. This method calls the parent class's activate
