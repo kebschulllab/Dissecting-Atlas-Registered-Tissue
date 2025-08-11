@@ -158,7 +158,7 @@ class Starter(BasePage):
         
         # save atlas name
         with open(os.path.join(self.project.folder, 'atlas.json'), 'w') as f:
-            json.dump(self.rois, f)
+            json.dump(self.atlas_name.get(), f)
 
         super().done()
 
