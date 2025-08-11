@@ -29,7 +29,16 @@ class SegmentationImporter(BasePage):
         """
         self.instructions_label = ttk.Label(
             master=self,
-            text=""
+            text="Instructions: \n"
+                 "1. Generate segmentations of the target images in the "
+                 "project folder using your desired algorithm. \n"
+                 "2. Upload segmentations to the project folder. \n\n" 
+                 "Segmentation Requirements: \n"
+                 "1. Uses the Allen Atlas CCF's pixel value to brain region "
+                 "assignments \n"
+                 "2. The segmentation(s) are .tif files, and the filename is "
+                 "that of the corresponding image with \"_seg\" appended to it \n"
+                 "For example: \"slide1_target1_seg.tif\""
         )
 
         self.load_btn = ttk.Button(
@@ -47,17 +56,9 @@ class SegmentationImporter(BasePage):
         instructions label
         """
         self.instructions_label.pack()
-        # instructions:
-        # take the target images we generated from the project folder
-        # and segment them with whatever algorithm you want
-        # as of now, the only requirement for the segmentation is that
-        # it uses the allen atlas's pixel value to brain region assignments
-        # for more info see: ___ (some link)
-        # then, once you have this segmentation, copy the file over as a .tif
-        # with the name of the corresponding image (e.g. "slide1_target1") with "_seg" 
-        # appended
+        self.load_btn.pack()
     
-    def load():
+    def load(self):
         """
         Load the segmentations. This method searches for the segmentations in 
         the project folder using the naming guide. It then reads them in as
