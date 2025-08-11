@@ -112,6 +112,8 @@ class STalignRunner(BasePage):
         Create the widgets for this page. This includes:
         - Info Label: Displays information regarding time left, which
         target and slice is currently being aligned, and completion status
+        - Run Button: Allows user to begin running STalign by clicking the
+        Run button.
         - Progress Bar: Displays progress in STalign alignment
         - Results Frame: Contains figure displaying results along with
         navigation controls
