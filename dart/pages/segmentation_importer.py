@@ -101,12 +101,12 @@ class SegmentationImporter(BasePage):
                 # make target folder and save segmentation
                 folder = os.path.join(
                     self.project.folder, 
-                    get_folder(si, ti, self.project.stalign_iterations)
+                    get_folder(si, ti, 0)
                 )
-                os.mkdir(folder)
+                os.makedirs(folder, exist_ok=True)
                 target.save_seg(folder, 'custom')
 
-        self.instructions_label.config(text="Uploaded!")
+        self.instructions_label.pack_forget()
         self.load_btn.pack_forget()
         self.show_results()
 
@@ -282,6 +282,7 @@ class SegmentationImporter(BasePage):
         method and deletes the folder for uploading segmentations.
         """
 
+        self.results_viewer.pack_forget()
         shutil.rmtree(self.upload_path)
         self.upload_path = None
         super().deactivate()
@@ -291,13 +292,27 @@ class SegmentationImporter(BasePage):
         Finalize the SegmentationImporter's actions. This method confirms that
         a segmentation has been imported for each target. If not, it raises an
         Exception and informs the user which targets are lacking segmentations.
-        The method also loads the segmentations in Target.seg['custom']
         """
+        # TODO: implement me!
+        for si, slide in enumerate(self.slides):
+            for ti, target in enumerate(slide.targets):
+                if "custom" not in target.seg:
+                    raise Exception(
+                        f"Missing segmentation for Slide #{si+1}, "
+                        f"Target #{ti+1}"
+                    )
+
         super().done()
     
     def cancel(self):
         """
         Cancel the SegmentationImporter's actions. This method clears the 
-        custom segmentation for each target, if it exists.
+        custom segmentation for each target, if it exists, and also hides the
+        resuls frame.
         """
+
+        for slide in self.slides:
+            for target in slide.targets:
+                if 'custom' in target.seg:
+                    target.seg.pop('custom')
         super().cancel()
