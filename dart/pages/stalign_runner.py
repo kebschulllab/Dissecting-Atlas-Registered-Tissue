@@ -220,9 +220,7 @@ class STalignRunner(BasePage):
         I = np.concatenate((I, (I-np.mean(I))**2))
         xJ = target.pix_loc
         J = target.img
-        J = J[None] / np.mean(np.abs(J))
-
-        
+        J = J[None] / np.mean(np.abs(J))        
 
         transform, errors = LDDMM_3D_LBFGS(
             xI,I,xJ,J,
