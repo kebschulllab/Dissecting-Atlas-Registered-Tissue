@@ -64,14 +64,14 @@ def get_folder(slide, targets, i):
         An int or list of ints that contains the (0-indexed) index or indices
         of the targets this file pertains to.
     i: int
-        An int representing which attempt (0-indexed) of stalign this folder represents.
+        An int representing which attempt (0-indexed) of segmentation this folder represents.
     
     Returns
     -------
     foldername : str
         The string representing the folder.
     """
-    foldername = f'{get_filename(slide, targets)}_iteration{i+1}'
+    foldername = f'{get_filename(slide, targets)}_alignment{i+1}'
     return foldername
 
 # Modified version of STalign.LDDMM_3D_to_slice
