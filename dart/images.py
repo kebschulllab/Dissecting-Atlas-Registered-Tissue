@@ -361,7 +361,7 @@ class Target(Image):
        
         marked = ski.segmentation.mark_boundaries(
             image=image,
-            label_img=segmentation.astype(np.uint8),
+            label_img=segmentation,
             color=color,
             mode=mode,
             background_label=0
@@ -398,7 +398,7 @@ class Target(Image):
             # return the most recent segmentation
             last_seg = list(self.seg.keys())[-1]
             if verbose: print(f"Using most recent segmentation: {last_seg}")
-            return self.seg[last_seg]
+            seg = last_seg
         
         options = ['estimated', 'stalign', 'visualign', 'custom']
         if seg not in options:
@@ -406,7 +406,7 @@ class Target(Image):
         if seg not in self.seg:
             raise Exception(f"Segmentation {seg} not loaded")
         
-        return self.seg[seg]
+        return self.seg[seg].astype(np.uint32)
         
     def save_seg(self, folder_path, seg):
         """
@@ -439,7 +439,6 @@ class Target(Image):
             f"{folder_path}/{seg}_segmentation.tif",
             self.seg[seg],
         )
-
 
     def add_landmarks(self, target_point, atlas_point):
         self.landmarks['target'].append(target_point)
