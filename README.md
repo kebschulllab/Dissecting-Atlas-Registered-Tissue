@@ -29,7 +29,7 @@ To use this tool, you will need provide the following information:
 
 ## Usage
 
-To use `DART`, please refer to our [tutorial](https://docs.google.com/document/d/1Ch9BTZmZ5squiQciajM1lAMXQOpW5biJrctP5JFD_R4/edit?usp=sharing).
+To use `DART`, please refer to our [tutorial](https://docs.google.com/document/d/1vvepQjYQtZjw-hnTglz25f71RQvsMKiJ/edit?usp=sharing&ouid=112930046003306259781&rtpof=true&sd=true).
 
 ## License
 - DART's source code is available under the GNU General Public License version 3
