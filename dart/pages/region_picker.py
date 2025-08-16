@@ -377,6 +377,8 @@ class RegionPicker(BasePage):
             row = 0
             col = 0
             for target in slide.targets:
+                target.region_boundaries = {}
+                target.wells = {}
                 for roi in self.rois:
                     roi_name = self.get_region_name(roi)
                     pts = np.argwhere(self.make_region_mask(target, roi))
