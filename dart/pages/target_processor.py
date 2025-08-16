@@ -317,7 +317,7 @@ class TargetProcessor(BasePage):
                 if (target.thetas != np.array([0,0,0])).any():
                     thetas_avg += target.thetas
                     n += 1
-            if n > 0: self.currTarget.thetas = np.divide(thetas_avg,n).astype('int64')
+            if n > 0: self.currTarget.thetas = np.divide(thetas_avg,n).astype(int)
 
         for i in range(3): self.thetas[i].set(self.currTarget.thetas[i])
         self.translation.set(self.currTarget.T_estim[0])
@@ -442,7 +442,7 @@ class TargetProcessor(BasePage):
         mesh_transformed = (L @ mesh[...,None])[...,0] + T
         slice_seg = atlas.get_img(mesh_transformed, mode='nearest')
         
-        target.seg['estimated'] = slice_seg.astype(int)
+        target.seg['estimated'] = slice_seg.astype(np.uint32)
 
     def show_atlas(self, event=None):
         """

@@ -287,7 +287,7 @@ class STalignRunner(BasePage):
             torch.tensor(vol[None].astype(np.float64),dtype=torch.float64,device=tform.device),
             tform.permute(-1,0,1,2),
             mode='nearest'
-        )[0,0].cpu().int().numpy()
+        )[0,0].cpu().numpy().astype(np.uint32)
         
         return segmentation
 

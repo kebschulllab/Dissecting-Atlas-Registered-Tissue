@@ -250,7 +250,7 @@ class RegionPicker(BasePage):
             are set to 1.
         """
         seg = target.get_seg(verbose=False)
-        mask = (seg==id).astype(int)
+        mask = (seg==id).astype(np.uint32)
         for child in self.region_tree.get_children(str(float(id))):
             mask += self.make_region_mask(target, int(float(child)))
         return mask

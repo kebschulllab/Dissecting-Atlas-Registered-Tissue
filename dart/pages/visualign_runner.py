@@ -173,7 +173,7 @@ class VisuAlignRunner(BasePage):
             mask = names==region_name
             seg[mask] = self.atlases['names'].id[region_name]
         
-        return seg.astype(int)
+        return seg.astype(np.uint32)
 
     def load_results(self):
         """
