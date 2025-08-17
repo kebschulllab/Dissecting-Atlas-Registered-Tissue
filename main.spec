@@ -1,10 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 a = Analysis(
-    ['./src/main/main.py'],
-    pathex=['./src/main'],
+    ['./dart/__main__.py'],
+    pathex=['./dart'],
     binaries=[],
-    datas=[('./src/main/constants.py', '.'), ('./src/main/images.py', '.'), ('./src/main/pages.py', '.'), ('./src/main/STalign.py', '.'), ('./src/main/utils.py', '.'), ('./atlases', 'atlases/'), ('./resources', 'resources/'), ('./VisuAlign-v0_9', 'VisuAlign-v0_9/')],
+    datas=[
+        ('./dart/app.py', '.'), 
+        ('./dart/constants.py', '.'), 
+        ('./dart/images.py', '.'), 
+        ('./dart/STalign.py', '.'), 
+        ('./dart/utils.py', '.'), 
+        ('./dart/pages', 'pages'),
+        ('./atlases', 'atlases/'), 
+        ('./resources', 'resources/'), 
+        ('./VisuAlign-v0_9', 'VisuAlign-v0_9/')
+        ],
     hiddenimports=['scipy', 'scipy._lib.array_api_compat.numpy.fft', 'jaraco', 'jaraco.text', 'PIL._tkinter_finder','skimage.segmentation'],
     hookspath=[],
     hooksconfig={},
@@ -20,7 +30,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='main',
+    name='dart',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
