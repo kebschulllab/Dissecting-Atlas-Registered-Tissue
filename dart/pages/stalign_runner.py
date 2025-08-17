@@ -9,7 +9,7 @@ import torch
 
 from pages.base import BasePage
 from constants import ALPHA, FSR, DSR, FSL 
-from utils import get_folder, LDDMM_3D_LBFGS, TkFigure
+from utils import get_target_name, LDDMM_3D_LBFGS, TkFigure
 
 
 class STalignRunner(BasePage):
@@ -332,7 +332,7 @@ class STalignRunner(BasePage):
                 # saving results
                 folder_path = os.path.join(
                     self.project.folder, 
-                    get_folder(sn, tn, self.project.stalign_iterations)
+                    get_target_name(sn, tn)
                 )
 
                 # save figure
@@ -347,7 +347,7 @@ class STalignRunner(BasePage):
                     pickle.dump(errors, f)
                 
                 # save segmentation
-                folder = get_folder(sn, tn, self.project.stalign_iterations)
+                folder = get_target_name(sn, tn)
                 target.save_seg(folder_path, 'stalign')
 
         self.can_finish = True
@@ -533,5 +533,4 @@ class STalignRunner(BasePage):
                 target.transform = None
                 if 'stalign' in target.seg:
                     target.seg.pop('stalign')
-        self.project.stalign_iterations += 1
         super().cancel()

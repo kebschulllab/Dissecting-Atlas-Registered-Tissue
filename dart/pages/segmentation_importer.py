@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from pages.base import BasePage
-from utils import TkFigure, get_filename, get_folder
+from utils import TkFigure, get_target_name
 
 class SegmentationImporter(BasePage):
     """
@@ -80,7 +80,7 @@ class SegmentationImporter(BasePage):
             for ti, target in enumerate(slide.targets):
 
                 # read segmentation
-                filename = get_filename(si, ti) + '_seg.tif'
+                filename = get_target_name(si, ti) + '_seg.tif'
                 path = os.path.join(
                     self.upload_path,
                     filename
@@ -101,7 +101,7 @@ class SegmentationImporter(BasePage):
                 # make target folder and save segmentation
                 folder = os.path.join(
                     self.project.folder, 
-                    get_folder(si, ti, 0)
+                    get_target_name(si, ti)
                 )
                 os.makedirs(folder, exist_ok=True)
                 target.save_seg(folder, 'custom')

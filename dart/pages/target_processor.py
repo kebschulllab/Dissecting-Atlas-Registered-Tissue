@@ -7,7 +7,7 @@ from pages.base import BasePage
 from images import Image
 from constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
                        COMMITTED_COLOR, REMOVABLE_COLOR)
-from utils import get_folder, TkFigure
+from utils import get_target_name, TkFigure
 
 class TargetProcessor(BasePage):
     """
@@ -655,7 +655,7 @@ class TargetProcessor(BasePage):
         elif num_iterations == 0: self.basic_combo.set(self.basic_options[4])
         else:
             self.basic_combo.set(f"Advanced settings - estimated duration: "
-                                  "{3*num_iterations} seconds") 
+                                 f"{3*num_iterations} seconds") 
 
     def done(self):
         """
@@ -673,9 +673,9 @@ class TargetProcessor(BasePage):
                 # make target folder
                 folder = os.path.join(
                     self.project.folder, 
-                    get_folder(si, ti, self.project.stalign_iterations)
+                    get_target_name(si, ti)
                 )
-                os.mkdir(folder)
+                os.makedirs(folder, exist_ok=True)
 
                 # make and save estimated segmentation
                 self.update_seg_estim(target)

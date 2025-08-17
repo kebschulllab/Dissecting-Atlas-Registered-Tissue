@@ -32,7 +32,7 @@ def stringify_ints(values):
     int_string = "_".join(values)
     return int_string
 
-def get_filename(slide, targets): 
+def get_target_name(slide, targets): 
     """
     Create and return a filename that describes the slides and targets 
     provided.
@@ -48,31 +48,14 @@ def get_filename(slide, targets):
     Returns
     -------
     filename : str
-        The string representing the filename with no extension.
+        The string representing the target's name with 1-indexing.
+
+    Example
+    -------
+    >>> get_target_name(0,0)
+    'slide1_target1
     """
     return f'slide{slide+1}_target{stringify_ints(targets)}'
-
-def get_folder(slide, targets, i): 
-    """
-    Create and return a foldername for the ith run of stalign.
-
-    Parameters
-    ----------
-    slide : int
-        The (0-indexed) index of the slide this file pertains to.
-    targets : int or List[int]
-        An int or list of ints that contains the (0-indexed) index or indices
-        of the targets this file pertains to.
-    i: int
-        An int representing which attempt (0-indexed) of segmentation this folder represents.
-    
-    Returns
-    -------
-    foldername : str
-        The string representing the folder.
-    """
-    foldername = f'{get_filename(slide, targets)}_alignment{i+1}'
-    return foldername
 
 # Modified version of STalign.LDDMM_3D_to_slice
 def LDDMM_3D_LBFGS(xI,I,xJ,J,a,nt,niter,sigmaM,sigmaR,sigmaP,

@@ -7,7 +7,7 @@ from tkinter import ttk
 
 from pages.base import BasePage
 from constants import COMMITTED_COLOR, REMOVABLE_COLOR, NEW_COLOR
-from utils import TkFigure, get_filename
+from utils import TkFigure, get_target_name
 
 class SlideProcessor(BasePage):
     """
@@ -450,7 +450,7 @@ class SlideProcessor(BasePage):
             f.write("slide#_target# : X Y\n")
             for si, slide in enumerate(self.slides):
                 for ti, target in enumerate(slide.targets):
-                    f.write(f"{get_filename(si, ti)} : {target.x_offset} {target.y_offset}\n")
+                    f.write(f"{get_target_name(si, ti)} : {target.x_offset} {target.y_offset}\n")
 
         # save calibration points in a text file
         with open(os.path.join(self.project.folder, 'calibration_points.txt'), 'w') as f:
@@ -462,7 +462,7 @@ class SlideProcessor(BasePage):
         # save target images in the project folder
         for si, slide in enumerate(self.slides):
             for ti, target in enumerate(slide.targets):
-                filename = get_filename(si, ti)+'.png'
+                filename = get_target_name(si, ti)+'.png'
                 ski.io.imsave(os.path.join(self.project.folder, filename),target.img_original)
 
         super().done()

@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from pages.base import BasePage
-from utils import get_filename, get_folder, TkFigure
+from utils import get_target_name, TkFigure
 from constants import NEW_COLOR, COMMITTED_COLOR, REMOVABLE_COLOR
 
 class Exporter(BasePage):
@@ -40,7 +40,7 @@ class Exporter(BasePage):
             for ti, target in enumerate(slide.targets):
                 folder_path = os.path.join(
                     self.project.folder,
-                    get_folder(si, ti, self.project.stalign_iterations)
+                    get_target_name(si, ti)
                 )
 
                 # export outlines
@@ -51,7 +51,7 @@ class Exporter(BasePage):
                 image_path = os.path.join(folder_path, 'rois.png')
                 self.export_boundary_image(target, image_path)
 
-                print(f'Exported outlines for {get_filename(si, ti)}')
+                print(f'Exported outlines for {get_target_name(si, ti)}')
                 
         super().activate()
 
@@ -254,7 +254,7 @@ class Exporter(BasePage):
                 self.exported[slide_index][i] = 2
                 tis.append(i)  
         
-        output_filename = f'{get_filename(slide_index, tis)}.xml'
+        output_filename = f'{get_target_name(slide_index, tis)}.xml'
         
         os.makedirs(os.path.join(self.project.folder, "output"), exist_ok=True)
         output_path = os.path.join(self.project.folder, "output", output_filename)

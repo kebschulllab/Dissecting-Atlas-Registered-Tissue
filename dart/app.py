@@ -32,7 +32,6 @@ class Project():
         }
         self.parent_folder = None
         self.folder = None
-        self.stalign_iterations = 0
 
 class App(tk.Tk):
     def __init__(self):

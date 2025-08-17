@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from pages.base import BasePage
-from utils import get_filename, get_folder
+from utils import get_target_name
 
 class VisuAlignRunner(BasePage):
     """
@@ -66,7 +66,7 @@ class VisuAlignRunner(BasePage):
             i=0
             for sn,slide in enumerate(self.slides):
                 for ti,t in enumerate(slide.targets):
-                    filename = get_filename(sn, ti)+'.png'
+                    filename = get_target_name(sn, ti)+'.png'
                     f.write('{')
                     h = raw_stack[i].shape[0]
                     w = raw_stack[i].shape[1]
@@ -184,9 +184,11 @@ class VisuAlignRunner(BasePage):
         
         for sn,slide in enumerate(self.slides):
             for ti,t in enumerate(slide.targets):
-                visualign_nl_flat_filename = os.path.join(self.project.folder,
-                                                          "EXPORT_VISUALIGN_HERE",
-                                                          get_filename(sn,ti)+"_nl.flat")
+                visualign_nl_flat_filename = os.path.join(
+                    self.project.folder,
+                    "EXPORT_VISUALIGN_HERE",
+                    get_target_name(sn,ti)+"_nl.flat"
+                )
                 
                 print(f'we are looking for {visualign_nl_flat_filename}')
                 
@@ -222,10 +224,9 @@ class VisuAlignRunner(BasePage):
         """
         folder_path = os.path.join(
             self.project.folder, 
-            get_folder(
+            get_target_name(
                 slideIndex, 
-                targetIndex, 
-                self.project.stalign_iterations
+                targetIndex
             )
         )
         target = self.slides[slideIndex].targets[targetIndex]
