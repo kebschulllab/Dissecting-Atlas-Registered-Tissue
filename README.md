@@ -15,11 +15,16 @@ DART enables:
 - Automatic generation of ROI boundaries.
 - Seamless sample handling and integration with Leica LMD software for laser dissection. 
 
-<img src="DART_alignment_results.png">
+<figure>
+    <img src=DART_alignment_results.png alt="DART Alignment Results">
+    <figcaption>
+        <b>DART alignment results on various brain sections</b>
+    </figcaption>
+</figure>
 
 ## Installation
 
-DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/drive/folders/1OZ8UNjqNX_7eInwqjmnIVMsgPvRFYCfx?usp=drive_link), then run the `main.exe` file inside—no installation or separate Python environment is required.
+DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/drive/folders/1OZ8UNjqNX_7eInwqjmnIVMsgPvRFYCfx?usp=drive_link), then run the `dart.exe` file inside—no installation or separate Python environment is required.
 
 ## Input Data
 To use this tool, you will need provide the following information:
