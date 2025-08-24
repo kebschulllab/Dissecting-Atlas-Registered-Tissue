@@ -22,7 +22,7 @@ DART enables:
 
 ## Installation
 
-DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/drive/folders/1OZ8UNjqNX_7eInwqjmnIVMsgPvRFYCfx?usp=drive_link), then run the `dart.exe` file inside—no installation or separate Python environment is required.
+DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/file/d/1L1MkYKXpCuYQAGlgl97pc70kUGD5u9hA/view?usp=sharing), then run the `dart.exe` file inside—no installation or separate Python environment is required.
 
 ## Input Data
 To use this tool, you will need provide the following information:
@@ -38,3 +38,5 @@ To use `DART`, please refer to our [tutorial](tutorials/README.md).
 - DART's source code is available under the GNU General Public License version 3
 - VisuAlign is developed by the Neural Systems Laboratory at the Institute of Basic Medical Sciences, University of Oslo, Norway and is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
+## Contributing
+For support or issues, please open an “Issue” on our GitHub repository. To contribute to the software, please email manjari.anant@gmail.com and rishikoneru2005@gmail.com.

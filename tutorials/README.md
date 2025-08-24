@@ -2,7 +2,7 @@
 
 ## Installation
 
-DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/drive/folders/1OZ8UNjqNX_7eInwqjmnIVMsgPvRFYCfx?usp=drive_link), then run the `dart.exe` file inside—no installation or separate Python environment is required.
+DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/file/d/1L1MkYKXpCuYQAGlgl97pc70kUGD5u9hA/view?usp=sharing), then run the `dart.exe` file inside—no installation or separate Python environment is required.
 
 ## Getting Started
 
@@ -73,4 +73,4 @@ The export page (**Figure 11**) allows the user to select sections for export. A
 
 Before importing shapes onto the LMD, switch the LMD to the desired objective for cutting. For example, if the user wants to cut their shapes using the 10x objective, then they must first switch to that objective. Then, click File > Import Shapes and select the .xml file containing the shape(s) to be imported. This will trigger a series of prompts to select shapes and calibrate the LMD. Navigate through these prompts until the final prompt, “Use the actual magnification for all imported shapes?”, is reached. Click “Yes”. 
 
-The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that DART automatically assigns wells to each shape, spaced out with one well in between . These well assignments may be adjusted in the Leica LMD software.
+The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that DART automatically assigns wells to each shape, spaced out with one well in between. These well assignments may be adjusted in the Leica LMD software.
