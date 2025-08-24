@@ -34,6 +34,15 @@ def load_project(page_name):
     return project
 
 def load_starter():
+    """
+    Load the project state for the Starter page. This function initializes
+    and returns a new Project object.
+    
+    Returns:
+    --------
+    Project
+        The initialized project object.
+    """
     return Project()
 
 def load_slide_processor():
