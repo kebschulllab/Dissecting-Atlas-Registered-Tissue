@@ -6,6 +6,7 @@ import pickle
 
 from app import Project
 from pages import *
+from test.load import *
 
 class Demo(tk.Tk):
     """
@@ -22,6 +23,7 @@ class Demo(tk.Tk):
         self.create_page_selector()
 
         self.demo_frame = tk.Frame(self)
+        self.demo_widget = None
 
         # Buttons
         self.start_btn = ttk.Button(
@@ -30,20 +32,6 @@ class Demo(tk.Tk):
             command=lambda: self.run(self.page_dict[self.page_name.get()])
         )
         self.start_btn.pack()
-
-        self.checkpoint_btn = ttk.Button(
-            master=self,
-            text='Finish & Save Checkpoint',
-            command = self.save
-        )
-
-        self.project = Project()
-
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.path_checkpoints = os.path.join(script_dir, "checkpoints")
-
-        self.demo_widget = None
-        self.checkpoint_name = None
 
     def create_page_selector(self):
         """
@@ -60,21 +48,10 @@ class Demo(tk.Tk):
             'SlideProcessor': SlideProcessor,
             'TargetProcessor': TargetProcessor,
             'STalignRunner': STalignRunner,
-            'SegmentationImporter' : SegmentationImporter,
+            'SegmentationImporter': SegmentationImporter,
             'VisuAlignRunner': VisuAlignRunner,
             'RegionPicker': RegionPicker,
             'Exporter': Exporter,
-        }
-
-        self.previous_page = {
-            'Starter': None,
-            'SlideProcessor': 'Starter',
-            'TargetProcessor': 'SlideProcessor',
-            'STalignRunner': 'TargetProcessor',
-            'SegmentationImporter' : 'SlideProcessor',
-            'VisuAlignRunner': 'STalignRunner',
-            'RegionPicker': 'VisuAlignRunner',
-            'Exporter': 'RegionPicker',
         }
 
         self.page_name = tk.StringVar(value='Starter')
@@ -99,31 +76,12 @@ class Demo(tk.Tk):
         self.page_selector.pack_forget()
         self.start_btn.pack_forget()
 
-        self.checkpoint_name = f"{widget_class.__name__}_checkpoint.pkl"
-        # load previous checkpoint
-        previous_page = self.previous_page[self.page_name.get()]
-        if previous_page:
-            previous_checkpoint = f"{self.previous_page[self.page_name.get()]}_checkpoint.pkl"
-            self.load(previous_checkpoint)
+        project = load_project(self.page_name.get())
 
-        self.demo_widget = widget_class(self.demo_frame, self.project)
+        self.demo_widget = widget_class(self.demo_frame, project)
 
         self.demo_frame.pack(expand=True, fill=tk.BOTH)
-        self.checkpoint_btn.pack()
         self.demo_widget.activate()
-
-    def load(self, checkpoint):
-        with open(os.path.join(self.path_checkpoints, checkpoint), 'rb') as f:
-            data = pickle.load(f)
-            self.project = data
-
-    def save(self):
-        self.demo_widget.done()
-        data = self.project
-        os.makedirs(self.path_checkpoints, exist_ok=True)
-        with open(os.path.join(self.path_checkpoints, self.checkpoint_name), 'wb') as f:
-            pickle.dump(data, f)
-        self.destroy()
 
 if __name__ == "__main__":
     demo = Demo()
