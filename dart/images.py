@@ -6,7 +6,7 @@ import shapely
 import STalign
 import math
 
-from constants import DEFAULT_STALIGN_PARAMS, BACKGROUND_PERCENTILE
+from .constants import DEFAULT_STALIGN_PARAMS, BACKGROUND_PERCENTILE
 
 class Image():
     """

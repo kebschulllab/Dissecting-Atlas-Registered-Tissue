@@ -5,9 +5,9 @@ from tkinter import ttk
 import os
 import pandas as pd
 
-from pages.base import BasePage
-from images import Slide
-from constants import FSR, DSR, FSL, DSL
+from .base import BasePage
+from ..images import Slide
+from ..constants import FSR, DSR, FSL, DSL
 
 class Starter(BasePage):
     """
@@ -36,14 +36,17 @@ class Starter(BasePage):
         atlases = os.listdir(self.atlas_dir)
         self.atlas_picker_combobox.config(values=atlases)
         super().activate()
-
     
     def create_widgets(self):
         """
         Create widgets for the Starter page. This includes:
+        - Segmentation method picker: A combobox to select the segmentation 
+        method.
         - Atlas picker: A combobox to select an atlas from available atlases.
-        - Slides picker: An entry field to select a folder containing sample images.
-        - Browse button: A button to open a file dialog for selecting the slides folder.
+        - Slides picker: An entry field to select a folder containing sample 
+        images.
+        - Browse button: A button to open a file dialog for selecting the 
+        slides folder.
         """
         # Segmentation Method Picker
         self.segmentation_method = tk.StringVar(

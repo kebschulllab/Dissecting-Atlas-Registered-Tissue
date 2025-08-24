@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
-from images import *
-from constants import *
-from utils import *
+from ..images import *
+from ..constants import *
+from ..utils import *
 
 from abc import ABC, abstractmethod
 

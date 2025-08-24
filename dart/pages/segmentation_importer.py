@@ -4,8 +4,8 @@ import skimage as ski
 import tkinter as tk
 from tkinter import ttk
 
-from pages.base import BasePage
-from utils import TkFigure, get_target_name
+from .base import BasePage
+from ..utils import TkFigure, get_target_name
 
 class SegmentationImporter(BasePage):
     """

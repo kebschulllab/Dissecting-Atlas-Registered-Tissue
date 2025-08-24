@@ -5,9 +5,9 @@ import skimage as ski
 import tkinter as tk
 from tkinter import ttk
 
-from pages.base import BasePage
-from constants import COMMITTED_COLOR, REMOVABLE_COLOR, NEW_COLOR
-from utils import TkFigure, get_target_name
+from .base import BasePage
+from ..constants import COMMITTED_COLOR, REMOVABLE_COLOR, NEW_COLOR
+from ..utils import TkFigure, get_target_name
 
 class SlideProcessor(BasePage):
     """

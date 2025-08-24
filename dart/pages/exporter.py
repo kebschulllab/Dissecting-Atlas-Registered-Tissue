@@ -5,9 +5,9 @@ import PIL.ImageDraw
 import tkinter as tk
 from tkinter import ttk
 
-from pages.base import BasePage
-from utils import get_target_name, TkFigure
-from constants import NEW_COLOR, COMMITTED_COLOR, REMOVABLE_COLOR
+from .base import BasePage
+from ..utils import get_target_name, TkFigure
+from ..constants import NEW_COLOR, COMMITTED_COLOR, REMOVABLE_COLOR
 
 class Exporter(BasePage):
     """

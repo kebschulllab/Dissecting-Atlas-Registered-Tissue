@@ -3,11 +3,11 @@ import tkinter as tk
 from tkinter import ttk
 import os
 
-from pages.base import BasePage
-from images import Image
-from constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
+from .base import BasePage
+from ..images import Image
+from ..constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
                        COMMITTED_COLOR, REMOVABLE_COLOR)
-from utils import get_target_name, TkFigure
+from ..utils import get_target_name, TkFigure
 
 class TargetProcessor(BasePage):
     """

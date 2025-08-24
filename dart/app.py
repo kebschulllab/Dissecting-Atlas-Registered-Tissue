@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-from images import Atlas, Slide
-from pages import *
-from constants import FSR, DSR, FSL, DSL
+from .images import Atlas, Slide
+from .pages import *
+from .constants import FSR, DSR, FSL, DSL
 
 class Project():
     """

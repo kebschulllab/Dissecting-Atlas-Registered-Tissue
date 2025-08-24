@@ -1,12 +1,12 @@
-from pages.base import BasePage
-from pages.starter import Starter
-from pages.slide_processor import SlideProcessor
-from pages.target_processor import TargetProcessor
-from pages.stalign_runner import STalignRunner
-from pages.visualign_runner import VisuAlignRunner
-from pages.region_picker import RegionPicker
-from pages.exporter import Exporter
-from pages.segmentation_importer import SegmentationImporter
+from .base import BasePage
+from .starter import Starter
+from .slide_processor import SlideProcessor
+from .target_processor import TargetProcessor
+from .stalign_runner import STalignRunner
+from .visualign_runner import VisuAlignRunner
+from .region_picker import RegionPicker
+from .exporter import Exporter
+from .segmentation_importer import SegmentationImporter
 
 __all__ = [
     'BasePage',

@@ -9,8 +9,8 @@ import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
 
-from pages.base import BasePage
-from utils import TkFigure
+from .base import BasePage
+from ..utils import TkFigure
 
 class RegionPicker(BasePage):
     """
