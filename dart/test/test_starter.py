@@ -5,6 +5,7 @@ import shutil
 import tkinter as tk
 
 from ..pages import Starter
+from ..constants import FSR, FSL, DSR, DSL
 from .load import load_starter
 import os
 
@@ -37,12 +38,12 @@ def slides_dir():
         'demo_images'
     )
 
-@pytest.fixture(params=[0,1])
+@pytest.fixture(params=list(range(2)))
 def seg_method(activated_starter, request):
     values = activated_starter.segmentation_method_combobox['values']
     return values[request.param]
 
-@pytest.fixture(params=[0,1,2])
+@pytest.fixture(params=list(range(5)))
 def atlas_name(activated_starter, request):
     values = activated_starter.atlas_picker_combobox['values']
     return values[request.param]
@@ -132,12 +133,22 @@ def test_done_inappropriate_slides(activated_starter, monkeypatch):
         starter.done()
     assert err in str(excinfo.value)
 
-
-def test_load_atlas_info(activated_starter, monkeypatch):
+def test_load_atlas_info(activated_starter, atlas_name):
     starter = activated_starter
-    monkeypatch.setattr(pd, "read_csv", lambda *a, **kw: pd.DataFrame({"id": [0]}, index=["empty"]))
-    starter.load_atlas_info("TestAtlas")
-    assert "names" in starter.atlases
+    starter.load_atlas_info(atlas_name)
+
+    fsr = starter.atlases[FSR]
+    fsl = starter.atlases[FSL]
+    dsr = starter.atlases[DSR]
+    dsl = starter.atlases[DSL]
+    names = starter.atlases["names"]
+
+    assert fsr.shape == fsl.shape
+    assert dsr.shape == dsl.shape
+    assert all(dsr.pix_dim >= 50)
+    assert all(dsl.pix_dim >= 50)
+    assert names.loc['empty','id'] == 0
+    
 '''
 def test_load_slides(master, project, slides_dir, monkeypatch):
     class DummySlide:
