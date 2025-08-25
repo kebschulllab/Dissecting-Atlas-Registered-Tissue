@@ -175,8 +175,8 @@ def test_load_slides(starter, slides_dir, monkeypatch):
     assert len(result_slide.targets) == 0
     assert result_slide.numCalibrationPoints == 0
     assert len(result_slide.calibration_points) == 0
-'''
+
 def test_cancel(master, project):
     starter = Starter(master, project)
     # Should call super().cancel() without error
-    starter.cancel()'''
+    starter.cancel()
