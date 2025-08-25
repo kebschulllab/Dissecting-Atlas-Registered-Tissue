@@ -29,10 +29,30 @@ def activated_starter(starter):
     return starter
 
 @pytest.fixture
-def completed_starter(activated_starter, monkeypatch, slides_dir):
+def slides_dir():
+    return os.path.join(
+        os.path.dirname(__file__), 
+        '..', 
+        '..',
+        'demo_images'
+    )
+
+@pytest.fixture(params=[0,1])
+def seg_method(activated_starter, request):
+    values = activated_starter.segmentation_method_combobox['values']
+    return values[request.param]
+
+@pytest.fixture(params=[0,1,2])
+def atlas_name(activated_starter, request):
+    values = activated_starter.atlas_picker_combobox['values']
+    return values[request.param]
+
+@pytest.fixture
+def completed_starter(activated_starter, slides_dir, seg_method, atlas_name):
     starter = activated_starter
     starter.slides_folder_name.set(slides_dir)
-    # Tests will supply combinations of atlas and segmentation method
+    starter.atlas_name.set(atlas_name)
+    starter.segmentation_method.set(seg_method)
     
     yield starter
 
@@ -42,24 +62,6 @@ def completed_starter(activated_starter, monkeypatch, slides_dir):
             full_path = os.path.join(slides_dir, folder)
             if os.path.isdir(full_path):
                 shutil.rmtree(full_path)
-
-@pytest.fixture
-def slides_dir():
-    return os.path.join(
-        os.path.dirname(__file__), 
-        '..', 
-        '..',
-        'demo_images'
-    )
-
-@pytest.fixture
-def seg_method(completed_starter):
-    return completed_starter.segmentation_method_combobox['values']
-
-@pytest.fixture
-def atlas_name(completed_starter):
-    return completed_starter.atlas_picker_combobox['values']
-
 
 def test_init(starter):
     assert hasattr(starter, "segmentation_method")
@@ -71,7 +73,6 @@ def test_activate(activated_starter):
     
     # Check if atlas picker is populated
     assert len(starter.atlas_picker_combobox['values']) > 0
-    print(starter.atlas_picker_combobox['values'])
     # Check if all widgets are gridded
     assert all([slave.winfo_manager == 'grid' for slave in starter.slaves()])
 
@@ -81,14 +82,20 @@ def test_select_slides(activated_starter, slides_dir, monkeypatch):
     starter.select_slides()
     assert starter.slides_folder_name.get() == slides_dir
 
-@pytest.mark.parametrize("seg_method", [], indirect=True)
-@pytest.mark.parametrize("atlas_name", [], indirect=True)
 def test_done_success(completed_starter, seg_method, atlas_name):
     starter = completed_starter
-    starter.atlas_name.set(atlas_name)
-    starter.segmentation_method.set(seg_method)
+
+    starter.stalign_skipped = False
+    def skip_stalign():
+        starter.stalign_skipped = True
+    starter.winfo_toplevel().skip_inbuilt_segmentation = skip_stalign
+
     starter.done()
 
+    if "Other" in seg_method:
+        assert starter.stalign_skipped
+    else:
+        assert not starter.stalign_skipped
     assert starter.project.folder is not None
     assert os.path.isdir(starter.project.folder)
 
@@ -101,30 +108,37 @@ def test_done_success(completed_starter, seg_method, atlas_name):
         atlas = json.load(f)
         assert atlas_name == atlas
 
-'''
-@pytest.mark.parametrize("seg_method,atlas,slides,err", [
-    ("Choose Segmentation Method", "TestAtlas", "folder", "Must select a segmentation method."),
-    ("DART in-built (STalign + VisuAlign)", "Choose Atlas", "folder", "Must select an atlas."),
-    ("DART in-built (STalign + VisuAlign)", "TestAtlas", "", "Must select an folder containing sample images."),
+@pytest.mark.parametrize(("atlas_selection", "slides_selection", "err"), [
+    ("Choose Atlas", "DUMMY_SELECTION", "Must select an atlas."),
+    ("DUMMY_Atlas", "", "Must select an folder containing sample images.")
 ])
-def test_done_missing_fields(master, project, seg_method, atlas, slides, err):
-    starter = Starter(master, project)
-    starter.create_widgets()
-    starter.segmentation_method.set(seg_method)
-    starter.atlas_name.set(atlas)
-    starter.slides_folder_name.set(slides)
+def test_done_missing_fields(activated_starter, atlas_selection, 
+                             slides_selection, err):
+    starter = activated_starter
+    starter.atlas_name.set(atlas_selection)
+    starter.slides_folder_name.set(slides_selection)
     with pytest.raises(Exception) as excinfo:
         starter.done()
     assert err in str(excinfo.value)
 
-def test_load_atlas_info(monkeypatch, master, project, atlas_dir):
-    starter = Starter(master, project)
-    starter.atlas_dir = str(atlas_dir)
-    starter.atlases = {k: DummyAtlas() for k in ["FSR", "FSL", "DSR", "DSL"]}
+def test_done_inappropriate_slides(activated_starter, monkeypatch):
+    starter = activated_starter
+    starter.atlas_name.set("PLACEHOLDER")
+    starter.slides_folder_name.set("PLACEHOLDER")
+
+    err = "Could not find slides folder at the specified path: PLACEHOLDER"
+    monkeypatch.setattr(starter, "load_atlas_info", lambda _: "/")
+    with pytest.raises(Exception) as excinfo:
+        starter.done()
+    assert err in str(excinfo.value)
+
+
+def test_load_atlas_info(activated_starter, monkeypatch):
+    starter = activated_starter
     monkeypatch.setattr(pd, "read_csv", lambda *a, **kw: pd.DataFrame({"id": [0]}, index=["empty"]))
     starter.load_atlas_info("TestAtlas")
     assert "names" in starter.atlases
-
+'''
 def test_load_slides(master, project, slides_dir, monkeypatch):
     class DummySlide:
         def __init__(self, path): self.path = path
