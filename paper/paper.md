@@ -26,7 +26,7 @@ affiliations:
   - index: 3
     name: Kavli Neuroscience Discovery Institute, Johns Hopkins University, Baltimore, MD 21205, USA
   - index: 4
-    name: Center for Computational Biology, Johns Hopkins University, Baltimore, MD
+    name: Center for Computational Biology, Johns Hopkins University, Baltimore, MD 21205, USA
   - index: 5
     name: Center for Functional Anatomy and Evolution, Johns Hopkins University, Baltimore, MD 21205, USA
 date: 25 August 2025
