@@ -42,7 +42,7 @@ The precise dissection of anatomically defined brain regions is the basis of man
 There is a growing demand for precise, automated methods to identify and dissect regions of interest (ROIs) in histological brain sections. The brain is a highly heterogeneous organ with distinct molecular and connectomic profiles across constituent regions, making accurate region dissection critical for meaningful biological interpretation. For example, proteomic analysis of brain regions and bulk RNA sequencing approaches rely on the dissection of histologically defined brain regions[@Webb2015; @Goto-Silva2021]​. Similarly, MAPseq and other barcoded connectomics techniques depend on the precise dissection of dozens to hundreds of brain regions to analyze how individual neurons project to these regions[@Huang2020; @Kim2025; @Kebschull2016; @Chen2019]​. Laser microdissection (LMD) enables such precise dissection by cutting cell-stained tissue with an ultraviolet laser that can be controlled with high accuracy. However, current approaches using LMD generally rely on manual delineation of brain regions. This manual selection is error-prone and time consuming, especially when many samples need to be dissected. Moreover, the lack of a standardized region selection makes it difficult to ensure consistent, reproducible sampling across experiments and laboratories. There are many existing open-source tools such as STalign [@Clifton2023], QuickNII [@Puchades2019], and VisuAlign [@Puchades2019] that can align an image of a histological brain section to a reference brain atlas in order to identify and segment the brain regions​. However, no tools exist that integrate atlas alignment of brain section images and brain region selection with Leica LMD software to enable the seamless and precise dissection of those regions. 
 
 Our open-source DART pipeline addresses this gap by providing: 
-1. Automated or semi-automated alignment of 2D brain sections to a 3D reference brain atlas (e.g., the Allen Brain Atlas CCFv3 2017 [@​Wang2020]​) and atlas-based segmentation. 
+1. Automated or semi-automated alignment of 2D brain sections to a 3D reference brain atlas (e.g., the Allen Brain Atlas CCFv3 2017 [@Wang2020]​) and atlas-based segmentation. 
 2. Seamless integration with Leica LMD software for laser dissection.
 3. Clear documentation and an accessible, modular codebase, facilitating further development and customization by the community. 
 
@@ -73,13 +73,13 @@ Additionally, DART facilitates high-throughput processing of brain sections by m
 
 1. **Programming Languages and Dependencies**
     - The core modules are implemented in Python, leveraging libraries such as Tkinter, NumPy, Matplotlib, STalign, Shapely, NiBabel, and Pynrrd. 
-2. **Overall Workflow** (\autoref{fig1}): 
-    1. **Input:** The user provides high-resolution cell stained (e.g. DAPI or Nissl stained) images of the slide containing the brain section(s) (commonly in TIFF or PNG) and selects the corresponding section level in the 3D atlas. 
+2. **Overall Workflow** (\autoref{fig1}):
+    1. **Input:** The user provides high-resolution cell stained (e.g. DAPI or Nissl stained) images of the slide containing the brain section(s) (commonly in TIFF or PNG) and selects the corresponding section level in the 3D atlas.
     2. **Section Definition:** In the case that multiple sections are contained in a single image, the user delineates the bounding boxes for each section.
-    3. **Run STalign:** A semi-automatic alignment between the atlas and the section(s) is performed using STalign.  
-    4. **VisuAlign Adjustment:** The user can visualize the atlas defined region boundaries on the cytoarchitecture to confirm alignment accuracy and, if necessary, manually adjust the alignment using VisuAlign. 
-    5. **ROI Selection:** The user selects ROIs (e.g., hippocampal subregions, cortical layers) to be exported. DART currently exploits the hierarchical region organization of the Allen Mouse Brain Reference Atlas to enable ROI definition of both coarse regions (e.g. primary motor area) and finer regions (e.g. layer 1 of primary motor cortex). 
-    6. **ROI Export:** These ROIs are then saved in an XML format that Leica LMD software can import, allowing precise laser dissections. 
+    3. **Run STalign:** A semi-automatic alignment between the atlas and the section(s) is performed using STalign.
+    4. **VisuAlign Adjustment:** The user can visualize the atlas defined region boundaries on the cytoarchitecture to confirm alignment accuracy and, if necessary, manually adjust the alignment using VisuAlign.
+    5. **ROI Selection:** The user selects ROIs (e.g., hippocampal subregions, cortical layers) to be exported. DART currently exploits the hierarchical region organization of the Allen Mouse Brain Reference Atlas to enable ROI definition of both coarse regions (e.g. primary motor area) and finer regions (e.g. layer 1 of primary motor cortex).
+    6. **ROI Export:** These ROIs are then saved in an XML format that Leica LMD software can import, allowing precise laser dissections.
 
 ![**The DART workflow.** The 3D renderings of the Allen atlas were produced using brainrender [@Wang2020; @Claudi2021]​.\label{fig1}](workflow.png)
 
@@ -96,7 +96,8 @@ To demonstrate its utility, we applied DART to dissect the primary and secondary
 
 # Discussion and Limitations 
 
-Our open-source workflow greatly simplifies consistent region identification and dissection across multiple brain sections. However, certain limitations remain: 
+Our open-source workflow greatly simplifies consistent region identification and dissection across multiple brain sections. However, certain limitations remain:
+
 - **Staining Variability:** Significant differences in staining intensity or section thickness can reduce alignment accuracy. 
 - **Atlas Mismatch:** Anatomical variability between individual subjects and the reference atlas may necessitate manual adjustment, especially in samples from disease models. 
 - **Tissue Damage:** Significant deformation to sections from holes or tears in the tissue can reduce alignment accuracy.  
