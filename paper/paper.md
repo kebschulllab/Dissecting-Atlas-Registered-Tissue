@@ -114,7 +114,7 @@ DART is hosted on Github: https://github.com/rk324/Dissecting-Atlas-Registered-T
 
 ## Installation: 
 
-DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/drive/folders/1OZ8UNjqNX_7eInwqjmnIVMsgPvRFYCfx?usp=drive_link), then run the `main.exe` file inside—no installation or separate Python environment is required. See the [tutorial](https://github.com/rk324/Dissecting-Atlas-Registered-Tissue/tree/main/tutorials) for instructions on usage. 
+DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/file/d/1L1MkYKXpCuYQAGlgl97pc70kUGD5u9hA/view?usp=sharing), then run the `main.exe` file inside—no installation or separate Python environment is required. See the [tutorial](https://github.com/rk324/Dissecting-Atlas-Registered-Tissue/tree/main/tutorials) for instructions on usage. 
 
 ## Data Collection 
 
