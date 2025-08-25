@@ -1,9 +1,11 @@
 import json
+import numpy.testing as npt
 import pandas as pd
 import pytest
 import shutil
 import tkinter as tk
 
+from ..images import Slide
 from ..pages import Starter
 from ..constants import FSR, FSL, DSR, DSL
 from .load import load_starter
@@ -133,8 +135,7 @@ def test_done_inappropriate_slides(activated_starter, monkeypatch):
         starter.done()
     assert err in str(excinfo.value)
 
-def test_load_atlas_info(activated_starter, atlas_name):
-    starter = activated_starter
+def test_load_atlas_info(starter, atlas_name):
     starter.load_atlas_info(atlas_name)
 
     fsr = starter.atlases[FSR]
@@ -149,16 +150,32 @@ def test_load_atlas_info(activated_starter, atlas_name):
     assert all(dsl.pix_dim >= 50)
     assert names.loc['empty','id'] == 0
     
-'''
-def test_load_slides(master, project, slides_dir, monkeypatch):
-    class DummySlide:
-        def __init__(self, path): self.path = path
-    monkeypatch.setattr("pages.starter.Slide", DummySlide)
-    starter = Starter(master, project)
-    starter.slides = []
-    starter.load_slides(str(slides_dir))
-    assert len(starter.slides) == 2
 
+def test_load_slides(starter, slides_dir, monkeypatch):
+    expected_slide = Slide(os.path.join(
+        slides_dir,
+        'demo.png'
+    ))
+
+    test_filenames = [
+        'random_folder',
+        'not_an_image.docx',
+        'non_existent_image.tiff',
+        'demo.png'
+    ]
+    monkeypatch.setattr(os, "listdir", lambda x: test_filenames)
+    starter.load_slides(slides_dir)
+    assert len(starter.slides) == 1
+
+    result_slide = starter.slides[0]
+    assert expected_slide.shape == result_slide.shape
+    assert expected_slide.filename == result_slide.filename
+    npt.assert_equal(expected_slide.img, result_slide.img)
+    assert result_slide.numTargets == 0
+    assert len(result_slide.targets) == 0
+    assert result_slide.numCalibrationPoints == 0
+    assert len(result_slide.calibration_points) == 0
+'''
 def test_cancel(master, project):
     starter = Starter(master, project)
     # Should call super().cancel() without error
