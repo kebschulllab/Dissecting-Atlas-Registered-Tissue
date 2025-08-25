@@ -1,12 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-import sys
-import os
-import pickle
+import shutil
 
-from app import Project
-from pages import *
-from test.load import *
+from .app import Project
+from .pages import *
+from .test.load import *
 
 class Demo(tk.Tk):
     """
@@ -32,6 +30,8 @@ class Demo(tk.Tk):
             command=lambda: self.run(self.page_dict[self.page_name.get()])
         )
         self.start_btn.pack()
+
+        # TODO: add Done and Cancel buttons
 
     def create_page_selector(self):
         """
@@ -82,6 +82,18 @@ class Demo(tk.Tk):
 
         self.demo_frame.pack(expand=True, fill=tk.BOTH)
         self.demo_widget.activate()
+    
+    def destroy(self):
+        """
+        Clean up the demo by deleting any folders created during the demo.
+        """
+        project_folder = self.demo_widget.project.folder
+        if project_folder is not None:
+            try:
+                shutil.rmtree(project_folder)
+            except OSError as e:
+                print(f"Error removing folder {project_folder}: {e}")
+        super().destroy()
 
 if __name__ == "__main__":
     demo = Demo()
