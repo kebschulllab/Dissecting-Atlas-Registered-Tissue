@@ -2,7 +2,7 @@ import numpy as np
 import os
 import pickle
 import skimage as ski
-import STalign
+from .. import STalign
 import tkinter as tk
 from tkinter import ttk
 import torch

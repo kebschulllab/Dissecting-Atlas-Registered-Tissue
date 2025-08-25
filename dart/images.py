@@ -3,7 +3,7 @@ import nrrd
 import numpy as np
 import skimage as ski
 import shapely
-import STalign
+from . import STalign
 import math
 
 from .constants import DEFAULT_STALIGN_PARAMS, BACKGROUND_PERCENTILE

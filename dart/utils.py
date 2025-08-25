@@ -1,5 +1,5 @@
 import torch
-import STalign
+from . import STalign
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure

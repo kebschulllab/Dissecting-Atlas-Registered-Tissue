@@ -1,4 +1,4 @@
-from app import Project
+from ..app import Project
 
 def load_project(page_name):
     """
