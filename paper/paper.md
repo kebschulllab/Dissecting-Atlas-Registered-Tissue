@@ -81,18 +81,18 @@ Additionally, DART facilitates high-throughput processing of brain sections by m
     5. **ROI Selection:** The user selects ROIs (e.g., hippocampal subregions, cortical layers) to be exported. DART currently exploits the hierarchical region organization of the Allen Mouse Brain Reference Atlas to enable ROI definition of both coarse regions (e.g. primary motor area) and finer regions (e.g. layer 1 of primary motor cortex). 
     6. **ROI Export:** These ROIs are then saved in an XML format that Leica LMD software can import, allowing precise laser dissections. 
 
-![The DART workflow. The 3D renderings of the Allen atlas were produced using brainrender [@Wang2020; @Claudi2021]​.\label{fig1}](workflow.png)
+![**The DART workflow.** The 3D renderings of the Allen atlas were produced using brainrender [@Wang2020; @Claudi2021]​.\label{fig1}](workflow.png)
 
 3. **Software Architecture**
     - DART follows an object-oriented framework (\autoref{fig2})
 
-![Class diagram of the object-oriented layout of DART\label{fig2}](class_diagram.png)
+![**Class diagram of the object-oriented layout of DART.**\label{fig2}](class_diagram.png)
 
 # Application 
 
 To demonstrate its utility, we applied DART to dissect the primary and secondary somatomotor areas and the anterior commissure from a coronal section of an adult mouse brain (\autoref{fig3}). Starting with a Nissl-stained section, we used DART to align the section to a DAPI-based atlas [@Stger2020]​ and generated outlines for the target regions. Importing these outlines into the Leica LMD system enabled precise laser cutting. 
 
-![A DART use case. A DART application begins with an image of the original section. It then generates a segmentation, selects desired regions, and exports to the LMD for cutting or etching with the laser as desired. Note: Images were restitched using the Stitching plugin in ImageJ [@Preibisch2009]​.\label{fig3}](dissection_results.png)
+![**A DART use case.** A DART application begins with an image of the original section. It then generates a segmentation, selects desired regions, and exports to the LMD for cutting or etching with the laser as desired. Note: Images were restitched using the Stitching plugin in ImageJ [@Preibisch2009]​.\label{fig3}](dissection_results.png)
 
 # Discussion and Limitations 
 
