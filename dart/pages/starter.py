@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from math import ceil
 import tkinter as tk
 from tkinter import ttk
 import os
@@ -127,9 +128,7 @@ class Starter(BasePage):
         """
         # check that segmentation method picker, atlas picker, 
         # and slides picker are not blank
-        if  self.segmentation_method.get() == 'Choose Segmentation Method':
-            raise Exception('Must select a segmentation method.')
-        elif self.atlas_name.get() == 'Choose Atlas': 
+        if self.atlas_name.get() == 'Choose Atlas': 
             raise Exception('Must select an atlas.')
         elif self.slides_folder_name.get() == '':
             raise Exception('Must select an folder containing sample images.')
@@ -193,7 +192,7 @@ class Starter(BasePage):
         # load images for downscaled version, 
         # which should be at least 50 microns per pixel
         pix_dim_full = self.atlases[FSR].pix_dim
-        downscale_factor = tuple([int(max(1, 50/dim)) for dim in pix_dim_full])
+        downscale_factor = tuple([ceil(max(1, 50/dim)) for dim in pix_dim_full])
         self.atlases[DSR].load_img(
             img=self.atlases[FSR].img, 
             pix_dim=self.atlases[FSR].pix_dim, 
@@ -215,8 +214,6 @@ class Starter(BasePage):
         """
         Load slides from the specified path. This method searches for image files
         in the given directory and initializes Slide objects for each image file.
-        It also creates a new folder for the project based on the current date and
-        time.
         
         Parameters
         ----------
