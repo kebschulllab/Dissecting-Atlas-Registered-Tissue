@@ -6,7 +6,7 @@ DART is distributed as a pre-compiled Windows binary in a standalone folder that
 
 ## Getting Started
 
-Prior to using DART, calibration points must be added to the slide. Although natural landmarks on the sample can be used, we recommend creating artificial calibration points that can be reliably located. To do this, use the laser to mark cross-shaped fiducials in the membrane at the top left, top right, and bottom right corners of the slide (**Figure 1**). Then, take an overview image of the whole slide, including fiducial crosses, to use in DART.
+Prior to using DART, calibration points must be added to the slide. Although natural landmarks on the sample can be used, we recommend creating artificial calibration points that can be reliably located. To do this, use the laser to mark cross-shaped fiducials in the slide membrane at the top left, top right, and bottom right corners of the slide (**Figure 1**). Then, take an overview image of the whole slide, including fiducial crosses, to use in DART.
 
 ![Cross Fiducial Example](assets/calibration_points.png)  
 **Figure 1. Cross Fiducial Example**
