@@ -87,12 +87,15 @@ class Demo(tk.Tk):
         """
         Clean up the demo by deleting any folders created during the demo.
         """
-        project_folder = self.demo_widget.project.folder
-        if project_folder is not None:
-            try:
-                shutil.rmtree(project_folder)
-            except OSError as e:
-                print(f"Error removing folder {project_folder}: {e}")
+        try:
+            project_folder = self.demo_widget.project.folder
+            if project_folder is not None:
+                try:
+                    shutil.rmtree(project_folder)
+                except OSError as e:
+                    print(f"Error removing folder {project_folder}: {e}")
+        except AttributeError:
+            pass
         super().destroy()
 
 if __name__ == "__main__":
