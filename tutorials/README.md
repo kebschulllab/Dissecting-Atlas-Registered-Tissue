@@ -27,7 +27,13 @@ On the slide processing page (**Figure 3**), the "Add Calibration Points" tab is
 
 ## Prepare for STalign
 
-The Section Processor Page (**Figure 4**) serves three functions: estimation of an affine transformation to map the atlas to the target section, annotation of landmark points, and adjustment of STalign parameters. Use the four sliders to adjust the various rotation angles and translation values of this affine transform. Add landmark points by clicking corresponding landmarks on the target section image and the atlas image, then clicking “Add Point” in the top menu. Tune the parameters of STalign either at a high-level through the dropdown menu or in detail through the text entries. 
+The Section Processor Page (**Figure 4**) serves three functions: estimation of an affine transformation to map the atlas to the target section, annotation of landmark points, and adjustment of STalign parameters. Use the bottom slider to approximate the section in your 3D atlas that best matches the section. Use the three sliders on the right to adjust  rotation angles and translation values of the atlas to more closely match the slice. This is your initial "guess" for the alignment, and even if it's not perfect, it will greatly speed up on converging on a proper alignment.
+
+Next, add landmark points by clicking corresponding landmarks on the target section image and the atlas image, then clicking “Add Point” in the top panel. 
+
+Finally, you can tune the parameters of STalign either at a high-level through the dropdown menu or in detail through the text entries. The slower transforms are generally more accurate. You can save these parameters by clicking "Save parameters for slice" in the bottom right. 
+
+If you have multiple slices, you can navigate to the different slices using the "Target" panel on the top right, and initialize an alignment for each one. 
 
 ![Section Processor Page](assets/section_processor.png)  
 **Figure 4. Section Processor Page**
