@@ -27,7 +27,7 @@ DART is distributed as a pre-compiled Windows binary in a standalone folder that
 ## Input Data
 To use this tool, you will need provide the following information:
 
-- 3D Reference Atlas with cell stain and region annotations(included in installation if using Allen Brain Atlas)
+- 3D Reference Atlas with cell stain and region annotations (included in installation if using Allen Brain Atlas)
 - A folder containing cell stained images from LEICA LDM on slides 
 
 ## Usage
