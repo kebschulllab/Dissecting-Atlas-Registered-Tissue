@@ -69,7 +69,7 @@ In the region selection page (**Figure 10**), select the regions of interest (RO
 
 ## Export ROI Boundaries
 
-The export page (**Figure 11**) allows the user to select sections for export. All the sections of a slide can be exported together in one batch file for the slide, or individual sections can be exported. This allows the user to group their LMD cutting jobs as desired.
+The export page (**Figure 11**) allows the user to select sections for export. All the sections of a slide can be exported together in one batch file for the slide, or individual sections can be exported. This allows the user to group their LMD cutting jobs as desired. The xml files necessary for LMD dissection are in the sample input folder, under the sub-folder "output".
 
 ![Export Page](assets/exporter.png)  
 **Figure 11. Export Page**
