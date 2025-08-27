@@ -4,7 +4,8 @@ import os
 
 from ..app import Project
 from ..images import Slide
-from ..pages import *
+from ..pages import Starter
+from .utils import get_calibration_point_data, get_target_data
 
 def load_project(page_name):
     """
@@ -106,8 +107,44 @@ def load_slide_processor():
     return project
 
 def load_target_processor():
+    """
+    Load the project state for the TargetProcessor page. This function builds
+    upon the SlideProcessor page's project state. It loads the targets for the
+    slides and the calibration points.
+    """
     project = load_slide_processor()
-    # TODO: implement
+
+    # load calibration points
+    print("Loading calibration points", end='...')
+    cp_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "data",
+        "calibration_points.txt"
+    )
+    with open(cp_path, 'r') as f:
+        f.readline()
+        for line in f.readlines():
+            sn, x, y = get_calibration_point_data(line)
+            project.slides[sn-1].add_calibration_point([x, y])
+    print("COMPLETE")
+
+    # load targets
+    print("Loading targets", end='...')
+    # load targets
+    target_coords_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "data",
+        "target_coordinates.txt"
+    )
+    with open(target_coords_path, 'r') as f:
+        f.readline()
+        for line in f.readlines():
+            sn, _, x, y, h, w = get_target_data(line)
+            data = project.slides[sn-1].get_img()[y:y+h, x:x+w]
+
+            project.slides[sn-1].add_target(x, y, data)
+    print("COMPLETE")
+    
     return project
 
 def load_stalign_runner():
