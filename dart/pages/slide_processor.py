@@ -457,7 +457,7 @@ class SlideProcessor(BasePage):
             f.write("slide# : X Y\n")
             for si, slide in enumerate(self.slides):
                 for point in slide.calibration_points:
-                    f.write(f"{si} : {point[0]} {point[1]}\n")
+                    f.write(f"{si+1} : {point[0]} {point[1]}\n")
         
         # save target images in the project folder
         for si, slide in enumerate(self.slides):
