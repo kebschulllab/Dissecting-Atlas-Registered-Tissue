@@ -107,7 +107,7 @@ def test_refresh(activated_slide_processor):
     assert sp.currSlide == sp.slides[index]
 	
     numSlides = len(sp.slides)
-    sp.curr_slide_var.set(numSlides)
+    sp.curr_slide_var.set(numSlides+1)
     with pytest.raises(IndexError):
         sp.refresh()
 
