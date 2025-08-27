@@ -168,8 +168,8 @@ def test_get_index(activated_slide_processor):
 	sp.curr_slide_var.set(1)
 	assert sp.get_index() == 0
 
-	sp.curr_slide_var.set(numSlides)
-	assert sp.get_index() == numSlides - 1
+	sp.curr_slide_var.set(numSlides+1)
+	assert sp.get_index() == numSlides
 
 def test_done(completed_slide_processor):
     sp = completed_slide_processor
