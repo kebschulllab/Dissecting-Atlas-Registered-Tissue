@@ -8,7 +8,7 @@ import os
 from ..pages import SlideProcessor
 from .load import load_slide_processor
 from ..utils import get_target_name
-
+from .utils import get_target_data, get_calibration_point_data
 
 @pytest.fixture(scope="module")
 def project():
@@ -30,25 +30,6 @@ def slide_processor(master, project):
 def activated_slide_processor(slide_processor):
 	slide_processor.activate()
 	return slide_processor
-
-def get_target_data(line):
-    target_name, coords = line.strip().split(' : ')
-    img = iio.imread(os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "data",
-        f"{target_name}.png"
-    ))
-
-    sn, tn = [int(s[-1]) for s in target_name.split('_')]
-    x, y = map(int, coords.split())
-    h, w = img.shape[:2]
-    return sn, tn, x, y, h, w
-
-def get_calibration_point_data(line):
-    sn, coords = line.strip().split(' : ')
-    sn = int(sn)
-    x, y = map(int, coords.split())
-    return sn, x, y
 
 @pytest.fixture
 def completed_slide_processor(activated_slide_processor):
