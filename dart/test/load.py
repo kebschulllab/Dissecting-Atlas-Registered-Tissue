@@ -130,7 +130,6 @@ def load_target_processor():
 
     # load targets
     print("Loading targets", end='...')
-    # load targets
     target_coords_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "data",
@@ -144,7 +143,7 @@ def load_target_processor():
 
             project.slides[sn-1].add_target(x, y, data)
     print("COMPLETE")
-    
+
     return project
 
 def load_stalign_runner():
