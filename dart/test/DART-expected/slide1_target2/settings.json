@@ -1,0 +1,1 @@
+{"rotations": [0, 0, 7], "translation": [-1441, 0, 0], "landmarks": {"target": [[616, 575], [286, 571], [505, 679], [509, 479], [203, 670], [200, 470]], "atlas": [[111, 113], [65, 113], [97, 123], [96, 103], [53, 126], [53, 102]]}, "stalign_params": {"timesteps": 12.0, "iterations": 1.0, "sigmaM": 0.5, "sigmaP": 1.0, "sigmaR": 100000000.0, "resolution": 250.0}}

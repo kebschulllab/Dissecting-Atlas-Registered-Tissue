@@ -1,4 +1,0 @@
-slide#_target# : X Y
-slide1_target1 : 204 70
-slide1_target2 : 99 1693
-slide1_target3 : 4 2582
