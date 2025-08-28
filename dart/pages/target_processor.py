@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
@@ -681,28 +682,14 @@ class TargetProcessor(BasePage):
                 self.update_seg_estim(target)
                 target.save_seg(folder, 'estimated')
 
-                with open(os.path.join(folder, 'settings.txt'), 'w') as f:
-                    # write affine parameters
-                    f.write("AFFINE\n")
-                    f.write(f"rotations : {target.thetas[0]} {target.thetas[1]} {target.thetas[2]}\n")
-                    f.write(f"translation : {target.T_estim[0]} {target.T_estim[1]} {target.T_estim[2]}\n")
-                    f.write("\n")
-
-                    # write landmark points
-                    f.write("LANDMARKS\n")
-                    f.write("target point: atlas point\n")
-                    for i in range(target.num_landmarks):
-                        target_pt = target.landmarks['target'][i]
-                        atlas_pt = target.landmarks['atlas'][i]
-                        f.write(f"{target_pt[0]} {target_pt[1]} : {atlas_pt[0]} {atlas_pt[1]}\n")
-                    f.write("\n")
-
-                    # write stalign parameters
-                    f.write("PARAMETERS\n")
-                    f.write("parameter : value\n")
-                    for key, value in target.stalign_params.items():
-                        f.write(f"{key} : {value}\n")
-        
+                with open(os.path.join(folder, 'settings.json'), 'w') as f:
+                    data = {
+                        'rotations': target.thetas.tolist(),
+                        'translation': target.T_estim.tolist(),
+                        'landmarks': target.landmarks,
+                        'stalign_params': target.stalign_params,
+                    }
+                    json.dump(data, f)        
         super().done()
 
     def cancel(self):

@@ -1,3 +1,4 @@
+import json
 import matplotlib as mpl
 import numpy as np
 import os
@@ -446,18 +447,30 @@ class SlideProcessor(BasePage):
                 raise e
 
         # save target coordinates in a text file
-        with open(os.path.join(self.project.folder, 'target_coordinates.txt'), 'w') as f:
-            f.write("slide#_target# : X Y\n")
+        with open(os.path.join(self.project.folder, 'target_coordinates.json'), 'w') as f:
+            to_dump = []
             for si, slide in enumerate(self.slides):
                 for ti, target in enumerate(slide.targets):
-                    f.write(f"{get_target_name(si, ti)} : {target.x_offset} {target.y_offset}\n")
+                    data = {
+                        "slide_index": si,
+                        "target_index": ti,
+                        "x_offset": target.x_offset,
+                        "y_offset": target.y_offset,
+                        "shape": target.img_original.shape
+                    }
+                    to_dump.append(data)
+            json.dump(to_dump, f)
 
         # save calibration points in a text file
-        with open(os.path.join(self.project.folder, 'calibration_points.txt'), 'w') as f:
-            f.write("slide# : X Y\n")
+        with open(os.path.join(self.project.folder, 'calibration_points.json'), 'w') as f:
+            to_dump = []
             for si, slide in enumerate(self.slides):
-                for point in slide.calibration_points:
-                    f.write(f"{si+1} : {point[0]} {point[1]}\n")
+                data = {
+                    "slide_index": si,
+                    "points": slide.calibration_points
+                }
+                to_dump.append(data)
+            json.dump(to_dump, f)
         
         # save target images in the project folder
         for si, slide in enumerate(self.slides):
