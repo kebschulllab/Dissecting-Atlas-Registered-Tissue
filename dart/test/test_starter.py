@@ -17,12 +17,6 @@ def project():
     return load_starter()
 
 @pytest.fixture
-def master():
-    root = tk.Tk()
-    yield root
-    root.destroy()
-
-@pytest.fixture
 def starter(master, project):
     return Starter(master, project)
 
