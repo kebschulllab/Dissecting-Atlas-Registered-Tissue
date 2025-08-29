@@ -9,7 +9,7 @@ import os
 from ..pages import SlideProcessor
 from .load import load_slide_processor
 from ..utils import get_target_name
-from .utils import EXAMPLE_FOLDER
+from .utils import EXAMPLE_FOLDER, DummyEvent
 
 @pytest.fixture(scope="module")
 def project():
@@ -51,13 +51,6 @@ def completed_slide_processor(activated_slide_processor):
         load_targets(sp, data)
 
     return sp
-
-class DummyEvent:
-    def __init__(self, xdata, ydata, inaxes=False, button=None):
-        self.xdata = xdata
-        self.ydata = ydata
-        self.inaxes = True if inaxes else None
-        self.button = button
 
 def load_targets(sp, data):
     """

@@ -8,6 +8,14 @@ from ..app import Project
 
 EXAMPLE_FOLDER = "DART-expected"
 
+
+class DummyEvent:
+    def __init__(self, xdata, ydata, inaxes=False, button=None):
+        self.xdata = xdata
+        self.ydata = ydata
+        self.inaxes = True if inaxes else None
+        self.button = button
+
 def load_targets(project, data):
     """
     Load targets into the given project from the provided data.
