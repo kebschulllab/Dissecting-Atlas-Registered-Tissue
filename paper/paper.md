@@ -59,7 +59,7 @@ Additionally, DART facilitates high-throughput processing of brain sections by m
     - Generation of affine and non-linear transformations to map 2D section coordinates onto known brain regions. 
 3. **ROI Definition and Export**
     - User-guided selection of atlas-defined regions in the aligned sections. 
-    - Conversion of these regions into outlines, polygons, or shape files suitable for use by a Leica LMD (xml files). 
+    - Conversion of these regions into outlines stored in `.xml` shape files suitable for use by a Leica LMD. 
     - Ability to store metadata (e.g., atlas region names) along with the exported ROI shapes.
 4. **GUI Control**
     - A GUI for real-time quality control and manual correction of section alignment. 
@@ -68,6 +68,9 @@ Additionally, DART facilitates high-throughput processing of brain sections by m
     - Open-source architecture allowing advanced users to plug in new registration algorithms, customize region-detection heuristics, or adapt to different species and atlases. 
 6. **High-throughput Multi-Sample Processing**
     - Slide segmentation tools allow users to upload images of whole slides with multiple sections and export the ROI outlines.
+7. **Integration with LMD**
+    - Simple shape import process using Leica's `.xml` template.
+    - Flexibility in selecting the magnification at which laser dissection of ROIs is performed, with the ability to switch between magnifications as needed without requiring redrawing of shapes 
 
 ## Implementation and Architecture 
 
