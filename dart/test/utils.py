@@ -49,7 +49,7 @@ def load_calibration_points(project, data):
 
 def load_settings(target, data):
     """
-    Load settings into the given project from the provided data.
+    Load settings into the given target from the provided data.
     
     Parameters
     ----------
