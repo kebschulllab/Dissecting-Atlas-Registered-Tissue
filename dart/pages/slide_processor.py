@@ -321,6 +321,7 @@ class SlideProcessor(BasePage):
         adding calibration points, disconnects the rectangle selector, and updates the
         buttons.
         """
+        self.annotation_mode.set('point')
         self.clear()
         self.slice_selector.set_active(False)
         self.click_event = self.slide_viewer.canvas.mpl_connect('button_press_event', self.on_click)
@@ -333,6 +334,7 @@ class SlideProcessor(BasePage):
         selector for selecting slices, disconnects the click event, and updates
         the buttons.
         """
+        self.annotation_mode.set('rect')
         self.clear()
         self.slice_selector.set_active(True)
         self.slide_viewer.canvas.mpl_disconnect(self.click_event)

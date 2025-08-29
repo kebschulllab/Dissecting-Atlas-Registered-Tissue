@@ -1,21 +1,48 @@
 import imageio as iio
+import pytest
 import os
+import tkinter as tk
 
-def get_target_data(line):
-    target_name, coords = line.strip().split(' : ')
-    img = iio.imread(os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "data",
-        f"{target_name}.png"
-    ))
+from ..app import Project
 
-    sn, tn = [int(s[-1]) for s in target_name.split('_')]
-    x, y = map(int, coords.split())
-    h, w = img.shape[:2]
-    return sn, tn, x, y, h, w
+EXAMPLE_FOLDER = "DART-expected"
 
-def get_calibration_point_data(line):
-    sn, coords = line.strip().split(' : ')
-    sn = int(sn)
-    x, y = map(int, coords.split())
-    return sn, x, y
+def load_targets(project, data):
+    """
+    Load targets into the given project from the provided data.
+    
+    Parameters
+    ----------
+    project : Project
+        The project instance where targets will be added.
+    data : list of dict
+        A list of dictionaries containing slide numbers, target numbers, and
+        their corresponding coordinates and shapes.
+    """
+    for target in data:
+        sn = target['slide_number']
+        x = target['x_offset']
+        y = target['y_offset']
+        t_shape = target['shape'][:2]
+        target_data = project.slides[sn].get_img()[y:y+t_shape[0], x:x+t_shape[1]]
+        project.slides[sn].add_target(x, y, target_data)
+
+def load_calibration_points(project, data):
+    """
+    Load calibration points into the given project from the provided data.
+    
+    Parameters
+    ----------
+    project : Project
+        The project instance where calibration points will be added.
+    data : list of dict
+        A list of dictionaries containing slide numbers and their corresponding
+        calibration points.
+    """
+    for slide in data:
+        sn = slide['slide_number']
+        for point in slide['points']:
+            x = point[0]
+            y = point[1]
+            project.slides[sn].add_calibration_point([x, y])
+
