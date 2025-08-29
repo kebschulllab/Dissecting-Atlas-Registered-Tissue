@@ -10,10 +10,10 @@ EXAMPLE_FOLDER = "DART-expected"
 
 
 class DummyEvent:
-    def __init__(self, xdata, ydata, inaxes=False, button=None):
+    def __init__(self, xdata, ydata, inaxes=None, button=None):
         self.xdata = xdata
         self.ydata = ydata
-        self.inaxes = True if inaxes else None
+        self.inaxes = inaxes
         self.button = button
 
 def load_targets(project, data):

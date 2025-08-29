@@ -108,7 +108,8 @@ def load_calibration_points(sp, data):
         for point in slide['points']:
             x = point[0]
             y = point[1]
-            event = DummyEvent(x, y, inaxes=True, button=1)
+            axes = sp.slide_viewer.axes[0]
+            event = DummyEvent(x, y, inaxes=axes, button=1)
             sp.on_click(event)
             sp.commit()
 
@@ -170,7 +171,8 @@ def test_on_select(activated_slide_processor, equal_click_release):
 def test_on_click(activated_slide_processor, inaxes, button):
     sp = activated_slide_processor
     
-    event = DummyEvent(10, 20, inaxes, button)
+    axes = sp.slide_viewer.axes[0] if inaxes else None
+    event = DummyEvent(10, 20, axes, button)
     sp.on_click(event)
     if inaxes and button == 1:
         assert sp.newPointX == 10
