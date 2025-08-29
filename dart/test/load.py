@@ -4,10 +4,12 @@ import os
 
 from ..app import Project
 from ..images import Slide
-from ..pages import Starter
-from .utils import get_calibration_point_data, get_target_data
+from ..pages import Starter, TargetProcessor
+from ..utils import get_target_name
+from .utils import (EXAMPLE_FOLDER, load_calibration_points, load_targets,
+                    load_settings)
 
-def load_project(page_name):
+def load_project(page_name=None):
     """
     Load a saved project state based on the page name.
 
@@ -33,7 +35,9 @@ def load_project(page_name):
         'Exporter': load_exporter,
     }
 
-    if page_name in load_function_dict:
+    if page_name is None:
+        project = load_exporter()
+    elif page_name in load_function_dict:
         project = load_function_dict[page_name]()
     else:
         raise ValueError(f"Unknown page name: {page_name}")
@@ -71,7 +75,7 @@ def load_slide_processor():
     print("Loading atlas", end='...')
     atlas_json_path = os.path.join(
         os.path.dirname(__file__), 
-        'data',
+        EXAMPLE_FOLDER,
         'atlas.json'
     )
     with open(atlas_json_path, 'r') as f:
@@ -96,7 +100,7 @@ def load_slide_processor():
         project.parent_folder,
         "DART-temp"
     )
-    os.mkdir(project.folder)
+    os.makedirs(project.folder, exist_ok=True)
     print("COMPLETE")
 
     # clean up dummy master (will destroy dummy_starter as well)
@@ -116,39 +120,77 @@ def load_target_processor():
 
     # load calibration points
     print("Loading calibration points", end='...')
-    cp_path = os.path.join(
+    calib_coords_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "data",
-        "calibration_points.txt"
+        EXAMPLE_FOLDER,
+        "calibration_points.json"
     )
-    with open(cp_path, 'r') as f:
-        f.readline()
-        for line in f.readlines():
-            sn, x, y = get_calibration_point_data(line)
-            project.slides[sn-1].add_calibration_point([x, y])
+    with open(calib_coords_path, 'r') as f:
+        data = json.load(f)
+        load_calibration_points(project, data)
     print("COMPLETE")
 
     # load targets
     print("Loading targets", end='...')
     target_coords_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "data",
-        "target_coordinates.txt"
+        EXAMPLE_FOLDER,
+        "target_coordinates.json"
     )
     with open(target_coords_path, 'r') as f:
-        f.readline()
-        for line in f.readlines():
-            sn, _, x, y, h, w = get_target_data(line)
-            data = project.slides[sn-1].get_img()[y:y+h, x:x+w]
-
-            project.slides[sn-1].add_target(x, y, data)
+        data = json.load(f)
+        load_targets(project, data)
     print("COMPLETE")
 
     return project
 
 def load_stalign_runner():
+    """
+    Load the project state for the STalignRunner page. This function builds
+    upon the TargetProcessor page's project state. It loads the estimated
+    affine transformations, landmarks, and STalign parameters for each target.
+    """
+
     project = load_target_processor()
-    # TODO: implement
+    dummy_master = tk.Tk()
+    dummy_stalign_runner = TargetProcessor(dummy_master, project)
+
+    for sn,slide in enumerate(project.slides):
+        for tn,target in enumerate(slide.targets):
+            # make target folder
+            folder = os.path.join(
+                project.folder, 
+                get_target_name(sn, tn)
+            )
+            os.makedirs(folder, exist_ok=True)
+
+            # load settings for each target
+            settings_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+				EXAMPLE_FOLDER,
+				get_target_name(sn, tn),
+				"settings.json"
+            )
+            with open(settings_path, 'r') as f:
+                data = json.load(f)
+                load_settings(target, data)
+
+            # compute img_estim for each target
+            dummy_stalign_runner.update_img_estim(target)
+        
+        # estimate pix_dim for each slide
+        slide.estimate_pix_dim()
+
+    for slide in project.slides:
+        for target in slide.targets:
+            # compute seg_estim for each target
+            dummy_stalign_runner.update_seg_estim(target)
+
+    # clean up dummy master (will destroy dummy_stalign_runner as well)
+    dummy_master.update()
+    dummy_master.update_idletasks()
+    dummy_master.destroy()
+
     return project
 
 def load_segmentation_importer():
@@ -157,16 +199,16 @@ def load_segmentation_importer():
     return project
 
 def load_visualign_runner():
-    project = load_segmentation_importer()
+    project = load_stalign_runner()
     # TODO: implement
     return project
 
 def load_region_picker():
-    project = load_starter()
+    project = load_visualign_runner()
     # TODO: implement
     return project
 
 def load_exporter():
-    project = load_starter()
+    project = load_region_picker()
     # TODO: implement
     return project

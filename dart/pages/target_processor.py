@@ -206,8 +206,6 @@ class TargetProcessor(BasePage):
         for slide in self.slides:
             for target in slide.targets:
                 self.update_img_estim(target)
-                target.img_estim.set_pix_dim(atlas.pix_dim[1:]*ALPHA)
-                target.img_estim.set_pix_loc()
 
         self.translation_scale.config(
             from_=self.atlases[DSR].pix_loc[0][0],
@@ -415,6 +413,8 @@ class TargetProcessor(BasePage):
         mesh_transformed = (L @ mesh[...,None])[...,0] + T
         slice_img = atlas.get_img(mesh_transformed)
         target.img_estim.load_img(slice_img)
+        target.img_estim.set_pix_dim(atlas.pix_dim[1:]*ALPHA)
+        target.img_estim.set_pix_loc()
     
     def update_seg_estim(self, target):
         """

@@ -1,4 +1,5 @@
 import imageio as iio
+import numpy as np
 import pytest
 import os
 import tkinter as tk
@@ -20,7 +21,7 @@ def load_targets(project, data):
         their corresponding coordinates and shapes.
     """
     for target in data:
-        sn = target['slide_number']
+        sn = target['slide_index']
         x = target['x_offset']
         y = target['y_offset']
         t_shape = target['shape'][:2]
@@ -40,9 +41,30 @@ def load_calibration_points(project, data):
         calibration points.
     """
     for slide in data:
-        sn = slide['slide_number']
+        sn = slide['slide_index']
         for point in slide['points']:
             x = point[0]
             y = point[1]
             project.slides[sn].add_calibration_point([x, y])
 
+def load_settings(target, data):
+    """
+    Load settings into the given project from the provided data.
+    
+    Parameters
+    ----------
+    target : Target
+        The target instance where settings will be applied.
+    data : list of dict
+        A list of dictionaries containing slide numbers, target numbers, and
+        their corresponding settings including thetas, translation, and points.
+    """
+    
+    target.thetas = np.array(data['rotations'])
+    target.T_estim = np.array(data['translation'])
+    
+    landmarks = data['landmarks']
+    for tp, ap in zip(landmarks['target'], landmarks['atlas']):
+        target.add_landmarks(tp, ap)
+
+    target.stalign_params = data['stalign_params']
