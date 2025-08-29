@@ -48,6 +48,25 @@ def completed_target_processor(activated_target_processor):
                 
     return tp
 
+def set_target(tp, slide_index, target_index):
+    """
+    Set the current target in the TargetProcessor using slide_index and
+    target_index.
+
+    Parameters
+    ----------
+    tp : TargetProcessor
+        The TargetProcessor instance where the target will be set.
+    slide_index : int
+        The index of the slide containing the target.
+    target_index : int
+        The index of the target within the slide.
+    """
+
+    tp.curr_slide_var.set(slide_index + 1)
+    tp.curr_target_var.set(target_index + 1)
+    tp.update()
+
 def load_rotation(tp, slide_index, target_index, rotations):
     """
     Load rotations using the provided data and the TargetProcessor interface.
@@ -65,7 +84,15 @@ def load_rotation(tp, slide_index, target_index, rotations):
     rotations : list of float
         A list of rotation angles (in degrees) to be applied to the target.
     """
-    return
+
+    # set current target
+    set_target(tp, slide_index, target_index)
+
+    # apply rotations
+    tp.x_rotation_scale.set(rotations[2])
+    tp.y_rotation_scale.set(rotations[1])
+    tp.z_rotation_scale.set(rotations[0])
+    tp.show_atlas()
 
 def load_translation(tp, slide_index, target_index, translations):
     """
@@ -84,7 +111,13 @@ def load_translation(tp, slide_index, target_index, translations):
     translations : list of float
         A list of translation values to be applied to the target.
     """
-    return
+
+    # set current target
+    set_target(tp, slide_index, target_index)
+
+    # apply translation
+    tp.translation_scale.set(translations[0])
+    tp.show_atlas()
 
 def load_points(tp, slide_index, target_index, points):
     """
@@ -104,6 +137,9 @@ def load_points(tp, slide_index, target_index, points):
     points : dict
         A dictionary containing lists of atlas and target points.
     """
+
+    # set current target
+    set_target(tp, slide_index, target_index)
     return
 
 def load_params(tp, slide_index, target_index, params):
@@ -124,4 +160,7 @@ def load_params(tp, slide_index, target_index, params):
     params : dict
         A dictionary containing stalign parameters.
     """
+
+    # set current target
+    set_target(tp, slide_index, target_index)
     return
