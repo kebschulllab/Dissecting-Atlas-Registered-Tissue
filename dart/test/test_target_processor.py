@@ -8,7 +8,7 @@ import tkinter as tk
 from ..pages import TargetProcessor
 from ..utils import get_target_name
 from .load import load_target_processor
-from .utils import EXAMPLE_FOLDER
+from .utils import EXAMPLE_FOLDER, DummyEvent
 
 @pytest.fixture(scope="module")
 def project():
@@ -140,7 +140,20 @@ def load_points(tp, slide_index, target_index, points):
 
     # set current target
     set_target(tp, slide_index, target_index)
-    return
+
+    for ap, tp in zip(points['atlas'], points['target']):
+        # simulate click on atlas point
+        axes = tp.atlas_viewer.axes[1]
+        event = DummyEvent(ap[0], ap[1], inaxes=axes, button=1)
+        tp.on_click(event)
+
+        # simulate click on target point
+        axes = tp.atlas_viewer.axes[0]
+        event = DummyEvent(tp[0], tp[1], inaxes=True, button=1)
+        tp.on_click(event)
+
+        # simulate click on commit button
+        tp.commit()
 
 def load_params(tp, slide_index, target_index, params):
     """
