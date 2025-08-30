@@ -1,4 +1,6 @@
+import imageio as iio
 import json
+import numpy as np
 import numpy.testing as npt
 import os
 import pytest
@@ -42,8 +44,8 @@ def completed_target_processor(activated_target_processor):
                 data = json.load(f)
 
                 load_rotation(tp, sn, tn, data['rotations'])
-                load_translation(tp, sn, tn, data['translations'])
-                load_points(tp, sn, tn, data['points'])
+                load_translation(tp, sn, tn, data['translation'])
+                load_points(tp, sn, tn, data['landmarks'])
                 load_params(tp, sn, tn, data['stalign_params'])
                 
     return tp
@@ -141,15 +143,15 @@ def load_points(tp, slide_index, target_index, points):
     # set current target
     set_target(tp, slide_index, target_index)
 
-    for ap, tp in zip(points['atlas'], points['target']):
+    for atlas_point, target_point in zip(points['atlas'], points['target']):
         # simulate click on atlas point
-        axes = tp.atlas_viewer.axes[1]
-        event = DummyEvent(ap[0], ap[1], inaxes=axes, button=1)
+        axes = tp.slice_viewer.axes[1]
+        event = DummyEvent(atlas_point[1], atlas_point[0], inaxes=axes, button=1)
         tp.on_click(event)
 
         # simulate click on target point
-        axes = tp.atlas_viewer.axes[0]
-        event = DummyEvent(tp[0], tp[1], inaxes=True, button=1)
+        axes = tp.slice_viewer.axes[0]
+        event = DummyEvent(target_point[1], target_point[0], inaxes=axes, button=1)
         tp.on_click(event)
 
         # simulate click on commit button
@@ -176,4 +178,93 @@ def load_params(tp, slide_index, target_index, params):
 
     # set current target
     set_target(tp, slide_index, target_index)
-    return
+    
+    # enter stalign parameters into entries
+    for key, value in params.items():
+        tp.param_vars[key].set(str(value))
+
+    # save parameters
+    tp.save_params()
+
+def test_done(completed_target_processor):
+    tp = completed_target_processor
+    tp.done()
+
+    for si, slide in enumerate(tp.project.slides):
+        for ti, target in enumerate(slide.targets):
+            # check estiamted pix_dim
+            assert all(slide.pix_dim == target.pix_dim)
+
+            # check that img_estim exists
+            assert hasattr(target, 'img_estim')
+
+            # check that seg_estim exists
+            assert 'estimated' in target.seg
+
+            # check that landmarks are consistent with count
+            npt.assert_equal(
+                len(target.landmarks['atlas']),
+                target.num_landmarks
+            )
+            npt.assert_equal(
+                len(target.landmarks['target']),
+                target.num_landmarks
+            )
+    
+            # check that target folders are created
+            folder_name = get_target_name(si, ti)
+            actual_path = os.path.join(
+                tp.project.folder,
+                folder_name
+            )
+            assert os.path.isdir(actual_path)
+
+            expected_path = os.path.join(
+                os.path.dirname(__file__),
+                EXAMPLE_FOLDER,
+                folder_name
+            )
+
+            # check settings json
+            settings_path_act = os.path.join(
+                actual_path,
+                "settings.json"
+            )
+            settings_path_exp = os.path.join(
+                expected_path,
+                "settings.json"
+            )
+            with open(settings_path_act, 'r') as f_act:
+                data_act = json.load(f_act)
+            with open(settings_path_exp, 'r') as f_exp:
+                data_exp = json.load(f_exp)
+                
+            assert data_act == data_exp
+
+            # check estimated segmentation and outlines images
+            assert result_image_equal(
+                actual_path, 
+                expected_path, 
+                "estimated_segmentation.tif"
+            )
+
+            assert result_image_equal(
+                actual_path,
+                expected_path,
+                "estimated_outlines.png"
+            )
+
+            assert result_image_equal(
+                actual_path,
+                expected_path,
+                "estimated_outlines.tif"
+            )
+
+def result_image_equal(path_act, path_exp, filename):
+    path_act = os.path.join(path_act, filename)
+    path_exp = os.path.join(path_exp, filename)
+
+    img_act = iio.imread(path_act)
+    img_exp = iio.imread(path_exp)
+
+    return np.all(img_act==img_exp)
