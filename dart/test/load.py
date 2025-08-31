@@ -69,7 +69,7 @@ def load_slide_processor():
         The project object to be used in the SlideProcessor page.
     """
     project = load_starter()
-    dummy_master = tk.Tk()
+    dummy_master = tk.Toplevel()
     dummy_starter = Starter(dummy_master, project)
 
     # load atlas
@@ -163,7 +163,7 @@ def load_stalign_runner():
     """
 
     project = load_target_processor()
-    dummy_master = tk.Tk()
+    dummy_master = tk.Toplevel()
     dummy_target_processor = TargetProcessor(dummy_master, project)
 
     for sn,slide in enumerate(project.slides):
@@ -286,7 +286,7 @@ def load_exporter():
 
     project = load_region_picker()
     
-    dummy_master = tk.Tk()
+    dummy_master = tk.Toplevel()
     dummy_region_picker = RegionPicker(dummy_master, project)
     dummy_region_picker.activate()
 
