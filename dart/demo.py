@@ -87,6 +87,7 @@ class Demo(tk.Tk):
         """
         Clean up the demo by deleting any folders created during the demo.
         """
+        self.demo_widget.deactivate()
         try:
             project_folder = self.demo_widget.project.folder
             if project_folder is not None:
