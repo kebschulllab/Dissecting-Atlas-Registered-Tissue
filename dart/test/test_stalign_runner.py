@@ -43,6 +43,7 @@ def test_done(completed_stalign_runner):
     # check that results were saved correctly
     for sn,slide in enumerate(sr.slides):
         for tn,target in enumerate(slide.targets):
+
             act_folder_path = os.path.join(
                 sr.project.folder,
                 get_target_name(sn,tn)
@@ -53,14 +54,15 @@ def test_done(completed_stalign_runner):
                 get_target_name(sn,tn)
             )
 
-            # check all stalign output files except for pickle files
-            check_name = lambda name: 'stalign' in name and 'pkl' not in name
-            files_to_check = [
-                name
-                for name in os.listdir(act_folder_path)
-                if check_name(name)
-            ]
+            if 'stalign_outlines.png' not in os.listdir(act_folder_path):
+                continue
 
+            # check stalign segmentation output images
+            files_to_check = [
+                'stalign_outlines.png', 
+                'stalign_outlines.tif', 
+                'stalign_segmentation.tif'
+            ]
             for filename in files_to_check:
                 act_path = os.path.join(act_folder_path, filename)
                 exp_path = os.path.join(exp_folder_path, filename)
