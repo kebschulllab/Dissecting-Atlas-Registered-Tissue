@@ -109,7 +109,11 @@ class VisuAlignRunner(BasePage):
                  "2. Click File > Open > \"CLICK_ME.json\"\n" \
                  "3. Adjust alignment with VisuAlign until satisfied\n" \
                  "4. Click File > Export > \"EXPORT_VISUALIGN_HERE\"\n" \
-                 "5. Close VisuAlign after notification of successful saving of segmentation"
+                 "5. Close VisuAlign after notification of successful saving " \
+                 "of segmentation.\n"
+                 "Note: The \"CLICK_ME.json\" file and the " \
+                 "\"EXPORT_VISUALIGN_HERE\" folder are both located within " \
+                 "the current project folder.\n" \
         )
 
     def show_widgets(self):
