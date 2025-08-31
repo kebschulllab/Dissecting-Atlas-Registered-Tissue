@@ -74,7 +74,6 @@ class SegmentationImporter(BasePage):
         corresponding folder, it hides the load button and calls
         `show_results` to display the uploaded segmentations.
         """
-        # TODO: implement me
 
         for si, slide in enumerate(self.slides):
             for ti, target in enumerate(slide.targets):
@@ -119,7 +118,7 @@ class SegmentationImporter(BasePage):
         with the boundaries from the segmentation overlaid.
         """
         
-        # for showing results after running stalign
+        # for showing results after importing segmentations
         self.menu_frame = tk.Frame(self.results_viewer)
         self.slice_frame = tk.Frame(self.results_viewer)
 
@@ -191,13 +190,8 @@ class SegmentationImporter(BasePage):
         for the current target.
         """
         
-        self.slice_viewer.axes[0].cla()
-
-        if 'stalign' in self.currTarget.seg:
-            seg_img = self.currTarget.get_img(seg='stalign')
-        else:            
-            seg_img = self.currTarget.get_img()
-        
+        self.slice_viewer.axes[0].cla()          
+        seg_img = self.currTarget.get_img()
         self.slice_viewer.axes[0].imshow(seg_img)
         self.slice_viewer.update()
 
