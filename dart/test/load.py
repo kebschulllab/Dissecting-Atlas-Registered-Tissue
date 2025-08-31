@@ -288,6 +288,7 @@ def load_exporter():
     
     dummy_master = tk.Tk()
     dummy_region_picker = RegionPicker(dummy_master, project)
+    dummy_region_picker.activate()
 
     # load rois
     path = os.path.join(
@@ -298,7 +299,6 @@ def load_exporter():
     with open(path, 'r') as f:
         data = json.load(f)
     dummy_region_picker.rois = data
-    dummy_region_picker.activate()
     dummy_region_picker.done() # calculate boundaries and assign wells
 
     # clean up dummy master (will destroy dummy_region_picker as well)
