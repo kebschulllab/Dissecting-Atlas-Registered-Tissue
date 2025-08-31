@@ -4,10 +4,10 @@ import pytest
 import shutil
 import os
 
-from ..pages import RegionPicker
-from ..utils import get_target_name
-from .load import load_region_picker
-from .utils import EXAMPLE_FOLDER
+from dart.pages import RegionPicker
+from dart.utils import get_target_name
+from dart.test.load import load_region_picker
+from dart.test.utils import EXAMPLE_FOLDER
 
 @pytest.fixture(scope="module")
 def project():

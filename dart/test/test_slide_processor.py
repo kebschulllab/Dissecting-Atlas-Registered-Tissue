@@ -6,10 +6,10 @@ import shutil
 import tkinter as tk
 import os
 
-from ..pages import SlideProcessor
-from .load import load_slide_processor
-from ..utils import get_target_name
-from .utils import EXAMPLE_FOLDER, DummyEvent
+from dart.pages import SlideProcessor
+from dart.utils import get_target_name
+from dart.test.load import load_slide_processor
+from dart.test.utils import EXAMPLE_FOLDER, DummyEvent
 
 @pytest.fixture(scope="module")
 def project():

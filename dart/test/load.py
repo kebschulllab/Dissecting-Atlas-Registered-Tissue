@@ -3,12 +3,12 @@ import json
 import tkinter as tk
 import os
 
-from ..app import Project
-from ..images import Slide
-from ..pages import Starter, TargetProcessor, RegionPicker
-from ..utils import get_target_name
-from .utils import (EXAMPLE_FOLDER, load_calibration_points, load_targets,
-                    load_settings)
+from dart.app import Project
+from dart.images import Slide
+from dart.pages import Starter, TargetProcessor, RegionPicker
+from dart.utils import get_target_name
+from dart.test.utils import (EXAMPLE_FOLDER, load_calibration_points,
+                             load_targets, load_settings)
 
 def load_project(page_name=None):
     """

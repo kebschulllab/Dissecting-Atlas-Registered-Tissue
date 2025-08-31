@@ -4,11 +4,11 @@ import tkinter as tk
 from tkinter import ttk
 import os
 
-from .base import BasePage
-from ..images import Image
-from ..constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
+from dart.pages.base import BasePage
+from dart.images import Image
+from dart.constants import (DSR, FSL, ALPHA, DEFAULT_STALIGN_PARAMS, NEW_COLOR,
                        COMMITTED_COLOR, REMOVABLE_COLOR)
-from ..utils import get_target_name, TkFigure
+from dart.utils import get_target_name, TkFigure
 
 class TargetProcessor(BasePage):
     """

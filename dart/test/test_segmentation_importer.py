@@ -5,10 +5,10 @@ import pytest
 import shutil
 import os
 
-from ..pages import SegmentationImporter
-from ..utils import get_target_name
-from .load import load_segmentation_importer
-from .utils import EXAMPLE_FOLDER
+from dart.pages import SegmentationImporter
+from dart.utils import get_target_name
+from dart.test.load import load_segmentation_importer
+from dart.test.utils import EXAMPLE_FOLDER
 
 @pytest.fixture(scope="module")
 def project():

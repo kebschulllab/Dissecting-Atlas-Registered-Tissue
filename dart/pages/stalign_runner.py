@@ -7,9 +7,9 @@ import tkinter as tk
 from tkinter import ttk
 import torch
 
-from .base import BasePage
-from ..constants import ALPHA, FSR, DSR, FSL 
-from ..utils import get_target_name, LDDMM_3D_LBFGS, TkFigure
+from dart.pages.base import BasePage
+from dart.constants import ALPHA, FSR, DSR, FSL 
+from dart.utils import get_target_name, LDDMM_3D_LBFGS, TkFigure
 
 
 class STalignRunner(BasePage):

@@ -5,10 +5,10 @@ import pytest
 import shutil
 import os
 
-from ..pages import Exporter
-from ..utils import get_target_name
-from .load import load_exporter
-from .utils import EXAMPLE_FOLDER, DummyEvent
+from dart.pages import Exporter
+from dart.utils import get_target_name
+from dart.test.load import load_exporter
+from dart.test.utils import EXAMPLE_FOLDER, DummyEvent
 
 @pytest.fixture(scope="module")
 def project():

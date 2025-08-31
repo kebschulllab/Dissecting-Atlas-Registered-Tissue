@@ -1,12 +1,12 @@
-from .base import BasePage
-from .starter import Starter
-from .slide_processor import SlideProcessor
-from .target_processor import TargetProcessor
-from .stalign_runner import STalignRunner
-from .visualign_runner import VisuAlignRunner
-from .region_picker import RegionPicker
-from .exporter import Exporter
-from .segmentation_importer import SegmentationImporter
+from dart.pages.base import BasePage
+from dart.pages.starter import Starter
+from dart.pages.slide_processor import SlideProcessor
+from dart.pages.target_processor import TargetProcessor
+from dart.pages.stalign_runner import STalignRunner
+from dart.pages.visualign_runner import VisuAlignRunner
+from dart.pages.region_picker import RegionPicker
+from dart.pages.exporter import Exporter
+from dart.pages.segmentation_importer import SegmentationImporter
 
 __all__ = [
     'BasePage',

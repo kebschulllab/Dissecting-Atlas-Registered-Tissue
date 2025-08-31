@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 import shutil
 
-from .app import Project
-from .pages import *
-from .test.load import *
+from dart.app import Project
+from dart.pages import *
+from dart.test.load import *
 
 class Demo(tk.Tk):
     """

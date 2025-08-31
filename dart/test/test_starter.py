@@ -3,9 +3,9 @@ import pytest
 import shutil
 import os
 
-from ..pages import Starter
-from .load import load_starter
-from .utils import EXAMPLE_FOLDER
+from dart.pages import Starter
+from dart.test.load import load_starter
+from dart.test.utils import EXAMPLE_FOLDER
 
 @pytest.fixture
 def project():

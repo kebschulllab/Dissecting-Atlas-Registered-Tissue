@@ -4,7 +4,7 @@ import pytest
 import os
 import tkinter as tk
 
-from ..app import Project
+from dart.app import Project
 
 EXAMPLE_FOLDER = "DART-expected"
 

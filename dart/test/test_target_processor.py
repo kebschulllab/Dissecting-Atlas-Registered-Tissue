@@ -7,10 +7,10 @@ import pytest
 import shutil
 import tkinter as tk
 
-from ..pages import TargetProcessor
-from ..utils import get_target_name
-from .load import load_target_processor
-from .utils import EXAMPLE_FOLDER, DummyEvent
+from dart.pages import TargetProcessor
+from dart.utils import get_target_name
+from dart.test.load import load_target_processor
+from dart.test.utils import EXAMPLE_FOLDER, DummyEvent
 
 @pytest.fixture(scope="module")
 def project():

@@ -9,8 +9,8 @@ import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
 
-from .base import BasePage
-from ..utils import TkFigure
+from dart.pages.base import BasePage
+from dart.utils import TkFigure
 
 class RegionPicker(BasePage):
     """

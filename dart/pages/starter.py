@@ -6,9 +6,9 @@ from tkinter import ttk
 import os
 import pandas as pd
 
-from .base import BasePage
-from ..images import Slide
-from ..constants import FSR, DSR, FSL, DSL
+from dart.pages.base import BasePage
+from dart.images import Slide
+from dart.constants import FSR, DSR, FSL, DSL
 
 class Starter(BasePage):
     """
