@@ -115,7 +115,8 @@ def load_target_processor():
     """
     Load the project state for the TargetProcessor page. This function builds
     upon the SlideProcessor page's project state. It loads the targets for the
-    slides and the calibration points.
+    slides and the calibration points. It also makes folders for each target, 
+    which is useful for future pages.
     """
     project = load_slide_processor()
 
@@ -143,6 +144,15 @@ def load_target_processor():
         load_targets(project, data)
     print("COMPLETE")
 
+    # make target folders
+    for sn,slide in enumerate(project.slides):
+        for tn,targt in enumerate(slide.targets):
+            folder = os.path.join(
+                project.folder, 
+                get_target_name(sn, tn)
+            )
+            os.makedirs(folder, exist_ok=True)
+
     return project
 
 def load_stalign_runner():
@@ -158,13 +168,6 @@ def load_stalign_runner():
 
     for sn,slide in enumerate(project.slides):
         for tn,target in enumerate(slide.targets):
-            # make target folder
-            folder = os.path.join(
-                project.folder, 
-                get_target_name(sn, tn)
-            )
-            os.makedirs(folder, exist_ok=True)
-
             # load settings for each target
             settings_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
@@ -218,8 +221,32 @@ def load_segmentation_importer():
     return project
 
 def load_visualign_runner():
-    project = load_stalign_runner()
-    # TODO: implement
+    """
+    Load the project state for the VisuAlignRunner page. This function builds
+    upon the SegmentationImporter's project status, which is loaded faster than
+    the STalignRunner's project status (which could also be used for this 
+    page). This function also loads a segmentation for each target under the 
+    key label "custom". The segmentation chosen is either stalign or estimated
+    segmentation with preference to stalign.
+    """
+    project = load_segmentation_importer()
+
+    # load segmentations
+    for si,slide in enumerate(project.slides):
+        for ti,target in enumerate(slide.targets):
+            folder_path = os.path.join(
+                os.path.dirname(__file__),
+                EXAMPLE_FOLDER,
+                get_target_name(si,ti)
+            )
+            
+            path = os.path.join(folder_path, "stalign_segmentation.tif")
+            if not os.path.exists(path):
+                path = os.path.join(folder_path, "estimated_segmentation.tif")
+            
+            seg = iio.imread(path)
+            target.seg['custom'] = seg
+
     return project
 
 def load_region_picker():
