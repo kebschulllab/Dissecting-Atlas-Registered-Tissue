@@ -57,7 +57,8 @@ class VisuAlignRunner(BasePage):
         if not os.path.exists(visualign_export_folder):
             os.mkdir(visualign_export_folder)
 
-        with open(os.path.join(self.project.folder,'CLICK_ME.json'),'w') as f:
+        self.click_me_path = os.path.join(self.project.parent_folder,'CLICK_ME.json')
+        with open(self.click_me_path,'w') as f:
             f.write('{')
             f.write('"name":"", ')
             f.write('"target":"custom_atlas.cutlas", ')
@@ -67,10 +68,11 @@ class VisuAlignRunner(BasePage):
             for sn,slide in enumerate(self.slides):
                 for ti,t in enumerate(slide.targets):
                     filename = get_target_name(sn, ti)+'.png'
+                    path = os.path.join(self.project.folder, filename).replace("\\","/")
                     f.write('{')
                     h = raw_stack[i].shape[0]
                     w = raw_stack[i].shape[1]
-                    f.write(f'"filename": "{filename}", ')
+                    f.write(f'"filename": "{path}", ')
                     f.write(f'"anchoring": [0, {len(raw_stack)-i-1}, {h}, {w}, 0, 0, 0, 0, -{h}], ')
                     f.write(f'"height": {h}, "width": {w}, ')
                     f.write('"nr": 1, "markers": []}')
@@ -86,7 +88,7 @@ class VisuAlignRunner(BasePage):
         deletes the JSON file for interfacing with VisuAlign
         along with the segmentation stack. 
         """
-        os.remove(os.path.join(self.project.folder,'CLICK_ME.json'))
+        os.remove(self.click_me_path)
         os.remove(self.custom_atlas_path)
         super().deactivate()
 
@@ -104,12 +106,15 @@ class VisuAlignRunner(BasePage):
 
         self.instructions_label = ttk.Label(
             master=self,
-            text="Instructions:\n" \
-                 "1. Click \"Open VisuAlign\" button\n" \
-                 "2. Click File > Open > \"CLICK_ME.json\"\n" \
-                 "3. Adjust alignment with VisuAlign until satisfied\n" \
-                 "4. Click File > Export > \"EXPORT_VISUALIGN_HERE\"\n" \
-                 "5. Close VisuAlign after notification of successful saving of segmentation"
+            text="Instructions:\n"
+                 "1. Click \"Open VisuAlign\" button\n"
+                 "2. Click File > Open > \"CLICK_ME.json\"\n"
+                 "3. Adjust alignment with VisuAlign until satisfied\n"
+                 "4. Click File > Export > \"EXPORT_VISUALIGN_HERE\"\n"
+                 "5. Close VisuAlign after notification of successful"
+                 " saving of segmentation.\n"
+                 "Note: The \"CLICK_ME.json\" file can be found in the folder"
+                 " containing the slide images.\n"
         )
 
     def show_widgets(self):
