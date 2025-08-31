@@ -5,7 +5,7 @@ import os
 
 from ..app import Project
 from ..images import Slide
-from ..pages import Starter, TargetProcessor
+from ..pages import Starter, TargetProcessor, RegionPicker
 from ..utils import get_target_name
 from .utils import (EXAMPLE_FOLDER, load_calibration_points, load_targets,
                     load_settings)
@@ -278,6 +278,32 @@ def load_region_picker():
     return project
 
 def load_exporter():
+    """
+    Load the project state for the Exporter page. This function builds
+    upon the RegionPicker's project status. This function also loads the ROIs,
+    calculates their region boundaries, and assigns wells to each shape.
+    """
+
     project = load_region_picker()
-    # TODO: implement
+    
+    dummy_master = tk.Tk()
+    dummy_region_picker = RegionPicker(dummy_master, project)
+
+    # load rois
+    path = os.path.join(
+        os.path.dirname(__file__),
+        EXAMPLE_FOLDER,
+        "regions.json"
+    )
+    with open(path, 'r') as f:
+        data = json.load(f)
+    dummy_region_picker.rois = data
+    dummy_region_picker.activate()
+    dummy_region_picker.done() # calculate boundaries and assign wells
+
+    # clean up dummy master (will destroy dummy_region_picker as well)
+    dummy_master.update()
+    dummy_master.update_idletasks()
+    dummy_master.destroy()
+
     return project
