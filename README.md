@@ -40,3 +40,6 @@ To use `DART`, please refer to our [tutorial](tutorials/README.md).
 
 ## Contributing
 For support or issues, please open an “Issue” on our GitHub repository. To contribute to the software, please email manjari.anant@gmail.com and rishikoneru2005@gmail.com.
+
+To reproduce our development environment, set up a conda environment using [`environment.yml`](environment.yml). Then, 
+clone this repo. Finally, download and extract the [atlases folder](https://drive.google.com/file/d/1gUxeuiDpKO7n59IhCtaC2jnlXDCoLk9m/view?usp=sharing) and move the result into the repo. The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
