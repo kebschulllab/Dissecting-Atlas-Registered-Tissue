@@ -164,7 +164,7 @@ def load_stalign_runner():
 
     project = load_target_processor()
     dummy_master = tk.Tk()
-    dummy_stalign_runner = TargetProcessor(dummy_master, project)
+    dummy_target_processor = TargetProcessor(dummy_master, project)
 
     for sn,slide in enumerate(project.slides):
         for tn,target in enumerate(slide.targets):
@@ -180,7 +180,7 @@ def load_stalign_runner():
                 load_settings(target, data)
 
             # compute img_estim for each target
-            dummy_stalign_runner.update_img_estim(target)
+            dummy_target_processor.update_img_estim(target)
         
         # estimate pix_dim for each slide
         slide.estimate_pix_dim()
@@ -188,9 +188,9 @@ def load_stalign_runner():
     for slide in project.slides:
         for target in slide.targets:
             # compute seg_estim for each target
-            dummy_stalign_runner.update_seg_estim(target)
+            dummy_target_processor.update_seg_estim(target)
 
-    # clean up dummy master (will destroy dummy_stalign_runner as well)
+    # clean up dummy master (will destroy dummy_target_processor as well)
     dummy_master.update()
     dummy_master.update_idletasks()
     dummy_master.destroy()
