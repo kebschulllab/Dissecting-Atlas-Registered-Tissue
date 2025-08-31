@@ -1,3 +1,4 @@
+import imageio as iio
 import json
 import tkinter as tk
 import os
@@ -194,8 +195,26 @@ def load_stalign_runner():
     return project
 
 def load_segmentation_importer():
-    project = load_slide_processor()
-    # TODO: implement
+    """
+    Load the project state for the SegmentationImporter page. The project
+    state for this page is identical to that of the TargetProcessor state, so 
+    this function simply calls `load_target_processor` and returns the project.
+    In addition, since SegmentationImporter requires users to actually interact
+    with the saved target images, this function saves the target images in the 
+    project folder as DART typically does.
+    """
+
+    project = load_target_processor() # same project state as TargetProcessor
+
+    # save the target images
+    for si,slide in enumerate(project.slides):
+        for ti,target in enumerate(slide.targets):
+            path = os.path.join(
+                project.folder,
+                get_target_name(si, ti) + ".png"
+            )
+            iio.imsave(path, target.img_original)
+    
     return project
 
 def load_visualign_runner():
