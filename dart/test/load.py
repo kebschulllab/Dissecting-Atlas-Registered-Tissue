@@ -250,8 +250,31 @@ def load_visualign_runner():
     return project
 
 def load_region_picker():
+    """
+    Load the project state for the RegionPicker page. This function builds
+    upon the VisuAlignRunner's project status. This function also loads a segmentation 
+    for each target under the key label "visualign". The segmentation chosen is 
+    either visualign, stalign, or estimated, with preference in that order.
+    """
     project = load_visualign_runner()
-    # TODO: implement
+    
+    # load segmentations
+    for si,slide in enumerate(project.slides):
+        for ti,target in enumerate(slide.targets):
+            folder_path = os.path.join(
+                os.path.dirname(__file__),
+                EXAMPLE_FOLDER,
+                get_target_name(si,ti)
+            )
+            
+            seg_options = ['visualign', 'stalign', 'estimated']
+            for option in seg_options:
+                path = os.path.join(folder_path, f"{option}_segmentation.tif")
+                if os.path.exists(path): break
+            
+            seg = iio.imread(path)
+            target.seg['visualign'] = seg
+
     return project
 
 def load_exporter():
