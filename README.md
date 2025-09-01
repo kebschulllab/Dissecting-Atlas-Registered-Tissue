@@ -31,7 +31,7 @@ DART is distributed as a pre-compiled Windows binary in a standalone folder that
 First, clone this repository using `git clone https://github.com/rk324/Dissecting-Atlas-Registered-Tissue.git`
 Next, set up a conda environment by navigating into the repository folder and using `conda env create -f environment.yml`
 
-Finally, download and extract the [atlases folder](https://drive.google.com/file/d/1cY77rU5f-xnoVCkOj0dRJIFgtk94HBsF/view?usp=sharing) and move the result into the repo. 
+Finally, download and extract the [atlases folder](https://drive.google.com/file/d/1zSF-S4CuY199EhDk4VU8NO6_jrEVNuMs/view?usp=sharing) and move the result into the repo. 
 The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
 
 ## Input Data
