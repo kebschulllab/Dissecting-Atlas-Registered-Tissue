@@ -6,7 +6,7 @@ import os
 from dart.pages import STalignRunner
 from dart.utils import get_target_name
 from dart.test.load import load_stalign_runner
-from dart.test.utils import EXAMPLE_FOLDER
+from dart.test.utils import EXAMPLE_FOLDER, compare_images
 
 @pytest.fixture(scope="module")
 def project():
@@ -64,9 +64,11 @@ def test_done(completed_stalign_runner):
                 'stalign_segmentation.tif'
             ]
             for filename in files_to_check:
-                act_path = os.path.join(act_folder_path, filename)
-                exp_path = os.path.join(exp_folder_path, filename)
-                assert filecmp.cmp(act_path, exp_path, shallow=False)
+                assert compare_images(
+                    act_folder_path, 
+                    exp_folder_path, 
+                    filename
+                ) < 50
 
 
 

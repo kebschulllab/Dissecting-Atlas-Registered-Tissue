@@ -10,7 +10,7 @@ import tkinter as tk
 from dart.pages import TargetProcessor
 from dart.utils import get_target_name
 from dart.test.load import load_target_processor
-from dart.test.utils import EXAMPLE_FOLDER, DummyEvent
+from dart.test.utils import EXAMPLE_FOLDER, DummyEvent, compare_images
 
 @pytest.fixture(scope="module")
 def project():
@@ -242,29 +242,21 @@ def test_done(completed_target_processor):
             assert data_act == data_exp
 
             # check estimated segmentation and outlines images
-            assert result_image_equal(
+            assert compare_images(
                 actual_path, 
                 expected_path, 
                 "estimated_segmentation.tif"
-            )
+            ) == 0
 
-            assert result_image_equal(
+            assert compare_images(
                 actual_path,
                 expected_path,
                 "estimated_outlines.png"
-            )
+            ) == 0
 
-            assert result_image_equal(
+            assert compare_images(
                 actual_path,
                 expected_path,
                 "estimated_outlines.tif"
-            )
+            ) == 0
 
-def result_image_equal(path_act, path_exp, filename):
-    path_act = os.path.join(path_act, filename)
-    path_exp = os.path.join(path_exp, filename)
-
-    img_act = iio.imread(path_act)
-    img_exp = iio.imread(path_exp)
-
-    return np.all(img_act==img_exp)

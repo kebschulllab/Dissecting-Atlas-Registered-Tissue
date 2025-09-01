@@ -1,6 +1,6 @@
 import imageio as iio
 import numpy as np
-import pytest
+import numpy.testing as npt
 import os
 import tkinter as tk
 
@@ -76,3 +76,14 @@ def load_settings(target, data):
         target.add_landmarks(tp, ap)
 
     target.stalign_params = data['stalign_params']
+
+def compare_images(folder_act, folder_exp, filename):
+    folder_act = os.path.join(folder_act, filename)
+    folder_exp = os.path.join(folder_exp, filename)
+
+    img_act = iio.imread(folder_act)
+    img_exp = iio.imread(folder_exp)
+
+    diff = np.abs(img_act.astype(np.int16) - img_exp.astype(np.int16))
+    return np.mean(diff)
+
