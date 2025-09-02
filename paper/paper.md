@@ -25,12 +25,16 @@ authors:
 affiliations:
   - index: 1
     name: Department of Biomedical Engineering, Johns Hopkins University, Baltimore, MD 21205, USA
+    
   - index: 2
     name: Department of Neuroscience, Johns Hopkins University, Baltimore, MD 21205, USA
+    
   - index: 3
     name: Kavli Neuroscience Discovery Institute, Johns Hopkins University, Baltimore, MD 21205, USA
+    
   - index: 4
     name: Center for Computational Biology, Johns Hopkins University, Baltimore, MD 21205, USA
+    
   - index: 5
     name: Center for Functional Anatomy and Evolution, Johns Hopkins University, Baltimore, MD 21205, USA
 date: 25 August 2025
