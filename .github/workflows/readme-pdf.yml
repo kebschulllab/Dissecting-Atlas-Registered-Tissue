@@ -4,10 +4,6 @@ on:
     paths:
       - tutorial/README.md
       - .github/workflows/readme-pdf.yml
-  workflow_dispatch:
-
-permissions:
-  contents: write   # needed only if you keep the "commit back" step
 
 jobs:
   # --- Option A: Pandoc + LaTeX (container; no setup needed) ---
@@ -24,8 +20,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: README-pdf-pandoc
-          path: README.pdf
-      - name: Commit README.pdf back to repo
-        
-
- 
+          path: tutorial/README.pdf
+  
