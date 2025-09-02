@@ -26,12 +26,6 @@ jobs:
           name: README-pdf-pandoc
           path: README.pdf
       - name: Commit README.pdf back to repo
-        if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.pdf || true
-          git commit -m "chore: update README.pdf [skip ci]" || exit 0
-          git push
+        
 
  
