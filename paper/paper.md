@@ -120,7 +120,7 @@ Here we present an open-source pipeline that aligns histological brain sections 
 
 ## Code Availability:
 
-DART is hosted on Github: https://github.com/rk324/Dissecting-Atlas-Registered-Tissue
+DART is hosted on Github: [https://github.com/rk324/Dissecting-Atlas-Registered-Tissue](https://github.com/rk324/Dissecting-Atlas-Registered-Tissue)
 
 ## Installation:
 
