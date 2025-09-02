@@ -3,6 +3,6 @@ import tkinter as tk
 
 @pytest.fixture
 def master(scope="session"):
-    root = tk.Tk()
+    root = tk.Toplevel()
     yield root
     root.destroy()
