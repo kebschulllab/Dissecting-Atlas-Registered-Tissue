@@ -2,7 +2,7 @@ name: Build README.pdf
 on:
   push:
     paths:
-      - tutorial/README.md
+      - tutorials/README.md
       - .github/workflows/readme-pdf.yml
 
 jobs:
