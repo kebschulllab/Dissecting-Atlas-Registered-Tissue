@@ -1,0 +1,37 @@
+name: Build README.pdf
+on:
+  push:
+    paths:
+      - tutorial/README.md
+      - .github/workflows/readme-pdf.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed only if you keep the "commit back" step
+
+jobs:
+  # --- Option A: Pandoc + LaTeX (container; no setup needed) ---
+  pandoc_latex:
+    runs-on: ubuntu-latest
+    container: pandoc/latex:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build PDF (Pandoc + XeLaTeX)
+        run: |
+          pandoc README.md -f gfm -o README.pdf \
+            --pdf-engine=xelatex -V geometry:margin=1in \
+            --resource-path=".:docs:images:assets"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: README-pdf-pandoc
+          path: README.pdf
+      - name: Commit README.pdf back to repo
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.pdf || true
+          git commit -m "chore: update README.pdf [skip ci]" || exit 0
+          git push
+
+ 
