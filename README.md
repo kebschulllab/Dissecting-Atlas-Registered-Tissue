@@ -10,7 +10,7 @@ DART enables:
 <figure>
     <img src=DART_alignment_results.png alt="DART Alignment Results">
     <figcaption>
-        <>DART alignment results on various brain sections</>
+        DART alignment results on various brain sections</>
     </figcaption>
 </figure>
 
