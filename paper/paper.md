@@ -11,13 +11,17 @@ authors:
   - name: Manjari Anant
     corresponding: true
     affiliation: '2,3,4'
+    orcid: 0000-0002-6600-3410
   - name: Hyopil Kim
     affiliation: '1'
+    orcid: 0000-0001-9159-8682
   - name: Julian Cheron
     affiliation: '1'
+    orcid: 0000-0001-6369-0019
   - name: Justus M. Kebschull
     corresponding: true
     affiliation: '1,2,3,5'
+    orcid: 0000-0002-4851-0267
 affiliations:
   - index: 1
     name: Department of Biomedical Engineering, Johns Hopkins University, Baltimore, MD 21205, USA
