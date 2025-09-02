@@ -2,23 +2,28 @@ name: Build README.pdf
 on:
   push:
     paths:
-      - tutorials/README.md
+      - tutorials/**
       - .github/workflows/readme-pdf.yml
 
 jobs:
-  # --- Option A: Pandoc + LaTeX (container; no setup needed) ---
   pandoc_latex:
     runs-on: ubuntu-latest
     container: pandoc/latex:latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Build PDF (Pandoc + XeLaTeX)
+        working-directory: tutorials
         run: |
+          ls -la
           pandoc README.md -f gfm -o README.pdf \
             --pdf-engine=xelatex -V geometry:margin=1in \
-            --resource-path=".:docs:images:assets"
+            --resource-path=".:..:docs:images:assets:tutorials"
+
+      - name: Verify file exists
+        run: test -f tutorials/README.pdf && ls -lh tutorials/README.pdf
+
       - uses: actions/upload-artifact@v4
         with:
           name: README-pdf-pandoc
           path: tutorials/README.pdf
-  
