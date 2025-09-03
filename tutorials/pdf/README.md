@@ -31,7 +31,7 @@ If you have multiple slices, you can navigate to the different slices using the 
 
 ## Run STalign and View Results
 
-In the STalign Runner Page ([Figure 5,6,7](#fig-5)), STalign is run on the section images when the “Run” button is clicked. Upon completion of STalign, the results are displayed by overlaying the calculated region boundaries over the section image (**Figure 7**). 
+In the STalign Runner Page ([Figure 5,6,7](#fig-5)), STalign is run on the section images when the “Run” button is clicked. Upon completion of STalign, the results are displayed by overlaying the calculated region boundaries over the section image ([Figure 7](#fig-7)). 
 
 ## Adjust Alignment
 
@@ -55,48 +55,48 @@ Before importing shapes onto the LMD, switch the LMD to the desired objective fo
 
 The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that `DART` automatically assigns wells to each shape, spaced out with one well in between. These well assignments may be adjusted in the Leica LMD software.
 
-#### **Figure 1. Cross Fiducial Example**
 <a id="fig-1"></a>
+#### **Figure 1. Cross Fiducial Example**
 ![Cross Fiducial Example](../assets/calibration_points.png)  
 
-####**Figure 2. Starter Page**
 <a id="fig-2"></a>
+####**Figure 2. Starter Page**
 ![Starter Page](../assets/starter.png)  
 
-####**Figure 3. Slide Processing Page**
 <a id="fig-3"></a>
+####**Figure 3. Slide Processing Page**
 ![Slide Processing Page](../assets/slide_processor.png)  
 
-####**Figure 4. Section Processor Page**
 <a id="fig-4"></a>
+####**Figure 4. Section Processor Page**
 ![Section Processor Page](../assets/section_processor.png)  
 
-####**Figure 5. STalign Runner Page**
 <a id="fig-5"></a>
+####**Figure 5. STalign Runner Page**
 ![STalign Runner Page](../assets/stalign_running.png)  
 
-####**Figure 6. STalign Progress Monitor**
 <a id="fig-6"></a>
+####**Figure 6. STalign Progress Monitor**
 ![STalign Progress Monitor](../assets/stalign_status_graphs.png)  
 
-####**Figure 7. STalign Results Display**
 <a id="fig-7"></a>
+####**Figure 7. STalign Results Display**
 ![STalign Results Display](../assets/stalign_results.png)  
 
-####**Figure 8. VisuAlign Runner Page**
 <a id="fig-8"></a>
+####**Figure 8. VisuAlign Runner Page**
 ![VisuAlign Runner Page](../assets/visualign_runner.png)  
 
-####**Figure 9. VisuAlign**
 <a id="fig-9"></a>
+####**Figure 9. VisuAlign**
 ![VisuAlign](../assets/visualign.png)  
 
-####**Figure 10. Region Selection Page**
 <a id="fig-10"></a>
+####**Figure 10. Region Selection Page**
 ![Region Selection Page](../assets/region_picker.png)  
 
-####**Figure 11. Export Page**
 <a id="fig-11"></a>
+####**Figure 11. Export Page**
 ![Export Page](../assets/exporter.png)  
 
 
