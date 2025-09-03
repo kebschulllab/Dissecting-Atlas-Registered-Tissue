@@ -55,7 +55,7 @@ Before importing shapes onto the LMD, switch the LMD to the desired objective fo
 
 The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that `DART` automatically assigns wells to each shape, spaced out with one well in between. These well assignments may be adjusted in the Leica LMD software.
 
-####**Figure 1. Cross Fiducial Example**
+#### **Figure 1. Cross Fiducial Example**
 <a id="fig-1"></a>
 ![Cross Fiducial Example](../assets/calibration_points.png)  
 
