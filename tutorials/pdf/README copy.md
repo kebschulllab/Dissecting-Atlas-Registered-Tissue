@@ -64,39 +64,39 @@ The shapes list should populate with the imported shapes. Select a shape to view
 **Figure 2. Starter Page**
 
 <a id="fig-3"></a>
-![Slide Processing Page](assets/slide_processor.png)  
+![Slide Processing Page](../assets/slide_processor.png)  
 **Figure 3. Slide Processing Page**
 
 <a id="fig-4"></a>
-![Section Processor Page](assets/section_processor.png)  
+![Section Processor Page](../assets/section_processor.png)  
 **Figure 4. Section Processor Page**
 
 <a id="fig-5"></a>
-![STalign Runner Page](assets/stalign_running.png)  
+![STalign Runner Page](../assets/stalign_running.png)  
 **Figure 5. STalign Runner Page**
 
 <a id="fig-6"></a>
-![STalign Progress Monitor](assets/stalign_status_graphs.png)  
+![STalign Progress Monitor](../assets/stalign_status_graphs.png)  
 **Figure 6. STalign Progress Monitor**
 
 <a id="fig-7"></a>
-![STalign Results Display](assets/stalign_results.png)  
+![STalign Results Display](../assets/stalign_results.png)  
 **Figure 7. STalign Results Display**
 
 <a id="fig-8"></a>
-![VisuAlign Runner Page](assets/visualign_runner.png)  
+![VisuAlign Runner Page](../assets/visualign_runner.png)  
 **Figure 8. VisuAlign Runner Page**
 
 <a id="fig-9"></a>
-![VisuAlign](assets/visualign.png)  
+![VisuAlign](../assets/visualign.png)  
 **Figure 9. VisuAlign**
 
 <a id="fig-10"></a>
-![Region Selection Page](assets/region_picker.png)  
+![Region Selection Page](../assets/region_picker.png)  
 **Figure 10. Region Selection Page**
 
 <a id="fig-11"></a>
-![Export Page](assets/exporter.png)  
+![Export Page](../assets/exporter.png)  
 **Figure 11. Export Page**
 
 
