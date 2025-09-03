@@ -55,48 +55,48 @@ Before importing shapes onto the LMD, switch the LMD to the desired objective fo
 
 The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that `DART` automatically assigns wells to each shape, spaced out with one well in between. These well assignments may be adjusted in the Leica LMD software.
 
+####**Figure 1. Cross Fiducial Example**
 <a id="fig-1"></a>
 ![Cross Fiducial Example](../assets/calibration_points.png)  
-**Figure 1. Cross Fiducial Example**
 
+####**Figure 2. Starter Page**
 <a id="fig-2"></a>
 ![Starter Page](../assets/starter.png)  
-**Figure 2. Starter Page**
 
+####**Figure 3. Slide Processing Page**
 <a id="fig-3"></a>
 ![Slide Processing Page](../assets/slide_processor.png)  
-**Figure 3. Slide Processing Page**
 
+####**Figure 4. Section Processor Page**
 <a id="fig-4"></a>
 ![Section Processor Page](../assets/section_processor.png)  
-**Figure 4. Section Processor Page**
 
+####**Figure 5. STalign Runner Page**
 <a id="fig-5"></a>
 ![STalign Runner Page](../assets/stalign_running.png)  
-**Figure 5. STalign Runner Page**
 
+####**Figure 6. STalign Progress Monitor**
 <a id="fig-6"></a>
 ![STalign Progress Monitor](../assets/stalign_status_graphs.png)  
-**Figure 6. STalign Progress Monitor**
 
+####**Figure 7. STalign Results Display**
 <a id="fig-7"></a>
 ![STalign Results Display](../assets/stalign_results.png)  
-**Figure 7. STalign Results Display**
 
+####**Figure 8. VisuAlign Runner Page**
 <a id="fig-8"></a>
 ![VisuAlign Runner Page](../assets/visualign_runner.png)  
-**Figure 8. VisuAlign Runner Page**
 
+####**Figure 9. VisuAlign**
 <a id="fig-9"></a>
 ![VisuAlign](../assets/visualign.png)  
-**Figure 9. VisuAlign**
 
+####**Figure 10. Region Selection Page**
 <a id="fig-10"></a>
 ![Region Selection Page](../assets/region_picker.png)  
-**Figure 10. Region Selection Page**
 
+####**Figure 11. Export Page**
 <a id="fig-11"></a>
 ![Export Page](../assets/exporter.png)  
-**Figure 11. Export Page**
 
 
