@@ -2,7 +2,7 @@ name: Build README.pdf
 on:
   push:
     paths:
-      - tutorials/**
+      - tutorials/pdf/**
       - .github/workflows/readme-pdf.yml
 
 jobs:
@@ -19,9 +19,9 @@ jobs:
             --resource-path=".:..:docs:images:assets:tutorials"
 
       - name: Verify file exists
-        run: test -f tutorials/README.pdf && ls -lh tutorials/README.pdf
+        run: test -f tutorials/pdf/README.pdf && ls -lh tutorials/pdf/README.pdf
 
       - uses: actions/upload-artifact@v4
         with:
           name: README-pdf-pandoc
-          path: tutorials/README.pdf
+          path: tutorials/pdf/README.pdf
