@@ -16,7 +16,6 @@ jobs:
         run: |
           pandoc README.md -f gfm -o README.pdf \
             --pdf-engine=xelatex -V geometry:margin=1in \
-            --lua-filter=../pagebreaks.lua \
             --resource-path=".:..:docs:images:assets:tutorials"
 
       - name: Verify file exists
