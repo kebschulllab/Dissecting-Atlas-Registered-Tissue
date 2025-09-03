@@ -6,14 +6,11 @@
 
 ## Getting Started
 
-Prior to using `DART`, calibration points must be added to the slide. Although natural landmarks on the sample can be used, we recommend creating artificial calibration points that can be reliably located. To do this, use the laser to mark cross-shaped fiducials in the slide membrane at the top left, top right, and bottom right corners of the slide ([Jump to Figure 1](#fig-1)). Then, take an overview image of the whole slide, including fiducial crosses, to use in `DART`.
+Prior to using `DART`, calibration points must be added to the slide. Although natural landmarks on the sample can be used, we recommend creating artificial calibration points that can be reliably located. To do this, use the laser to mark cross-shaped fiducials in the slide membrane at the top left, top right, and bottom right corners of the slide ([Figure 1](#fig-1)). Then, take an overview image of the whole slide, including fiducial crosses, to use in `DART`.
 
 ## Load the Data
 
-On the `DART` starter page (**Figure 2**), select an atlas from several options with varying resolutions and imaging workups. Atlases comprise three components: a reference atlas that contains the spatial cell density of the organ of interest, a labels atlas that maps each voxel from the reference atlas to an ID corresponding to a specific region in the tissue, and a table containing information about the regions and their hierarchical structure. In addition to selecting an atlas, select the sample images by clicking **Browse** and selecting the folder containing the images. `DART` will load each image in the folder as a separate slide and create a subfolder to store results and intermediate files. The name of the subfolder will follow the format `DART-[datetime]`.
-
-![Starter Page](assets/starter.png)  
-**Figure 2. Starter Page**
+On the `DART` starter page (([Jump to Figure 2](#fig-2))), select an atlas from several options with varying resolutions and imaging workups. Atlases comprise three components: a reference atlas that contains the spatial cell density of the organ of interest, a labels atlas that maps each voxel from the reference atlas to an ID corresponding to a specific region in the tissue, and a table containing information about the regions and their hierarchical structure. In addition to selecting an atlas, select the sample images by clicking **Browse** and selecting the folder containing the images. `DART` will load each image in the folder as a separate slide and create a subfolder to store results and intermediate files. The name of the subfolder will follow the format `DART-[datetime]`.
 
 ## Mark Calibration Points and Select Sections
 
@@ -80,7 +77,11 @@ Before importing shapes onto the LMD, switch the LMD to the desired objective fo
 The shapes list should populate with the imported shapes. Select a shape to view it overlaid on the section, and click “Start cut” to initiate the laser dissection process for this shape. Alternatively, all the shapes may be selected and dissected. Note that `DART` automatically assigns wells to each shape, spaced out with one well in between. These well assignments may be adjusted in the Leica LMD software.
 
 <a id="fig-1"></a>
-### Figure 1 -- training-pipeline
 ![Cross Fiducial Example](../assets/calibration_points.png)  
 **Figure 1. Cross Fiducial Example**
+
+
+<a id="fig-2"></a>
+![Starter Page](assets/starter.png)  
+**Figure 2. Starter Page**
 
