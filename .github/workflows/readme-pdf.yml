@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build PDF (Pandoc + XeLaTeX)
-        working-directory: tutorialspdf/
+        working-directory: tutorials/pdf/
         run: |
           pandoc README.md -f gfm -o README.pdf \
             --pdf-engine=xelatex -V geometry:margin=1in \
