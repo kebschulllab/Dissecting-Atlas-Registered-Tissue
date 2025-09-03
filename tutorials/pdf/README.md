@@ -68,35 +68,35 @@ The shapes list should populate with the imported shapes. Select a shape to view
 ![Slide Processing Page](../assets/slide_processor.png)  
 
 <a id="fig-4"></a>
-#### **Figure 4. Section Processor Page**
+### **Figure 4. Section Processor Page**
 ![Section Processor Page](../assets/section_processor.png)  
 
 <a id="fig-5"></a>
-#### **Figure 5. STalign Runner Page**
+### **Figure 5. STalign Runner Page**
 ![STalign Runner Page](../assets/stalign_running.png)  
 
 <a id="fig-6"></a>
-#### **Figure 6. STalign Progress Monitor**
+### **Figure 6. STalign Progress Monitor**
 ![STalign Progress Monitor](../assets/stalign_status_graphs.png)  
 
 <a id="fig-7"></a>
-#### **Figure 7. STalign Results Display**
+### **Figure 7. STalign Results Display**
 ![STalign Results Display](../assets/stalign_results.png)  
 
 <a id="fig-8"></a>
-#### **Figure 8. VisuAlign Runner Page**
+### **Figure 8. VisuAlign Runner Page**
 ![VisuAlign Runner Page](../assets/visualign_runner.png)  
 
 <a id="fig-9"></a>
-#### **Figure 9. VisuAlign**
+### **Figure 9. VisuAlign**
 ![VisuAlign](../assets/visualign.png)  
 
 <a id="fig-10"></a>
-#### **Figure 10. Region Selection Page**
+### **Figure 10. Region Selection Page**
 ![Region Selection Page](../assets/region_picker.png)  
 
 <a id="fig-11"></a>
-#### **Figure 11. Export Page**
+### **Figure 11. Export Page**
 ![Export Page](../assets/exporter.png)  
 
 
