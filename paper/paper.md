@@ -49,7 +49,7 @@ The precise dissection of anatomically defined brain regions is the basis of man
 
 There is a growing demand for precise, automated methods to identify and dissect regions of interest (ROIs) in histological brain sections. The brain is highly heterogeneous, with distinct molecular and connectomic profiles across regions, making accurate region dissection critical for biological interpretation. For example, proteomic analyses, bulk RNA sequencing, and connectomic techniques like MAPseq often require the precise dissection of dozens to hundreds of brain regions [@Webb2015; @Goto-Silva2021; @Huang2020; @Kim2025; @Kebschull2016; @Chen2019]​. Laser microdissection (LMD) enables highly accurate dissection of biological tissues; however, current approaches using LMD require manual delineation of brain regions, which is error-prone and time consuming. Moreover, the lack of a standardized region selection makes it difficult to ensure consistent, reproducible sampling across experiments and laboratories. Existing open-source tools enable atlas alignment and segmentation of histological brain section images (e.g. STalign, QuickNII, and VisuAlign) [@Clifton2023; @Puchades2019]​. However, no tools currently integrate atlas alignment and region selection with Leica LMD software to enable seamless and precise dissection of those regions.
 
-The Dissecting Atlas Registered Tissue (DART) pipeline (\autoref{fig1}) addresses this gap by providing:
+The Dissecting Atlas-Registered Tissue (DART) pipeline (\autoref{fig1}) addresses this gap by providing:
 
 1. Automated or semi-automated alignment of 2D brain sections to a 3D reference brain atlas and atlas-based segmentation.
 2. Seamless integration with Leica LMD software for laser dissection.
