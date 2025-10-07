@@ -95,7 +95,7 @@ class RegionPicker(BasePage):
 
         # Set the column width; disable stretch so the column can be
         # wider than the available area and let the x-scrollbar work.
-        self.region_tree.column('#0', minwidth=max_width, stretch=False)
+        self.region_tree.column('#0', width=max_width, minwidth=max_width, stretch=False)
 
     def create_widgets(self):
         """
