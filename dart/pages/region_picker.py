@@ -73,6 +73,7 @@ class RegionPicker(BasePage):
                 text=name
             )
         self.region_tree.expand_all()
+        self.configure_tree_width()
 
     def configure_tree_width(self):
         # Dynamically size the tree's primary column (#0) so the horizontal
@@ -106,7 +107,12 @@ class RegionPicker(BasePage):
         - Region Frame: Contains the tree view for selecting regions
         of interest (ROIs).
         """
-        self.pw = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
+        self.pw = ttk.PanedWindow(
+            self, 
+            orient=tk.HORIZONTAL, 
+            width=800, 
+            height=600
+        )
 
         self.main_frame = tk.Frame(self.pw)
         self.region_frame = tk.Frame(self.pw)
@@ -164,16 +170,14 @@ class RegionPicker(BasePage):
         self.update()
         
         self.pw.pack(expand=True, fill=tk.BOTH)
-        self.pw.add(self.main_frame, weight=5)
+        self.pw.add(self.main_frame, weight=1)
         self.pw.add(self.region_frame, weight=1)
 
-        
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_rowconfigure(1, weight=1)
         self.menu_frame.grid(row=0, column=0, sticky='nsew')
         self.slice_frame.grid(row=1, column=0, sticky='nsew')
-        #self.region_frame.grid(row=0, rowspan=2, column=1, sticky='nsew')
-
+        
         self.slide_nav_label.pack(side=tk.LEFT)
         self.slide_nav_combo.pack(side=tk.LEFT)
         
@@ -187,7 +191,6 @@ class RegionPicker(BasePage):
         self.region_tree.grid(row=0, column=0, sticky='nsew')
         self.y_scroll.grid(row=0, column=1, sticky='ns')
         self.x_scroll.grid(row=1, column=0, sticky='ew')
-        self.configure_tree_width()
 
     def switch_slides(self, event=None):
         """
