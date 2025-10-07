@@ -74,6 +74,29 @@ class RegionPicker(BasePage):
             )
         self.region_tree.expand_all()
 
+    def configure_tree_width(self):
+        # Dynamically size the tree's primary column (#0) so the horizontal
+        # scrollbar can represent horizontal overflow. We measure the text
+        # width of each region name using the widget/font metrics and add
+        # padding to account for the checkbox image and indentation.
+        # prefer the tree's configured font if available
+        tree_font = None
+        try:
+            tree_font = tk.font.Font(font=self.region_tree.cget('font'))
+        except Exception:
+            tree_font = tk.font.Font()
+
+        max_width = 0
+        # region names are stored in the DataFrame index (used as `text`)
+        for name in self.atlases['names'].index:
+            w = tree_font.measure(str(name))
+            if w > max_width:
+                max_width = w
+
+        # Set the column width; disable stretch so the column can be
+        # wider than the available area and let the x-scrollbar work.
+        self.region_tree.column('#0', minwidth=max_width, stretch=False)
+
     def create_widgets(self):
         """
         Create the widgets for this page. This includes:
@@ -83,9 +106,13 @@ class RegionPicker(BasePage):
         - Region Frame: Contains the tree view for selecting regions
         of interest (ROIs).
         """
-        self.menu_frame = tk.Frame(self)
-        self.slice_frame = tk.Frame(self)
-        self.region_frame = tk.Frame(self)
+        self.pw = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
+
+        self.main_frame = tk.Frame(self.pw)
+        self.region_frame = tk.Frame(self.pw)
+
+        self.menu_frame = tk.Frame(self.main_frame)
+        self.slice_frame = tk.Frame(self.main_frame)
 
         self.slide_nav_label = ttk.Label(self.menu_frame, text="Slide: ")
         self.curr_slide_var = tk.IntVar(master=self.menu_frame, value='1')
@@ -111,9 +138,15 @@ class RegionPicker(BasePage):
         self.slice_viewer.canvas.mpl_connect('motion_notify_event', self.on_move)
         self.slice_viewer.canvas.mpl_connect('button_press_event', self.on_click)
 
+        self.y_scroll = ttk.Scrollbar(self.region_frame, orient='vertical')
+        self.x_scroll = ttk.Scrollbar(self.region_frame, orient='horizontal')
         self.region_tree = self.ModifiedCheckboxTreeView(
-            master=self.region_frame
+            master=self.region_frame,
+            yscrollcommand=self.y_scroll.set,
+            xscrollcommand=self.x_scroll.set
         )
+        self.y_scroll['command']=self.region_tree.yview
+        self.x_scroll['command']=self.region_tree.xview
 
         self.region_tree.bind('<Motion>',self.check_update)
         self.region_tree.bind('<ButtonRelease-1>',self.check_update)
@@ -129,13 +162,16 @@ class RegionPicker(BasePage):
         """
         self.update()
         
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure(0, weight=5)
-        self.grid_columnconfigure(1, weight=1)
+        self.pw.pack(expand=True, fill=tk.BOTH)
+        self.pw.add(self.main_frame, weight=5)
+        self.pw.add(self.region_frame, weight=1)
 
+        
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_rowconfigure(1, weight=1)
         self.menu_frame.grid(row=0, column=0, sticky='nsew')
         self.slice_frame.grid(row=1, column=0, sticky='nsew')
-        self.region_frame.grid(row=0, rowspan=2, column=1, sticky='nsew')
+        #self.region_frame.grid(row=0, rowspan=2, column=1, sticky='nsew')
 
         self.slide_nav_label.pack(side=tk.LEFT)
         self.slide_nav_combo.pack(side=tk.LEFT)
@@ -145,8 +181,12 @@ class RegionPicker(BasePage):
 
         self.slice_viewer.get_widget().pack(expand=True, fill=tk.BOTH)
 
-        self.region_tree.pack(expand=True, fill=tk.BOTH)
-        #TODO: figure out how to make entire tree horizontal visible
+        self.region_frame.grid_rowconfigure(0, weight=1)
+        self.region_frame.grid_columnconfigure(0, weight=1)
+        self.region_tree.grid(row=0, column=0, sticky='nsew')
+        self.y_scroll.grid(row=0, column=1, sticky='ns')
+        self.x_scroll.grid(row=1, column=0, sticky='ew')
+        self.configure_tree_width()
 
     def switch_slides(self, event=None):
         """
