@@ -95,7 +95,7 @@ class RegionPicker(BasePage):
 
         # Set the column width; disable stretch so the column can be
         # wider than the available area and let the x-scrollbar work.
-        self.region_tree.column('#0', width=max_width, minwidth=max_width, stretch=False)
+        self.region_tree.column('#0', width=max_width+30, stretch=False)
 
     def create_widgets(self):
         """
@@ -143,7 +143,8 @@ class RegionPicker(BasePage):
         self.region_tree = self.ModifiedCheckboxTreeView(
             master=self.region_frame,
             yscrollcommand=self.y_scroll.set,
-            xscrollcommand=self.x_scroll.set
+            xscrollcommand=self.x_scroll.set,
+            show='tree'
         )
         self.y_scroll['command']=self.region_tree.yview
         self.x_scroll['command']=self.region_tree.xview
