@@ -28,6 +28,8 @@ Next, set up a conda environment by navigating into the repository folder and us
 Finally, download and extract the [atlases folder](https://drive.google.com/file/d/1zSF-S4CuY199EhDk4VU8NO6_jrEVNuMs/view?usp=sharing) and move the result into the repo. 
 The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
 
+The automated tests can be run with pytest using either `pytest --disable-warnings` or `python -m pytest --disable-warnings`.
+
 ## Input Data
 To use this tool, you will need provide the following information:
 
