@@ -16,17 +16,22 @@ DART enables:
 
 ## Installation
 
-### Executable File (no coding experience required)
-DART is distributed as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/file/d/1UHvkmNt6kgneh7vLTZS29K53wJkYFOEJ/view?usp=sharing), then run the `main.exe` file inside—no installation or separate Python environment is required.
+DART can currently be installed via two methods: 
+1. [downloading the pre-compiled Windows binary](#executable-file)
+2. [cloning the github repository and downloading auxiliary files](#cloning-this-repository)
 
-### OR
+Regardless of installation method, DART is available only on Windows 11. It was tested on a computer with 192 GB RAM and 24 GB graphics card. Running DART on less powerful devices may cause issues with loading high-resolution atlases and significantly slow processing time. 
 
-### Cloning this repository (Suitable for editing/contributing to the software, Required for testing via pytest)
-First, clone this repository using `git clone https://github.com/rk324/Dissecting-Atlas-Registered-Tissue.git`
-Next, set up a conda environment by navigating into the repository folder and using `conda env create -f environment.yml`
+### Executable File
+DART is available as a pre-compiled Windows binary in a standalone folder that includes all necessary dependencies. This installation method is perfect for users with little or no coding experience. To use the software, download and extract the entire folder from the [Google Drive link](https://drive.google.com/file/d/1UHvkmNt6kgneh7vLTZS29K53wJkYFOEJ/view?usp=sharing), then run the `main.exe` file inside—no installation or separate Python environment is required.
 
-Finally, download and extract the [atlases folder](https://drive.google.com/file/d/1zSF-S4CuY199EhDk4VU8NO6_jrEVNuMs/view?usp=sharing) and move the result into the repo. 
-The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
+### Cloning this repository
+DART can also be installed by cloning the repository and downloading auxiliary files. This is ideal for editing or contributing to the software and is necessary for running unit tests via pytest. To succesfully install DART with this method follow these steps:
+
+1. Clone this repository using `git clone https://github.com/rk324/Dissecting-Atlas-Registered-Tissue.git`
+2. Set up a conda environment by navigating into the repository folder and using `conda env create -f environment.yml`
+3. Download and extract the [atlases folder](https://drive.google.com/file/d/1zSF-S4CuY199EhDk4VU8NO6_jrEVNuMs/view?usp=sharing) and move the result into the repo.
+    - Note: The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
 
 The automated tests can be run with pytest using either `pytest --disable-warnings` or `python -m pytest --disable-warnings`.
 
