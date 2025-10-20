@@ -76,11 +76,10 @@ class RegionPicker(BasePage):
         self.configure_tree_width()
 
     def configure_tree_width(self):
-        # Dynamically size the tree's primary column (#0) so the horizontal
-        # scrollbar can represent horizontal overflow. We measure the text
-        # width of each region name using the widget/font metrics and add
+        """Configure width of region tree display."""
+
+        # Use widget/font metrics to get text width and add
         # padding to account for the checkbox image and indentation.
-        # prefer the tree's configured font if available
         tree_font = None
         try:
             tree_font = tk.font.Font(font=self.region_tree.cget('font'))
@@ -88,14 +87,12 @@ class RegionPicker(BasePage):
             tree_font = tk.font.Font()
 
         max_width = 0
-        # region names are stored in the DataFrame index (used as `text`)
         for name in self.atlases['names'].index:
             w = tree_font.measure(str(name))
             if w > max_width:
                 max_width = w
 
-        # Set the column width; disable stretch so the column can be
-        # wider than the available area and let the x-scrollbar work.
+        # Set the column width
         self.region_tree.column('#0', width=max_width+30, stretch=False)
 
     def create_widgets(self):
