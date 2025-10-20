@@ -15,7 +15,15 @@ a = Analysis(
         ('./resources', 'resources/'), 
         ('./VisuAlign-v0_9', 'VisuAlign-v0_9/')
         ],
-    hiddenimports=['scipy', 'scipy._lib.array_api_compat.numpy.fft', 'jaraco', 'jaraco.text', 'PIL._tkinter_finder','skimage.segmentation'],
+    hiddenimports=[
+        'scipy',
+        'sklearn._cyutility', 
+        'sklearn.externals.array_api_compat.numpy.fft',
+        'jaraco',
+        'jaraco.text',
+        'PIL._tkinter_finder',
+        'skimage.segmentation'
+        ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
