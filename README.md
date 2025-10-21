@@ -32,8 +32,11 @@ DART can also be installed by cloning the repository and downloading auxiliary f
 2. Set up a conda environment by navigating into the repository folder and using `conda env create -f environment.yml`
 3. Download and extract the [atlases folder](https://drive.google.com/file/d/1zSF-S4CuY199EhDk4VU8NO6_jrEVNuMs/view?usp=sharing) and move the result into the repo.
     - Note: The `atlases` folder should have 5 subfolders, and each of those should have 3 subfiles titled `label.nrrd`, `reference.nrrd`, and `names_dict.csv`.
+4. To run the software as a user, call `python -m dart` from the root directory of the repository.
 
-The automated tests can be run with pytest using either `pytest --disable-warnings` or `python -m pytest --disable-warnings`.
+Installing DART via repository cloning enables several additional tools for developers:
+1. The automated tests can be run with pytest using either `pytest --disable-warnings` or `python -m pytest --disable-warnings`.
+2. Individual pages can be "demoed" by calling `python -m dart.demo` from the root directory of the repository. This opens up a GUI where users can select a specific page and view it without needing to proceed through the previous pages.
 
 ## Input Data
 To use this tool, you will need provide the following information:
