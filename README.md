@@ -53,6 +53,6 @@ To use `DART`, please refer to our [tutorial](tutorials/README.md).
 - VisuAlign is developed by the Neural Systems Laboratory at the Institute of Basic Medical Sciences, University of Oslo, Norway and is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ## Contributing
-For support or issues, please open an “Issue” on our GitHub repository. To contribute to the software, please email manjari.anant@gmail.com and rishikoneru2005@gmail.com.
+For support or issues, please open an “Issue” on our GitHub repository. To contribute to the software, please refer to our [Contribution guidelines](CONTRIBUTING.md)
 
 
