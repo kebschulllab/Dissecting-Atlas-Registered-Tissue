@@ -1,0 +1,43 @@
+ARRIVE 2.0 – Essential 10 (Author Checklist)
+Ethics
+------
+Institutional oversight: Johns Hopkins University ACUC
+Protocols: MO20M376; MO23M346
+
+1) Study design
+   Purpose was to generate an example image to validate and demonstrate the software. No hypothesis testing or treatment groups. 
+
+2) Sample size
+   2 mice
+
+3) Inclusion/exclusion criteria
+   Animals were included if they met facility health standards and were scheduled on approved protocols. 
+   Sections were included if they met LMD image-quality criteria (no tearing/folding, adequate contrast, correct plane). 
+
+4) Randomization
+   Not applicable—no allocation to treatment/control. 
+
+5) Blinding
+   Not applicable—no group comparisons. 
+
+6) Outcome measures
+   Primary outcome for the sample asset: an image suitable for testing installation and basic functions of the software 
+   (readability, image I/O, ROI tools). Quality metrics used to qualify the image included focus sharpness and 
+   signal-to-background appropriate for LMD context; no biological endpoints were analyzed from the distributed example.
+
+7) Statistical methods
+   None—no inferential statistics performed. 
+
+8) Experimental animals
+   Species/strain: Mus musculus, C57BL/6J; Sex: both sexes maintained on protocol; Age: adult (~8–12 weeks) at time 
+   of tissue collection; Health status: standard SPF barrier facility. Animals maintained on a 12-h light/dark cycle with 
+   ad libitum food and water.
+
+9) Experimental procedures
+   Tissue preparation for LMD followed established methods under institutional SOPs: euthanasia per ACUC-approved methods, 
+   rapid brain extraction, fresh-frozen embedding, cryosectioning, and slide prep appropriate for LMD; sections were imaged 
+   to generate the example file. Detailed LMD prep steps are provided in Huang, L. et al. BRICseq Bridges Brain-wide Interregional Connectivity to Neural Activity and Gene Expression in Single Animals. Cell 182, 177–188.e27 (2020).
+
+10) Results
+    This is a demonstrative software asset rather than a hypothesis-driven experiment; results are limited to confirming that 
+    the example image loads and exercises core features of the software.
