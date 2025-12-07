@@ -36,7 +36,8 @@ Protocols: MO20M376; MO23M346
 9) Experimental procedures
    Tissue preparation for LMD followed established methods under institutional SOPs: euthanasia per ACUC-approved methods, 
    rapid brain extraction, fresh-frozen embedding, cryosectioning, and slide prep appropriate for LMD; sections were imaged 
-   to generate the example file. Detailed LMD prep steps are provided in Huang, L. et al. BRICseq Bridges Brain-wide Interregional Connectivity to Neural Activity and Gene Expression in Single Animals. Cell 182, 177–188.e27 (2020).
+   to generate the example file. Detailed LMD prep steps are provided in Huang, L. et al. BRICseq Bridges Brain-wide 
+   Interregional Connectivity to Neural Activity and Gene Expression in Single Animals. Cell 182, 177–188.e27 (2020).
 
 10) Results
     This is a demonstrative software asset rather than a hypothesis-driven experiment; results are limited to confirming that 
