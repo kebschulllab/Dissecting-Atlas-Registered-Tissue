@@ -28,26 +28,26 @@ authors:
     orcid: 0000-0002-4851-0267
 affiliations:
   - index: 1
-    name: Department of Biomedical Engineering, Johns Hopkins University, Baltimore, MD 21205, USA
+    name: Department of Biomedical Engineering, Johns Hopkins University, Baltimore, MD 21205, United States of America
   - index: 2
-    name: Department of Neuroscience, Johns Hopkins University, Baltimore, MD 21205, USA
+    name: Department of Neuroscience, Johns Hopkins University, Baltimore, MD 21205, United States of America
   - index: 3
-    name: Kavli Neuroscience Discovery Institute, Johns Hopkins University, Baltimore, MD 21205, USA
+    name: Kavli Neuroscience Discovery Institute, Johns Hopkins University, Baltimore, MD 21205, United States of America
   - index: 4
-    name: Center for Computational Biology, Johns Hopkins University, Baltimore, MD 21205, USA
+    name: Center for Computational Biology, Johns Hopkins University, Baltimore, MD 21205, United States of America
   - index: 5
-    name: Center for Functional Anatomy and Evolution, Johns Hopkins University, Baltimore, MD 21205, USA
+    name: Center for Functional Anatomy and Evolution, Johns Hopkins University, Baltimore, MD 21205, United States of America
 date: 25 August 2025
 bibliography: paper.bib
 ---
 
 # Summary
 
-The precise dissection of anatomically defined brain regions is the basis of many workflows in neurobiology. Traditionally, brain regions of interest are defined by visual inspection of tissue sections, followed by manual dissection. Recently, laser capture microscopes have been employed for more accurate dissection, but region identification remains challenging. This paper presents an open-source software pipeline [D]{.ul}issecting [A]{.ul}tlas-[R]{.ul}egistered [T]{.ul}issue (DART) that aligns histological brain sections to three-dimensional reference atlases and exports the resulting region-of-interest (ROI) contours for dissection by Leica Laser Microdissection (LMD) instruments. By integrating well-established image-processing libraries with a user-friendly graphical user interface, the software automates the traditionally time-consuming workflow of defining the boundaries of brain regions for dissection. With this pipeline, researchers can streamline tissue sampling for molecular analyses, while ensuring reproducibility and precision in ROI selection.
+The precise dissection of anatomically defined brain regions is the basis of many workflows in neurobiology. Traditionally, brain regions of interest are defined by visual inspection of tissue sections, followed by manual dissection. Recently, laser capture microscopes have been employed for more accurate dissection, but region identification remains challenging. This paper presents an open-source software pipeline -- [D]{.ul}issecting [A]{.ul}tlas-[R]{.ul}egistered [T]{.ul}issue (DART) -- that aligns histological brain sections to three-dimensional reference atlases and exports the resulting region-of-interest (ROI) contours for dissection by Leica Laser Microdissection (LMD) instruments. By integrating well-established image-processing libraries with a user-friendly graphical user interface, the software automates the traditionally time-consuming workflow of defining the boundaries of brain regions for dissection. With this pipeline, researchers can streamline tissue sampling for molecular analyses, while ensuring reproducibility and precision in ROI selection.
 
 # Statement of Need
 
-There is a growing demand for precise, automated methods to identify and dissect regions of interest (ROIs) in histological brain sections. The brain is highly heterogeneous, with distinct molecular and connectomic profiles across regions, making accurate region dissection critical for biological interpretation. For example, proteomic analyses, bulk RNA sequencing, and connectomic techniques like MAPseq often require the precise dissection of dozens to hundreds of brain regions [@Webb2015; @Goto-Silva2021; @Huang2020; @Kim2025; @Kebschull2016; @Chen2019]​. Laser microdissection (LMD) enables highly accurate dissection of biological tissues; however, current approaches using LMD require manual delineation of brain regions, which is error-prone and time consuming. Moreover, the lack of a standardized region selection makes it difficult to ensure consistent, reproducible sampling across experiments and laboratories. Existing open-source tools enable atlas alignment and segmentation of histological brain section images (e.g. STalign, QuickNII, and VisuAlign) [@Clifton2023; @Puchades2019]​. However, no tools currently integrate atlas alignment and region selection with Leica LMD software to enable seamless and precise dissection of those regions.
+There is a growing demand for precise, automated methods to identify and dissect regions of interest (ROIs) in histological brain sections. The brain is highly heterogeneous, with distinct molecular and connectomic profiles across regions, making accurate region dissection critical for biological interpretation. For example, proteomic analyses, bulk RNA sequencing, and connectomic techniques like MAPseq often require the precise dissection of dozens to hundreds of brain regions [@Webb2015; @Goto-Silva2021; @Huang2020; @Kim2025; @Kebschull2016; @Chen2019]​. Laser microdissection (LMD) enables highly accurate dissection of biological tissues; however, current approaches using LMD require manual delineation of brain regions, which is error-prone and time-consuming. Moreover, the lack of a standardized region selection process makes it difficult to ensure consistent, reproducible sampling across experiments and laboratories. Existing open-source tools enable atlas alignment and segmentation of histological brain section images (e.g. STalign, QuickNII, and VisuAlign) [@Clifton2023; @Puchades2019]​. However, no tools currently integrate atlas alignment and region selection with Leica LMD software to enable seamless and precise dissection of those regions.
 
 The Dissecting Atlas-Registered Tissue (DART) pipeline (\autoref{fig1}) addresses this gap by providing:
 
