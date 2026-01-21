@@ -158,7 +158,6 @@ class VisuAlignRunner(BasePage):
         nutil_json_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             '..',
-            '..',
             'resources',
             'Rainbow 2017.json'
         )
