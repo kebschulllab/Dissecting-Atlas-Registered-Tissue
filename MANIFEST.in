@@ -1,0 +1,2 @@
+recursive-include dart/resources *
+global-exclude __pycache__

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["dart*"]  # ["*"] by default
+exclude = ["dart.test*"]  # empty by default
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"dart" = ["resources/**", "VisuAlign-v0_9/**"]
+
+[project]
+name = "dart-lmd"
+version = "0.1.1"
+description = "Dissecting Atlas-Registered Tissue (DART): align tissue images to an atlas and generate region ROIs for laser microdissection."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [ 
+    { name = "Rishi Koneru", email = "rishikoneru2005@gmail.com" },
+    { name = "Manjari Anant", email = "manjari.anant@gmail.com"}
+]
+license = "GPL-3.0-or-later"
+license-files = ["COPYING"]
+keywords = ["atlas", "neuroscience", "image-alignment", "segmentation", "laser-microdissection"]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Operating System :: Microsoft :: Windows",
+	"Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+
+dependencies = [
+    "numpy>=2.2.4",
+    "nibabel",
+    "pynrrd",
+    "scikit-image",
+    "scikit-learn",
+    "pandas",
+    "matplotlib",
+    "requests",
+    "plotly",
+    "tornado",
+    "ttkwidgets",
+    "shapely>=2.0",
+	"torch",
+	"torchvision",
+	"torchaudio",
+]
+
+
+[project.scripts]
+dart = "dart.__main__:main"
+dart-download-atlases = "dart.download_atlases:main"
