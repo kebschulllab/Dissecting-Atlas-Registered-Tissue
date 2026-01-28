@@ -42,7 +42,6 @@ class VisuAlignRunner(BasePage):
         self.visualign_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             '..',
-            '..',
             'VisuAlign-v0_9'
         )
         self.custom_atlas_path = os.path.join(
