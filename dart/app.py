@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import os
 from dart.images import Atlas, Slide
 from dart.pages import *
 from dart.constants import FSR, DSR, FSL, DSL
@@ -35,6 +36,15 @@ class Project():
 
 class App(tk.Tk):
     def __init__(self):
+        # check for atlases and raise exception if not found
+        if not os.path.exists(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), 
+            'atlases'
+        )):
+            raise FileNotFoundError(
+                "Atlases not found. Use the command `dart-download-atlases` to download the required atlases."
+            )
+
         # initializes app with main window, navigation bar, prev/next buttons in nav_bar, 
         super().__init__()
         self.create_widgets()
