@@ -26,6 +26,22 @@ def download_atlases():
     dest_dir : str
         Returns the destination directory (str).
     """
+    # Check if atlases already exist
+    if os.path.exists(DEST_DIR) and len(os.listdir(DEST_DIR)) > 0:
+        # Atlases may already exist, ask user to confirm download
+        print(f"Atlases directory '{DEST_DIR}' already exists and is not empty. Proceeding may overwrite existing files.")
+        response = input("Proceed (y/n)? ")
+        
+        # Repeat until valid response
+        while response.lower() not in ['y', 'n']:
+            print(f"Your response ('{response}') was not one of 'y' or 'n'.")
+            response = input("Proceed (y/n)? ")
+        
+        # Cancel download if user responds 'n'
+        if response.lower() == 'n':
+            print("Download cancelled.")
+            return
+
     # Create destination directory if it doesn't exist
     dest_dir = Path(DEST_DIR)
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -70,11 +86,10 @@ def download_atlases():
     os.remove(dest_file)
     print("DONE")
 
-    return dest_dir
+    print(f"Atlases available at: {DEST_DIR}")
 
 def main():
-    path = download_atlases()
-    print(f"Atlases available at: {path}")
+    download_atlases()
     return 0
 
 
